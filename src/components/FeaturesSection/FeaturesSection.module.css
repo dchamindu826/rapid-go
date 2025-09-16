@@ -1,0 +1,63 @@
+.features {
+    padding: 100px 0;
+    background-color: var(--bg-color);
+}
+
+.sectionTitle {
+    text-align: center;
+    font-size: 2.8rem;
+    font-weight: 800;
+    margin-bottom: 60px;
+}
+
+.featuresGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 30px;
+}
+
+.card {
+    border-radius: 20px;
+    padding: 30px 35px;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-10px);
+}
+
+.card.dark {
+    background-color: var(--card-bg-color);
+}
+
+.card.blue {
+    background-color: #0d2847;
+}
+
+.cardNumber {
+    position: absolute;
+    top: -20px;
+    right: 10px;
+    font-size: 6rem;
+    font-weight: 800;
+    color: rgba(255, 255, 255, 0.05);
+    z-index: 1;
+}
+
+.card h3 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 15px;
+    position: relative;
+    z-index: 2;
+}
+
+.card p {
+    font-size: 1rem;
+    color: var(--text-secondary);
+    line-height: 1.7;
+    position: relative;
+    z-index: 2;
+}

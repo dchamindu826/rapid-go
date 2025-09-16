@@ -1,0 +1,63 @@
+.footer {
+    background-color: var(--card-bg-color);
+    position: relative;
+    overflow: hidden;
+    margin-top: 100px; /* Tikak ida thiyenna */
+}
+
+/* animatedScene ekata adala okkoma styles ain kara */
+
+.footerContent {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr;
+    gap: 50px;
+    padding: 60px 0;
+}
+
+/* ... (Anith okkoma footer content styles kalin widiyatama thiyenawa) ... */
+.footerLogo {
+    width: 150px;
+    margin-bottom: 20px;
+}
+.footerAbout p {
+    color: var(--text-secondary);
+    max-width: 350px;
+}
+.footerLinks h4, .footerSocial h4 {
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin-bottom: 20px;
+}
+.footerLinks ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+.footerLinks li {
+    margin-bottom: 10px;
+}
+.footerLinks a {
+    color: var(--text-secondary);
+    text-decoration: none;
+    transition: color 0.3s;
+}
+.footerLinks a:hover {
+    color: var(--secondary-accent);
+}
+.footerCopyright {
+    background-color: var(--bg-color);
+    text-align: center;
+    padding: 20px 0;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    border-top: 1px solid var(--border-color);
+}
+@media (max-width: 768px) {
+    .footerContent {
+        grid-template-columns: 1fr;
+        text-align: center;
+    }
+    .footerAbout p {
+        margin: 0 auto;
+    }
+}

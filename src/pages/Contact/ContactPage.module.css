@@ -1,0 +1,77 @@
+.pageContainer {
+    padding: 80px 0;
+    min-height: 70vh;
+}
+
+.pageContainer h1, .subtitle {
+    text-align: center;
+}
+
+.pageContainer h1 {
+    font-size: 3rem;
+    font-weight: 800;
+    margin-bottom: 20px;
+}
+
+.subtitle {
+    font-size: 1.2rem;
+    color: var(--text-secondary);
+    max-width: 600px;
+    margin: 0 auto 60px auto;
+}
+
+.contactWrapper {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 50px;
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.contactForm {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.contactForm input, .contactForm textarea {
+    padding: 15px;
+    font-size: 1rem;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    background-color: var(--card-bg-color);
+    color: var(--text-color);
+    font-family: 'Plus Jakarta Sans', sans-serif;
+}
+
+.contactForm button {
+    padding: 15px;
+    background: var(--primary-accent);
+    color: white;
+    border: none;
+    font-weight: 700;
+    font-size: 1rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.contactForm button:hover {
+    background-color: #B71C1C;
+}
+
+.contactDetails h3 {
+    font-size: 1.5rem;
+    margin-bottom: 20px;
+}
+
+.contactDetails p {
+    line-height: 1.8;
+    color: var(--text-secondary);
+}
+
+@media (max-width: 768px) {
+    .contactWrapper {
+        grid-template-columns: 1fr;
+    }
+}

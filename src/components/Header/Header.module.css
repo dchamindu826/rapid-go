@@ -1,0 +1,136 @@
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 0;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.logo img {
+    width: 170px;
+    vertical-align: middle;
+}
+
+.nav {
+    display: flex;
+    gap: 10px;
+}
+
+.navLink {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 15px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    text-decoration: none;
+    border-radius: 8px;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.navLink:hover {
+    background-color: var(--card-bg-color);
+    color: var(--text-color);
+}
+
+.navLink.active {
+    background-color: var(--secondary-accent);
+    color: #fff;
+}
+
+.navLink .icon {
+    font-size: 1.1rem;
+}
+
+.headerActions {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.actionBtn {
+    background: transparent;
+    border: 1px solid var(--border-color);
+    color: var(--text-secondary);
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    font-size: 1.2rem;
+    transition: background-color 0.3s, color 0.3s;
+    position: relative;
+}
+
+.actionBtn:hover {
+    background-color: var(--card-bg-color);
+    color: var(--text-color);
+}
+
+.cartBtn {
+    position: relative;
+}
+
+.cartCount {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background-color: var(--primary-accent);
+    color: #fff;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    font-size: 0.75rem;
+    font-weight: 700;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.mobileMenuBtn {
+    display: none;
+    background: none;
+    border: none;
+    color: var(--text-color);
+    font-size: 1.8rem;
+    cursor: pointer;
+    z-index: 1001;
+}
+
+@media (max-width: 992px) {
+    .nav {
+        position: fixed;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100vh;
+        background-color: var(--bg-color);
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        gap: 20px;
+        transition: left 0.4s ease-in-out;
+        z-index: 1000;
+    }
+    .nav.mobileActive {
+        left: 0;
+    }
+    .navLink {
+        font-size: 1.5rem;
+    }
+    .mobileMenuBtn {
+        display: block;
+        order: 3; /* Hamburger icon eka anith ewata passe pennanna */
+    }
+    .headerActions {
+        /* MEKA THAMAI WENAS KAMA: display: none ain karala thiyenne */
+        display: flex; /* Icons pennanna */
+        gap: 10px;
+        order: 2; /* Logo ekata passe pennanna */
+    }
+    .logo {
+        order: 1;
+    }
+}

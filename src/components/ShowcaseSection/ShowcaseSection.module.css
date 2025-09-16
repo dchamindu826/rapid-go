@@ -1,0 +1,57 @@
+.showcase {
+    padding: 100px 0;
+    background-color: var(--bg-color);
+}
+.sectionTitle {
+    text-align: center;
+    font-size: 2.5rem;
+    font-weight: 800;
+    margin-bottom: 50px;
+}
+.showcaseGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 30px;
+}
+.productCard {
+    background: var(--card-bg-color);
+    border-radius: 15px;
+    border: 1px solid var(--border-color);
+    padding: 20px;
+    text-align: center;
+    transition: transform 0.3s, box-shadow 0.3s, border-color 0.3s;
+}
+.productCard:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    border-color: var(--secondary-accent);
+}
+.productCard .productImage {
+    height: 180px;
+    background-color: #424242; 
+    border-radius: 10px;
+    margin-bottom: 20px;
+}
+.productCard h3 {
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+.productCard p {
+    color: var(--text-secondary);
+    margin-bottom: 20px;
+}
+.productCard .btn {
+    background: var(--primary-accent);
+    color: white;
+    border: none;
+    padding: 12px 28px;
+    font-weight: 700;
+    font-size: 0.9rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+.productCard .btn:hover {
+    background-color: #B71C1C;
+}

@@ -1,0 +1,31 @@
+/* Import NEW Font */
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap');
+
+/* CSS Variables for New Theme */
+:root {
+    --bg-color: #121212; /* Dark Black Ash */
+    --primary-accent: #E53935; /* Slightly Deeper Red */
+    --secondary-accent: #03A9F4; /* Light Blue */
+    --card-bg-color: #1E1E1E; /* Slightly Lighter Ash */
+    --text-color: #E0E0E0;
+    --text-secondary: #BDBDBD;
+    --border-color: #424242;
+}
+
+/* Base Styles */
+body {
+    /* Font eka wenas kara */
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    line-height: 1.6;
+    margin: 0;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.container {
+    width: 90%;
+    max-width: 1200px;
+    margin: 0 auto;
+}

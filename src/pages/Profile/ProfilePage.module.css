@@ -1,0 +1,34 @@
+.profilePage { padding: 60px 0; }
+.profilePage h1 { font-size: 2.8rem; font-weight: 800; text-align: center; margin-bottom: 50px; }
+.profileHeader { display: flex; align-items: center; gap: 30px; background-color: var(--card-bg-color); padding: 30px; border-radius: 20px; max-width: 800px; margin: 0 auto 60px auto; }
+.profilePic { width: 100px; height: 100px; border-radius: 50%; object-fit: cover; flex-shrink: 0; }
+.profileInfo h2 { margin: 0 0 5px 0; font-size: 2rem; }
+.profileInfo p { margin: 0 0 15px 0; color: var(--text-secondary); word-break: break-all; }
+.logoutBtn { background-color: var(--primary-accent); color: #fff; border: none; padding: 10px 20px; border-radius: 8px; font-weight: 600; cursor: pointer; }
+.ordersSection { max-width: 800px; margin: 0 auto; }
+.ordersSection h2 { font-size: 2rem; margin-bottom: 30px; }
+.ordersTable { display: flex; flex-direction: column; gap: 15px; }
+.tableHeader { display: grid; grid-template-columns: 1.5fr 1fr 1fr 1fr; font-weight: 700; color: var(--text-secondary); padding: 0 20px; }
+.tableRow { display: grid; grid-template-columns: 1.5fr 1fr 1fr 1fr; align-items: center; padding: 20px; border-radius: 10px; background-color: var(--card-bg-color); }
+.statusDelivered { background-color: #2E7D32; color: #C8E6C9; padding: 5px 12px; border-radius: 20px; font-size: 0.9rem; text-align: center; }
+
+/* --- MOBILE OPTIMIZATION --- */
+@media (max-width: 768px) {
+    .profileHeader { flex-direction: column; text-align: center; }
+    .tableHeader { display: none; } /* Table header eka hide karanawa */
+    .tableRow {
+        grid-template-columns: 1fr 1fr; /* Columns 2kata wenas karanawa */
+        gap: 15px 20px;
+        padding: 20px;
+    }
+    .tableRow span {
+        display: flex;
+        flex-direction: column;
+    }
+    /* Data walata labels add karanawa */
+    .tableRow span:nth-child(1)::before { content: "Order ID"; font-weight: 600; font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 5px; }
+    .tableRow span:nth-child(2)::before { content: "Date"; font-weight: 600; font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 5px; }
+    .tableRow span:nth-child(3)::before { content: "Total"; font-weight: 600; font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 5px; }
+    .tableRow span:nth-child(4)::before { content: "Status"; font-weight: 600; font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 5px; }
+    .statusDelivered { width: fit-content; }
+}

@@ -1,0 +1,39 @@
+.pageContainer {
+    padding: 80px 0;
+    min-height: 70vh;
+}
+
+.pageContainer h1 {
+    font-size: 3rem;
+    font-weight: 800;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.subtitle {
+    font-size: 1.2rem;
+    color: var(--text-secondary);
+    text-align: center;
+    max-width: 600px;
+    margin: 0 auto 60px auto;
+}
+
+.content {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.content h2 {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-top: 40px;
+    margin-bottom: 15px;
+    border-left: 4px solid var(--secondary-accent);
+    padding-left: 15px;
+}
+
+.content p {
+    font-size: 1.1rem;
+    line-height: 1.8;
+    color: var(--text-secondary);
+}
