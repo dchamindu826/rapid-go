@@ -1,77 +1,115 @@
 .trackingSection {
-    padding: 0 0 100px 0;
-}
-.trackingBox {
-    background-color: var(--card-bg-color);
-    border: 1px solid var(--border-color);
-    border-radius: 15px;
-    padding: 40px;
-    text-align: center;
-}
-.trackingBox h2 {
-    font-size: 2rem;
-    font-weight: 700;
-    margin-top: 0;
-}
-.trackingBox p {
-    color: var(--text-secondary);
-    margin-bottom: 30px;
-}
-.trackingInputGroup {
-    display: flex;
-    max-width: 500px;
-    margin: 0 auto;
-    border-radius: 8px;
-    overflow: hidden;
-    border: 1px solid var(--border-color);
-}
-.trackingInputGroup input {
-    flex-grow: 1;
-    border: none;
-    padding: 15px 20px;
-    font-size: 1rem;
-    background-color: #2a2a2a;
-    color: var(--text-color);
-    font-family: 'Poppins', sans-serif;
-}
-.trackingInputGroup input:focus {
-    outline: 2px solid var(--secondary-accent);
-}
-.btnTrack {
-    border: none;
-    background: var(--secondary-accent); /* Aluth color eka */
-    color: var(--bg-color); /* Akuru wala paata dark kara */
-    padding: 15px 30px;
-    font-size: 1rem;
-    font-weight: 700;
-    cursor: pointer;
-    transition: all 0.3s;
-}
-.btnTrack:hover {
-    background-color: #0288D1;
+    padding: 80px 0;
 }
 
-/* Kalin තිබුණු code එකට පහළින් මේ ටික add කරන්න */
+.trackingBox {
+    background: linear-gradient(135deg, #1E2A47 0%, #0A192F 100%);
+    border: 1px solid var(--border-color);
+    border-radius: 20px;
+    padding: 60px 40px;
+    text-align: center;
+    max-width: 800px;
+    margin: 0 auto;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+}
 
 .trackingIcon {
     width: 60px;
-    margin-bottom: 15px;
+    margin-bottom: 20px;
     animation: pulseIcon 2s infinite ease-in-out;
 }
 
 @keyframes pulseIcon {
-    0% {
-        transform: scale(1);
-    }
-    50% {
-        transform: scale(1.1);
-    }
-    100% {
-        transform: scale(1);
+    0% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+}
+
+.trackingBox h2 {
+    font-size: 2.5rem;
+    font-weight: 800;
+    margin-top: 0;
+    margin-bottom: 15px;
+}
+
+.trackingBox p {
+    color: var(--text-secondary);
+    margin-bottom: 30px;
+    font-size: 1.1rem;
+}
+
+.trackingInputGroup {
+    display: flex;
+    max-width: 500px;
+    margin: 0 auto;
+    border-radius: 50px;
+    overflow: hidden;
+    border: 1px solid var(--border-color);
+    background-color: var(--bg-color);
+}
+
+.trackingInputGroup input {
+    flex-grow: 1;
+    border: none;
+    background: none;
+    padding: 15px 25px;
+    font-size: 1rem;
+    color: var(--text-color);
+    font-family: 'Plus Jakarta Sans', sans-serif;
+}
+.trackingInputGroup input:focus { outline: none; }
+
+/* --- "Track" Button eke ALUTH STYLES --- */
+.btnTrack {
+    border: none;
+    background: var(--primary-accent); /* Main accent color eka use kala */
+    color: white; /* Text color eka white kala */
+    padding: 15px 35px; /* Padding eka adjust kala */
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s ease; /* Smooth transition */
+    border-radius: 50px; /* Aluth border-radius eka */
+    box-shadow: 0 4px 15px rgba(229, 57, 53, 0.3); /* Soft shadow */
+}
+.btnTrack:hover {
+    background-color: #f04d49; /* Hover karanakota podi color change ekak */
+    transform: translateY(-2px); /* Podi lift up effect ekak */
+    box-shadow: 0 8px 20px rgba(229, 57, 53, 0.4); /* Stronger shadow on hover */
+}
+
+
+@media (max-width: 992px) {
+    .trackingSection {
+        padding-top: 0;
+        margin-top: 40px;
     }
 }
 
-.trackingBox {
-    /* ... kalin thibunu styles ... */
-    position: relative; /* Icon eka nisa meka add kara */
+@media (max-width: 500px) {
+    .trackingInputGroup {
+        flex-direction: column;
+        gap: 15px; /* Spacing between input and button */
+        border-radius: 20px;
+        border: none;
+        background-color: transparent;
+        padding-bottom: 10px; /* input group ekata pahalin podi ida */
+    }
+    .trackingInputGroup input {
+        border-radius: 50px;
+        border: 1px solid var(--border-color);
+        text-align: center;
+        padding: 15px 25px;
+    }
+    .btnTrack {
+        width: 100%; /* Mobile waladi button eka 100% palala karanna */
+        max-width: 300px; /* Ekata max width ekak denna */
+        margin: 0 auto; /* Madin thiyanna */
+    }
+    .trackingBox {
+        padding: 40px 20px;
+    }
+    .trackingBox h2 {
+        font-size: 2rem;
+    }
 }

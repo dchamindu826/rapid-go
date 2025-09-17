@@ -3,12 +3,13 @@ import styles from './CartPage.module.css';
 import { Link } from 'react-router-dom';
 import { useCart } from '../../contexts/CartContext';
 import { FiTrash2 } from 'react-icons/fi';
+import ProductImage from '../../components/ProductImage/ProductImage';
 
 const CartPage = () => {
   const { cartItems, updateQuantity, removeFromCart } = useCart();
 
   const subtotal = cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-  const total = subtotal; // Assuming no delivery fee for digital products
+  const total = subtotal;
 
   if (cartItems.length === 0) {
     return (
@@ -25,23 +26,30 @@ const CartPage = () => {
       <h1>Your Shopping Cart</h1>
       <div className={styles.cartLayout}>
         <div className={styles.cartItems}>
-          {cartItems.map(item => (
-            <div key={item.id} className={styles.cartItem}>
-              <img src={item.img} alt={item.name} />
-              <div className={styles.itemDetails}>
-                <h3>{item.name}</h3>
-                <p>Price: Rs. {item.price.toFixed(2)}</p>
-                <div className={styles.quantityControl}>
-                    <button onClick={() => updateQuantity(item.id, item.quantity - 1)}>-</button>
-                    <input type="number" value={item.quantity} readOnly />
-                    <button onClick={() => updateQuantity(item.id, item.quantity + 1)}>+</button>
+          {cartItems.map(item => {
+            const displayImage = item.productMedia?.find(media => media._type === 'image' || media._type === 'imageUrl');
+            return (
+              <div key={item._id} className={styles.cartItem}>
+                <div className={styles.cartImageWrapper}>
+                  <ProductImage mediaItem={displayImage} altText={item.name} width={160} />
                 </div>
+                <div className={styles.itemDetails}>
+                  <h3>{item.name}</h3>
+                  <p>Price: Rs. {item.price.toFixed(2)}</p>
+                  <div className={styles.quantityControl}>
+                      <button onClick={() => updateQuantity(item._id, item.quantity - 1)}>-</button>
+                      <input type="number" value={item.quantity} readOnly />
+                      <button onClick={() => updateQuantity(item._id, item.quantity + 1)}>+</button>
+                  </div>
+                </div>
+                <p className={styles.itemTotal}>Rs. {(item.price * item.quantity).toFixed(2)}</p>
+                <button className={styles.removeBtn} onClick={() => removeFromCart(item._id)}><FiTrash2 /></button>
               </div>
-              <p className={styles.itemTotal}>Rs. {(item.price * item.quantity).toFixed(2)}</p>
-              <button className={styles.removeBtn} onClick={() => removeFromCart(item.id)}><FiTrash2 /></button>
-            </div>
-          ))}
+            );
+          })}
         </div>
+        
+        {/* --- ME KOTASA THAMAI OYAAGE FILE EKE ADU WELA THIBBE --- */}
         <div className={styles.orderSummary}>
           <h2>Order Summary</h2>
           <div className={styles.summaryLine}>
@@ -59,5 +67,4 @@ const CartPage = () => {
   );
 };
 
-// --- ME LINE EKA HARIGASSA THIYENNE ---
 export default CartPage;

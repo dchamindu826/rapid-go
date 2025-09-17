@@ -1,15 +1,27 @@
 import React, { useState } from 'react';
-import { Link, NavLink } from 'react-router-dom';
+import { Link, NavLink, useNavigate } from 'react-router-dom';
 import styles from './Header.module.css';
 import { FiHome, FiShoppingCart, FiTruck, FiInfo, FiMail, FiShoppingBag, FiUser, FiMenu, FiX } from 'react-icons/fi';
 import { useCart } from '../../contexts/CartContext';
+import { useAuth } from '../../contexts/AuthContext';
 
 const Header = () => {
   const { cartItems } = useCart();
+  const { currentUser, logout } = useAuth();
   const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const navigate = useNavigate();
 
   const toggleMobileMenu = () => {
     setMobileMenuOpen(!isMobileMenuOpen);
+  };
+
+  const handleLogout = async () => {
+      try {
+          await logout();
+          navigate('/login');
+      } catch (error) {
+          console.error("Failed to log out", error);
+      }
   };
 
   return (
@@ -22,6 +34,7 @@ const Header = () => {
         {isMobileMenuOpen ? <FiX /> : <FiMenu />}
       </button>
 
+      {/* --- Navigation Links Added Back Here --- */}
       <nav className={`${styles.nav} ${isMobileMenuOpen ? styles.mobileActive : ''}`}>
         <NavLink to="/" className={styles.navLink} onClick={toggleMobileMenu} end>
           <FiHome className={styles.icon} /> <span>Home</span>
@@ -47,9 +60,20 @@ const Header = () => {
             <span className={styles.cartCount}>{cartItems.length}</span>
           )}
         </Link>
-        <Link to="/profile" className={styles.actionBtn}>
-          <FiUser />
-        </Link>
+        
+        {currentUser ? (
+          <div className={styles.profileDropdown}>
+            <img src={currentUser.photoURL || '/images/icons/default-profile.png'} alt="Profile" className={styles.profilePic} />
+            <div className={styles.dropdownContent}>
+                <Link to="/profile">My Profile</Link>
+                <button onClick={handleLogout}>Log Out</button>
+            </div>
+          </div>
+        ) : (
+          <Link to="/login" className={styles.actionBtn}>
+            <FiUser />
+          </Link>
+        )}
       </div>
     </header>
   );

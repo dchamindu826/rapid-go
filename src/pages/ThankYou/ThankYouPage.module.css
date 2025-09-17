@@ -1,0 +1,59 @@
+.pageContainer {
+    padding: 80px 0;
+    min-height: 70vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+.thankYouBox {
+    max-width: 600px;
+    background-color: var(--card-bg-color);
+    padding: 50px;
+    border-radius: 20px;
+    border: 1px solid var(--border-color);
+}
+.successIcon {
+    font-size: 4rem;
+    color: var(--secondary-accent);
+    margin-bottom: 20px;
+}
+.thankYouBox h1 {
+    font-size: 2.5rem;
+    font-weight: 800;
+    margin-bottom: 15px;
+}
+.subtitle {
+    font-size: 1.1rem;
+    color: var(--text-secondary);
+    line-height: 1.7;
+    margin-bottom: 40px;
+}
+.buttonGroup {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+.btn, .btnSecondary {
+    padding: 12px 25px;
+    border-radius: 8px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.3s;
+}
+.btn {
+    background-color: var(--primary-accent);
+    color: #fff;
+    border: 1px solid var(--primary-accent);
+}
+.btn:hover {
+    background-color: #B71C1C;
+}
+.btnSecondary {
+    background-color: transparent;
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+}
+.btnSecondary:hover {
+    background-color: var(--border-color);
+}

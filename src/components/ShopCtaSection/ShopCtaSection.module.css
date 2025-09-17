@@ -1,36 +1,82 @@
 .ctaSection {
     padding: 80px 0;
-    text-align: center;
 }
+
 .title {
-    font-size: 2.5rem;
+    text-align: center;
+    font-size: 2.8rem;
     font-weight: 800;
     margin-bottom: 50px;
 }
-.ctaGrid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 30px;
+
+.swiperContainer {
+    padding: 0 40px; /* Slider eke depeththen podi idak thiyanna */
 }
-.ctaCard {
-    background-color: var(--card-bg-color);
-    border: 1px solid var(--border-color);
+
+.swiperSlide {
+    width: 300px !important; /* Hama card ekatama ekama palala */
+}
+
+.productCard {
+    position: relative;
+    display: block;
     border-radius: 15px;
-    padding: 30px;
+    overflow: hidden;
     text-decoration: none;
     color: var(--text-color);
-    transition: transform 0.3s, box-shadow 0.3s;
+    aspect-ratio: 4 / 3;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    background-color: var(--card-bg-color);
 }
-.ctaCard:hover {
-    transform: translateY(-10px);
-    box-shadow: 0 15px 30px rgba(0,0,0,0.3);
-    border-color: var(--secondary-accent);
+
+.productCard:hover {
+    transform: scale(1.05); /* Loku wela penna hover effect eka */
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
 }
-.ctaCard img {
-    max-width: 100px;
-    margin-bottom: 20px;
+
+.cardImage {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
 }
-.ctaCard h3 {
-    font-size: 1.5rem;
+
+.productCard::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 80%;
+    background: linear-gradient(to top, rgba(17, 34, 64, 0.95) 20%, transparent);
+    z-index: 1;
+}
+
+.cardContent {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    padding: 20px;
+    z-index: 2;
+}
+
+.cardContent h3 {
+    font-size: 1.2rem;
     font-weight: 700;
+    margin: 0 0 5px 0;
+}
+
+.cardContent .price {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--secondary-accent);
+}
+
+@media (max-width: 768px) {
+    .swiperContainer {
+        padding: 0 20px;
+    }
+    .swiperSlide {
+        width: 250px !important;
+    }
 }

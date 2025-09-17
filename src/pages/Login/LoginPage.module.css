@@ -52,3 +52,12 @@
     width: 24px;
     height: 24px;
 }
+/* LoginPage.module.css file eke, kalin thibba styles walata ek olarak me tika add karanna ho replace karanna */
+.loginForm { display: flex; flex-direction: column; gap: 20px; }
+.loginForm input { padding: 12px; font-size: 1rem; border-radius: 8px; border: 1px solid var(--border-color); background-color: var(--bg-color); color: var(--text-color); }
+.loginBtn { padding: 15px; background: var(--primary-accent); color: white; border: none; font-weight: 700; font-size: 1rem; border-radius: 8px; cursor: pointer; }
+.loginBtn:disabled { background-color: #555; }
+.divider { margin: 25px 0; color: var(--text-secondary); font-weight: 600; }
+.signupRedirect { margin-top: 20px; color: var(--text-secondary); }
+.signupRedirect a { color: var(--secondary-accent); font-weight: 600; text-decoration: none; }
+.error { background-color: rgba(229, 57, 53, 0.2); color: var(--primary-accent); padding: 10px; border-radius: 8px; margin-bottom: 20px; }

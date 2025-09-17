@@ -1,21 +1,23 @@
-import { initializeApp } from "firebase/app";
-import { getAuth, GoogleAuthProvider } from "firebase/auth";
+import { initializeApp, getApp, getApps } from 'firebase/app';
+import { getAuth, GoogleAuthProvider } from 'firebase/auth';
+import { getFirestore } from 'firebase/firestore';
 
-// Firebase eken copy karagaththa details ටික මෙතනට දාන්න
+// Your Firebase config
 const firebaseConfig = {
-   apiKey: "AIzaSyCHDuE6paornkV2zbhtbFVoysFLv005HG0",
-  authDomain: "rapid-go-f887c.firebaseapp.com",
-  projectId: "rapid-go-f887c",
-  storageBucket: "rapid-go-f887c.firebasestorage.app",
-  messagingSenderId: "150822256660",
-  appId: "1:150822256660:web:47c98d86926443c1776701",
-  measurementId: "G-YJTDVSYHKK"
-
+    apiKey: "AIzaSyCHDuE6paornkV2zbhtbFVoysFLv005HG0",
+    authDomain: "rapid-go-f887c.firebaseapp.com",
+    projectId: "rapid-go-f887c",
+    storageBucket: "rapid-go-f887c.appspot.com",
+    messagingSenderId: "150822256660",
+    appId: "1:150822256660:web:47c98d86926443c1776701",
+    measurementId: "G-YJTDVSYHKK"
 };
 
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
+// Robust Firebase Initialization
+const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
+const auth = getAuth(app);
+const db = getFirestore(app);
+const googleProvider = new GoogleAuthProvider();
 
-// Export Auth services
-export const auth = getAuth(app);
-export const googleProvider = new GoogleAuthProvider();
+// Export all services
+export { app, auth, db, googleProvider };
