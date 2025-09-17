@@ -7,7 +7,7 @@
 }
 
 .logo img {
-    width: 170px;
+    width: 220px; /* Logo size eka 200px idan 220px walata wadi kara */
     vertical-align: middle;
 }
 

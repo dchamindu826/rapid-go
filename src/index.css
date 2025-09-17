@@ -1,31 +1,84 @@
-/* Import NEW Font */
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap');
-
-/* CSS Variables for New Theme */
+/* Global styles and CSS variables */
 :root {
-    --bg-color: #121212; /* Dark Black Ash */
-    --primary-accent: #E53935; /* Slightly Deeper Red */
-    --secondary-accent: #03A9F4; /* Light Blue */
-    --card-bg-color: #1E1E1E; /* Slightly Lighter Ash */
-    --text-color: #E0E0E0;
-    --text-secondary: #BDBDBD;
-    --border-color: #424242;
+  --bg-color: #0A192F; /* Dark Blue */
+  --card-bg-color: #112240; /* Slightly lighter blue for cards */
+  --border-color: #233554; /* Border color */
+
+  --text-color: #E6F1FF; /* Light blue-white for main text */
+  --text-secondary: #8892B0; /* Gray-blue for secondary text */
+
+  --primary-accent: #E63946; /* Red for primary buttons/highlights */
+  --secondary-accent: #64FFDA; /* Aqua green for secondary accents/links */
+
+  --gradient-start: #0A192F; /* Gradient start for glow */
+  --gradient-end: #0B335E;   /* Gradient end for glow */
+
+  --header-height: 80px; /* උස */
 }
 
-/* Base Styles */
+/* Base styles */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
 body {
-    /* Font eka wenas kara */
-    font-family: 'Plus Jakarta Sans', sans-serif;
-    background-color: var(--bg-color);
-    color: var(--text-color);
-    line-height: 1.6;
-    margin: 0;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 .container {
-    width: 90%;
-    max-width: 1200px;
-    margin: 0 auto;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: var(--text-color);
+  line-height: 1.2;
+}
+
+a {
+  color: var(--secondary-accent);
+  text-decoration: none;
+}
+
+a:hover {
+  color: var(--primary-accent);
+}
+
+button {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  cursor: pointer;
+}
+
+/* Soft Glow Effect */
+body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  background: radial-gradient(
+    circle at 20% 20%, /* Top-left glow */
+    rgba(100, 255, 218, 0.08) 0%, /* secondary-accent with low opacity */
+    transparent 25%
+  ),
+  radial-gradient(
+    circle at 80% 80%, /* Bottom-right glow */
+    rgba(230, 57, 70, 0.08) 0%, /* primary-accent with low opacity */
+    transparent 25%
+  );
+  z-index: -2; /* Background color එකටත් යටින් */
 }
