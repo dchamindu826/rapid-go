@@ -1,39 +1,65 @@
-.pageContainer {
-    padding: 80px 0;
-    min-height: 70vh;
+.pageContainer { 
+    padding-bottom: 80px; 
 }
 
-.pageContainer h1 {
-    font-size: 3rem;
-    font-weight: 800;
-    margin-bottom: 20px;
-    text-align: center;
+.hero { 
+    text-align: center; 
+    padding: 80px 20px; /* Use local padding */
+    background-color: var(--card-bg-color); /* Add a distinct background */
+    border-radius: 0 0 30px 30px; /* Add some curves */
+    margin-bottom: 100px; /* Add space below the hero section */
 }
 
-.subtitle {
-    font-size: 1.2rem;
-    color: var(--text-secondary);
-    text-align: center;
-    max-width: 600px;
-    margin: 0 auto 60px auto;
+.hero h1 { 
+    font-size: 3.5rem; 
+    font-weight: 800; 
+    margin-bottom: 20px; 
 }
 
-.content {
-    max-width: 800px;
-    margin: 0 auto;
+.subtitle { 
+    font-size: 1.2rem; 
+    color: var(--text-secondary); 
+    max-width: 700px; 
+    margin: 0 auto; 
 }
 
-.content h2 {
-    font-size: 2rem;
-    font-weight: 700;
-    margin-top: 40px;
-    margin-bottom: 15px;
-    border-left: 4px solid var(--secondary-accent);
-    padding-left: 15px;
+.ourValues { 
+    padding: 0 20px; /* Use local padding */
 }
 
-.content p {
-    font-size: 1.1rem;
-    line-height: 1.8;
-    color: var(--text-secondary);
+.ourValues h2 { 
+    text-align: center; 
+    font-size: 2.8rem; 
+    font-weight: 800; 
+    margin-bottom: 60px; 
+}
+
+.valuesGrid { 
+    display: grid; 
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); 
+    gap: 30px; 
+}
+
+.valueCard { 
+    background-color: var(--card-bg-color); 
+    border: 1px solid var(--border-color); 
+    border-radius: 15px; 
+    padding: 30px; 
+    text-align: center; 
+}
+
+.valueCard svg { 
+    font-size: 3rem; 
+    color: var(--secondary-accent); 
+    margin-bottom: 20px; 
+}
+
+.valueCard h3 { 
+    font-size: 1.5rem; 
+    margin-bottom: 15px; 
+}
+
+.valueCard p { 
+    color: var(--text-secondary); 
+    line-height: 1.7; 
 }

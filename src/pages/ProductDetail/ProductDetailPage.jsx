@@ -1,20 +1,24 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
+import { useCart } from '../../contexts/CartContext';
 import styles from './ProductDetailPage.module.css';
 
-// Me data tika ShopPage eken copy kara
-const products = [
-    { id: 1, category: 'Pharmacy', name: 'Panadol (24 Tablets)', price: 'Rs. 120.00', rating: 5, img: '/images/products/panadol.png', description: 'Provides fast, effective relief from fever and pain such as headaches, migraines, and toothaches.' },
-    { id: 2, category: 'Pharmacy', name: 'Vitamin C (100 Capsules)', price: 'Rs. 750.00', rating: 4, img: '/images/products/vitamin-c.png', description: 'A high-potency Vitamin C supplement to support your immune system and overall health.' },
-    // Anith product walatath description add karanna
+const digitalProducts = [
+    { id: 9, category: 'Video', name: 'Corporate Slideshow Pack', price: 2500.00, rating: 5, img: '/images/products/digital/video1.jpg', description: 'A professional and clean slideshow pack with smooth animations, perfect for corporate presentations, business meetings, and marketing videos.' },
+    { id: 10, category: 'Web', name: 'Modern React Landing Page', price: 3000.00, rating: 5, img: '/images/products/digital/web1.jpg', description: 'A fully responsive, modern landing page template built with React and Vite. Easy to customize and deploy for your next project.' },
+    { id: 11, category: 'PSD', name: 'Business Card Mockup Set', price: 1200.00, rating: 4, img: '/images/products/digital/psd1.jpg', description: 'A set of high-quality PSD mockups to showcase your business card designs in a realistic and professional manner.' },
+    { id: 12, category: 'Preset', name: 'Cinematic Lightroom Presets', price: 1500.00, rating: 5, img: '/images/products/digital/preset1.jpg', description: 'A collection of professional Lightroom presets designed to give your photos a cinematic, moody, and consistent look.' },
+    { id: 13, category: 'Video', name: 'Dynamic Intro & Opener', price: 1800.00, rating: 4, img: '/images/products/digital/video2.jpg', description: 'An energetic and dynamic opener for your videos, perfect for YouTube intros, event promotions, and more.' },
+    { id: 14, category: 'Web', name: 'E-commerce UI Kit', price: 4500.00, rating: 5, img: '/images/products/digital/web2.jpg', description: 'A complete UI kit for Figma and Sketch, designed for modern e-commerce websites. Includes hundreds of components and screens.' },
 ];
 
 const ProductDetailPage = () => {
     const { productId } = useParams();
-    const product = products.find(p => p.id === parseInt(productId));
+    const { addToCart } = useCart();
+    const product = digitalProducts.find(p => p.id === parseInt(productId));
 
     if (!product) {
-        return <div className="container"><h2>Product not found!</h2></div>;
+        return <div className="container" style={{padding: '50px', textAlign:'center'}}><h2>Product not found!</h2></div>;
     }
 
     return (
@@ -28,10 +32,10 @@ const ProductDetailPage = () => {
                     <h1>{product.name}</h1>
                     <div className={styles.rating}>{'★'.repeat(product.rating)}{'☆'.repeat(5 - product.rating)}</div>
                     <p className={styles.description}>{product.description}</p>
-                    <div className={styles.price}>{product.price}</div>
+                    <div className={styles.price}>Rs. {product.price.toFixed(2)}</div>
                     <div className={styles.actions}>
                         <input type="number" defaultValue="1" min="1" className={styles.quantity} />
-                        <button className={styles.addToCartBtn}>Add to Cart</button>
+                        <button className={styles.addToCartBtn} onClick={() => addToCart(product)}>Add to Cart</button>
                     </div>
                 </div>
             </div>

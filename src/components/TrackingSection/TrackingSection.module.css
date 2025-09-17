@@ -39,13 +39,13 @@
 }
 .btnTrack {
     border: none;
-    background: var(--secondary-accent);
-    color: #fff;
+    background: var(--secondary-accent); /* Aluth color eka */
+    color: var(--bg-color); /* Akuru wala paata dark kara */
     padding: 15px 30px;
     font-size: 1rem;
     font-weight: 700;
     cursor: pointer;
-    transition: background-color 0.3s;
+    transition: all 0.3s;
 }
 .btnTrack:hover {
     background-color: #0288D1;

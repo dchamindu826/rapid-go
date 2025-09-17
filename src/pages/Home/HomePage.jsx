@@ -1,17 +1,17 @@
 import React from 'react';
-import HeroSection from '../../components/HeroSection/HeroSection'; // Path eka wenas kara
-import TrackingSection from '../../components/TrackingSection/TrackingSection'; // Path eka wenas kara
-import ShowcaseSection from '../../components/ShowcaseSection/ShowcaseSection'; // Path eka wenas kara
-import ServicesSection from '../../components/ServicesSection/ServicesSection'; // Path eka wenas kara
-import FeaturesSection from '../../components/FeaturesSection/FeaturesSection'; // Path eka wenas kara
-import TestimonialsSection from '../../components/TestimonialsSection/TestimonialsSection'; // Path eka wenas kara
+import HeroSection from '../../components/HeroSection/HeroSection';
+import TrackingSection from '../../components/TrackingSection/TrackingSection'; // Ayemath import kara
+import ShopCtaSection from '../../components/ShopCtaSection/ShopCtaSection';
+import ServicesSection from '../../components/ServicesSection/ServicesSection';
+import FeaturesSection from '../../components/FeaturesSection/FeaturesSection';
+import TestimonialsSection from '../../components/TestimonialsSection/TestimonialsSection';
 
 const HomePage = () => {
   return (
     <main>
       <HeroSection />
-      <TrackingSection />
-      <ShowcaseSection />
+      <TrackingSection /> {/* Ayemath methanata add kara */}
+      <ShopCtaSection />
       <ServicesSection />
       <FeaturesSection />
       <TestimonialsSection />

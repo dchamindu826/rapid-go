@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import styles from './HeroSection.module.css';
+import { Link } from 'react-router-dom';
 
 // Hero section ekata daanna ona images wala paths me array ekata daanna
 const heroImages = [
@@ -25,7 +26,9 @@ const HeroSection = () => {
                 <p className={styles.heroTagline}>FAST & RELIABLE</p>
                 <h1 className={styles.heroTitle}>Your Daily Essentials, Delivered in Minutes.</h1>
                 <p className={styles.heroSubtitle}>Craving food or need medicine in a hurry? RapidGo brings your favorite stores right to your doorstep, faster than ever.</p>
-                <button className={styles.btn}>Place an Order</button>
+                <Link to="/shop">
+                  <button className={styles.btn}>Place an Order</button>
+                </Link>
             </div>
             <div className={styles.heroImageContainer}>
                 {/* Random image eka methanin pennanawa */}

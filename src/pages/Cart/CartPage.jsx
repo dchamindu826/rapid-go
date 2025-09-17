@@ -1,15 +1,14 @@
 import React from 'react';
 import styles from './CartPage.module.css';
 import { Link } from 'react-router-dom';
-import { useCart } from '../../contexts/CartContext'; // Path eka wenas kara
+import { useCart } from '../../contexts/CartContext';
 import { FiTrash2 } from 'react-icons/fi';
 
 const CartPage = () => {
   const { cartItems, updateQuantity, removeFromCart } = useCart();
 
   const subtotal = cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-  const deliveryFee = 250.00;
-  const total = subtotal + deliveryFee;
+  const total = subtotal; // Assuming no delivery fee for digital products
 
   if (cartItems.length === 0) {
     return (
@@ -49,10 +48,6 @@ const CartPage = () => {
             <span>Subtotal</span>
             <span>Rs. {subtotal.toFixed(2)}</span>
           </div>
-          <div className={styles.summaryLine}>
-            <span>Delivery Fee</span>
-            <span>Rs. {deliveryFee.toFixed(2)}</span>
-          </div>
           <div className={`${styles.summaryLine} ${styles.total}`}>
             <span>Total</span>
             <span>Rs. {total.toFixed(2)}</span>
@@ -64,4 +59,5 @@ const CartPage = () => {
   );
 };
 
+// --- ME LINE EKA HARIGASSA THIYENNE ---
 export default CartPage;

@@ -1,34 +1,39 @@
 .hero {
-    padding: 60px 0;
     display: flex;
     align-items: center;
-    gap: 20px; /* Gap eka poddak adu kara */
-    min-height: 80vh;
+    gap: 60px;
+    min-height: calc(100vh - 80px); /* 80px is header height */
+    padding: 40px 0;
 }
 
 .heroContent {
-    flex: 1; 
-    z-index: 2;
+    flex: 1;
+    max-width: 550px;
 }
 
 .heroTagline {
+    font-size: 1rem;
     font-weight: 700;
     color: var(--secondary-accent);
-    margin-bottom: 15px;
+    margin-bottom: 20px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
 }
 
 .heroTitle {
-    font-size: 3.5rem;
+    font-size: 4rem;
     font-weight: 800;
-    line-height: 1.2;
+    line-height: 1.15;
     margin-bottom: 25px;
+    color: var(--text-color);
 }
 
 .heroSubtitle {
     font-size: 1.1rem;
-    max-width: 500px;
     margin-bottom: 40px;
     color: var(--text-secondary);
+    max-width: 500px;
+    line-height: 1.7;
 }
 
 .btn {
@@ -49,48 +54,39 @@
     box-shadow: 0 7px 30px rgba(229, 57, 53, 0.35);
 }
 
-/* --- Image Styles (Aluth Wenaskam) --- */
 .heroImageContainer {
-    flex: 1.1; /* Image ekata tikak wadi idak */
+    flex: 1.1;
     display: flex;
     justify-content: center;
     align-items: center;
 }
 
-/* Rider ge Image eka THAWATH LOKU KIREEMA saha Aluth Animation */
 .heroImage {
-    max-width: 150%; /* Image eka thawath loku kara */
+    max-width: 100%;
     height: auto;
-    max-height: 680px; /* Uasa wadi kara */
-    
-    /* ALUTH 'PULSE' ANIMATION EKA */
+    max-height: 700px;
     animation: pulseAnimation 5s ease-in-out infinite;
 }
 
-/* Aluth Keyframes - Pulse Effect */
 @keyframes pulseAnimation {
-    0% {
-        transform: scale(1);
-    }
-    50% {
-        transform: scale(1.04);
-    }
-    100% {
-        transform: scale(1);
-    }
+    0% { transform: scale(1); }
+    50% { transform: scale(1.03); }
+    100% { transform: scale(1); }
 }
-
 
 @media (max-width: 992px) {
     .hero {
         flex-direction: column;
         text-align: center;
-        padding-top: 40px;
+        min-height: unset;
+        gap: 40px;
     }
-    .heroTitle { font-size: 2.8rem; }
-    .heroSubtitle { margin: 0 auto 40px auto; }
+    .heroTitle {
+        font-size: 3rem;
+    }
     .heroImageContainer {
-        margin-top: 40px;
-        width: 80%; /* Mobile waladi image eka poddak chin karala pennanna */
+        order: -1; /* Mobile waladi image eka udin pennanna */
+        width: 80%;
+        margin-top: 20px;
     }
 }

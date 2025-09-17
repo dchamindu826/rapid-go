@@ -2,181 +2,28 @@
     padding-top: 60px;
     padding-bottom: 100px;
 }
-
-.shopHeader {
-    text-align: center;
-    margin-bottom: 50px;
-}
-
-.shopHeader h1 {
-    font-size: 3.5rem;
-    font-weight: 800;
-    margin-bottom: 15px;
-}
-
-.subtitle {
-    font-size: 1.2rem;
-    color: var(--text-secondary);
-    max-width: 600px;
-    margin: 0 auto 40px auto;
-}
-
-.searchBar {
-    position: relative;
-    max-width: 600px;
-    margin: 0 auto;
-}
-
-.searchBar input {
-    width: 100%;
-    padding: 15px 50px 15px 20px;
-    font-size: 1rem;
-    border-radius: 50px;
-    border: 1px solid var(--border-color);
-    background-color: var(--card-bg-color);
-    color: var(--text-color);
-    font-family: 'Plus Jakarta Sans', sans-serif;
-    transition: border-color 0.3s;
-}
-.searchBar input:focus {
-    outline: none;
-    border-color: var(--secondary-accent);
-}
-.searchIcon {
-    position: absolute;
-    right: 20px;
-    top: 50%;
-    transform: translateY(-50%);
-    color: var(--text-secondary);
-}
-
-.filterBar {
-    display: flex;
-    justify-content: center;
-    gap: 15px;
-    margin-bottom: 50px;
-    flex-wrap: wrap;
-}
-
-.filterBtn {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    background-color: var(--card-bg-color);
-    color: var(--text-secondary);
-    border: 1px solid var(--border-color);
-    padding: 10px 20px;
-    border-radius: 50px;
-    font-size: 1rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s;
-}
-
-.filterBtn:hover {
-    background-color: var(--border-color);
-    color: var(--text-color);
-}
-
-.filterBtn.active {
-    background-color: var(--secondary-accent);
-    color: var(--bg-color);
-    border-color: var(--secondary-accent);
-}
-
-.productGrid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 30px;
-}
-
-.productCard {
-    background-color: var(--card-bg-color);
-    border: 1px solid var(--border-color);
-    border-radius: 15px;
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-    transition: transform 0.3s, box-shadow 0.3s;
-}
-.productCard:hover {
-    transform: translateY(-10px);
-    box-shadow: 0 15px 30px rgba(0,0,0,0.3);
-    border-color: var(--secondary-accent);
-}
-
-.productLink {
-    text-decoration: none;
-    color: inherit;
-    display: flex;
-    flex-direction: column;
-    flex-grow: 1;
-}
-
-.productImageWrapper {
-    height: 220px;
-    overflow: hidden;
-    position: relative;
-}
-.productImageWrapper img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transition: transform 0.4s ease;
-}
-.productCard:hover .productImageWrapper img {
-    transform: scale(1.05);
-}
-
-.categoryBadge {
-    position: absolute;
-    top: 15px;
-    left: 15px;
-    background-color: rgba(10, 25, 47, 0.7);
-    backdrop-filter: blur(5px);
-    color: var(--secondary-accent);
-    padding: 5px 10px;
-    border-radius: 20px;
-    font-size: 0.8rem;
-    font-weight: 600;
-}
-
-.productInfo {
-    padding: 20px;
-    display: flex;
-    flex-direction: column;
-    flex-grow: 1;
-}
-
-.productName {
-    font-size: 1.2rem;
-    font-weight: 700;
-    margin: 0 0 10px 0;
-}
-
-.price {
-    font-size: 1.3rem;
-    font-weight: 700;
-    color: var(--secondary-accent);
-    margin-top: auto; /* Price eka pahalata yawanna */
-}
-
-.productAction {
-    padding: 0 20px 20px 20px;
-}
-
-.addToCartBtn {
-    width: 100%;
-    padding: 12px;
-    background-color: var(--primary-accent);
-    color: #fff;
-    border: none;
-    border-radius: 8px;
-    font-weight: 700;
-    font-size: 1rem;
-    cursor: pointer;
-    transition: background-color 0.2s;
-}
-.addToCartBtn:hover {
-    background-color: #B71C1C;
-}
+.shopHeader { text-align: center; margin-bottom: 50px; }
+.shopHeader h1 { font-size: 3.5rem; font-weight: 800; margin-bottom: 15px; }
+.subtitle { font-size: 1.2rem; color: var(--text-secondary); max-width: 600px; margin: 0 auto 40px auto; }
+.searchBar { position: relative; max-width: 600px; margin: 0 auto; }
+.searchBar input { width: 100%; padding: 15px 50px 15px 20px; font-size: 1rem; border-radius: 50px; border: 1px solid var(--border-color); background-color: var(--card-bg-color); color: var(--text-color); font-family: 'Plus Jakarta Sans', sans-serif; transition: border-color 0.3s; }
+.searchBar input:focus { outline: none; border-color: var(--secondary-accent); }
+.searchIcon { position: absolute; right: 20px; top: 50%; transform: translateY(-50%); color: var(--text-secondary); }
+.filterBar { display: flex; justify-content: center; gap: 15px; margin-bottom: 50px; flex-wrap: wrap; }
+.filterBtn { display: flex; align-items: center; gap: 8px; background-color: var(--card-bg-color); color: var(--text-secondary); border: 1px solid var(--border-color); padding: 10px 20px; border-radius: 50px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: all 0.3s; }
+.filterBtn:hover { background-color: var(--border-color); color: var(--text-color); }
+.filterBtn.active { background-color: var(--secondary-accent); color: var(--bg-color); border-color: var(--secondary-accent); }
+.productGrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; }
+.productCard { background-color: var(--card-bg-color); border: 1px solid var(--border-color); border-radius: 15px; overflow: hidden; display: flex; flex-direction: column; transition: transform 0.3s, box-shadow 0.3s; }
+.productCard:hover { transform: translateY(-10px); box-shadow: 0 15px 30px rgba(0,0,0,0.3); border-color: var(--secondary-accent); }
+.productLink { text-decoration: none; color: inherit; display: flex; flex-direction: column; flex-grow: 1; }
+.productImageWrapper { height: 220px; overflow: hidden; position: relative; }
+.productImageWrapper img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.4s ease; }
+.productCard:hover .productImageWrapper img { transform: scale(1.05); }
+.categoryBadge { position: absolute; top: 15px; left: 15px; background-color: rgba(10, 25, 47, 0.7); backdrop-filter: blur(5px); color: var(--secondary-accent); padding: 5px 10px; border-radius: 20px; font-size: 0.8rem; font-weight: 600; }
+.productInfo { padding: 20px; display: flex; flex-direction: column; flex-grow: 1; }
+.productName { font-size: 1.2rem; font-weight: 700; margin: 0 0 10px 0; }
+.price { font-size: 1.3rem; font-weight: 700; color: var(--secondary-accent); margin-top: auto; }
+.productAction { padding: 0 20px 20px 20px; }
+.addToCartBtn { width: 100%; padding: 12px; background-color: var(--primary-accent); color: #fff; border: none; border-radius: 8px; font-weight: 700; font-size: 1rem; cursor: pointer; transition: background-color 0.2s; }
+.addToCartBtn:hover { background-color: #B71C1C; }

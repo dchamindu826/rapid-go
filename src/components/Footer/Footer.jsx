@@ -1,12 +1,12 @@
 import React from 'react';
 import styles from './Footer.module.css';
+import { FiFacebook, FiMessageCircle } from 'react-icons/fi';
+import { FaTiktok } from 'react-icons/fa';
 
 const Footer = () => {
   return (
     <footer className={styles.footer}>
-      {/* Animated Scene eka ain kara */}
-
-      {/* --- Footer Content --- */}
+      {/* ... (Animation eka thibba kotasa) ... */}
       <div className={`container ${styles.footerContent}`}>
         <div className={styles.footerAbout}>
           <img src="/logo.png" alt="RapidGo Logo" className={styles.footerLogo} />
@@ -23,7 +23,12 @@ const Footer = () => {
         </div>
         <div className={styles.footerSocial}>
           <h4>Follow Us</h4>
-          {/* Add social media icons here */}
+          {/* Aluth social icons tika */}
+          <div className={styles.socialIcons}>
+            <a href="#" target="_blank" rel="noopener noreferrer"><FiFacebook /></a>
+            <a href="#" target="_blank" rel="noopener noreferrer"><FaTiktok /></a>
+            <a href="https://wa.me/94706004033" target="_blank" rel="noopener noreferrer"><FiMessageCircle /></a>
+          </div>
         </div>
       </div>
       <div className={styles.footerCopyright}>
