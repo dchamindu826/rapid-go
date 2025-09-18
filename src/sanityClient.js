@@ -1,18 +1,15 @@
-import { createClient } from '@sanity/client';
-import imageUrlBuilder from '@sanity/image-url';
+    import { createClient } from '@sanity/client';
+    import imageUrlBuilder from '@sanity/image-url';
 
-export const client = createClient({
-  // අපි Vercel වල හදපු Environment Variables මෙතනට දානවා
-  projectId: import.meta.env.VITE_SANITY_PROJECT_ID,
-  dataset: import.meta.env.VITE_SANITY_DATASET,
+    export const client = createClient({
+      projectId: 'p0umau0m', // Oyaage Sanity Project ID eka
+      dataset: 'production',
+      apiVersion: '2024-09-17',
+      token: import.meta.env.VITE_SANITY_TOKEN, // .env file eken token eka gannawa
+      useCdn: false,
+    });
 
-  // අද දිනය හෝ ඔයා project එක හදපු දිනයක් YYYY-MM-DD විදිහට දෙන්න
-  apiVersion: '2025-09-17', 
+    const builder = imageUrlBuilder(client);
+
+    export const urlFor = (source) => builder.image(source);
   
-  // Public data කියවද්දී CDN එක use කරන එක වේගවත්
-  useCdn: true, 
-});
-
-const builder = imageUrlBuilder(client);
-
-export const urlFor = (source) => builder.image(source);
