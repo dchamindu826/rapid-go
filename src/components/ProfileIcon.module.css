@@ -1,0 +1,51 @@
+.profileLink {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none;
+    color: var(--text-color);
+    padding: 5px 10px;
+    border: 1px solid var(--border-color);
+    border-radius: 50px;
+    transition: background-color 0.3s, box-shadow 0.3s;
+}
+
+.profileLink:hover {
+    background-color: var(--card-bg-color);
+    box-shadow: 0 0 15px rgba(0, 195, 255, 0.1);
+}
+
+.profileImage {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 1px solid var(--secondary-accent);
+}
+
+.defaultIcon {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background-color: var(--card-bg-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-secondary);
+    border: 1px solid var(--border-color);
+}
+
+.profileText {
+    font-weight: 500;
+    font-size: 0.9rem;
+}
+
+/* Mobile waladi 'Profile' kiyana wachane nathi karamu */
+@media (max-width: 768px) {
+    .profileText {
+        display: none;
+    }
+    .profileLink {
+        padding: 5px;
+    }
+}

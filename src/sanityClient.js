@@ -1,15 +1,24 @@
-    import { createClient } from '@sanity/client';
-    import imageUrlBuilder from '@sanity/image-url';
+import { createClient } from '@sanity/client';
+import imageUrlBuilder from '@sanity/image-url';
 
-    export const client = createClient({
-      projectId: 'p0umau0m', // Oyaage Sanity Project ID eka
-      dataset: 'production',
-      apiVersion: '2024-09-17',
-      token: import.meta.env.VITE_SANITY_TOKEN, // .env file eken token eka gannawa
-      useCdn: false,
-    });
+const readClientConfig = {
+  projectId: import.meta.env.VITE_SANITY_PROJECT_ID,
+  dataset: import.meta.env.VITE_SANITY_DATASET,
+  token: import.meta.env.VITE_SANITY_TOKEN, // Viewer token for reading data
+  useCdn: false,
+  apiVersion: '2023-05-03',
+  ignoreBrowserTokenWarning: true,
+};
 
-    const builder = imageUrlBuilder(client);
+// Main client for reading data (used on most pages)
+export const client = createClient(readClientConfig);
 
-    export const urlFor = (source) => builder.image(source);
-  
+// A separate, secure client ONLY for writing data
+export const writeClient = createClient({
+  ...readClientConfig,
+  token: import.meta.env.VITE_SANITY_WRITE_TOKEN, // Editor token for creating orders
+});
+
+
+const builder = imageUrlBuilder(client);
+export const urlFor = (source) => builder.image(source);

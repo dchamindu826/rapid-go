@@ -127,3 +127,94 @@
     background: var(--secondary-accent);
     color: var(--bg-color);
 }
+
+/* ... (All previous styles from the file you sent) ... */
+
+.resultsSection {
+    margin-top: 60px;
+    animation: fadeIn 0.5s ease-in-out;
+}
+@keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+.resultsSection h2 {
+    text-align: center;
+    font-size: 2rem;
+    margin-bottom: 50px;
+}
+.currentStatus {
+    color: var(--secondary-accent);
+}
+
+.timeline {
+    position: relative;
+    max-width: 600px;
+    margin: 0 auto;
+    padding-left: 30px;
+    border-left: 3px solid var(--border-color);
+}
+
+/* ✅ WENAS KAMA: Aluth Notice Box ekata Styles */
+.noticeBox {
+    position: relative;
+    margin-bottom: 40px;
+    padding: 1rem 1rem 1rem 3.5rem;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+.noticeBox svg {
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 1.8rem;
+}
+.noticeBox h3 {
+    margin: 0 0 5px 0;
+}
+.noticeBox.rescheduled {
+    background-color: rgba(244, 63, 94, 0.1);
+    border: 1px solid var(--primary-accent);
+    color: var(--primary-accent);
+}
+.noticeBox.returned {
+    background-color: rgba(239, 68, 68, 0.1);
+    border: 1px solid #EF4444;
+    color: #F87171;
+}
+
+.timelineItem {
+    position: relative;
+    margin-bottom: 40px;
+    opacity: 0.5;
+    transition: opacity 0.5s;
+}
+
+.timelineIcon {
+    position: absolute;
+    left: -46px;
+    top: 0;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--border-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    border: 3px solid var(--bg-color);
+    transition: background-color 0.5s;
+}
+
+.timelineContent h3 { font-size: 1.2rem; font-weight: 700; margin-bottom: 5px; }
+.timelineContent p { color: var(--text-secondary); margin-bottom: 8px; }
+.timestamp { font-size: 0.9rem; color: #8892B0; }
+
+.timelineItem.completed {
+    opacity: 1;
+}
+.timelineItem.completed .timelineIcon {
+    background: var(--secondary-accent);
+    color: var(--bg-color);
+}

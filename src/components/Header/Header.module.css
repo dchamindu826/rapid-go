@@ -180,3 +180,17 @@
 .dropdownContent a:hover, .dropdownContent button:hover {
     background-color: var(--border-color);
 }
+
+/* ME CSS KOTASA oyage Header.module.css file eke pahalatama danna */
+.profilePicIcon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: var(--card-bg-color);
+    border: 2px solid var(--border-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-secondary);
+    cursor: pointer;
+}

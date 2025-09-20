@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useParams } from 'react-router-dom';
 import { useCart } from '../../contexts/CartContext';
 import styles from './ProductDetailPage.module.css';
@@ -9,73 +9,97 @@ const ProductDetailPage = () => {
     const { addToCart } = useCart();
     const [product, setProduct] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
-    const [selectedImage, setSelectedImage] = useState(null);
+    const [selectedMedia, setSelectedMedia] = useState(null);
 
     useEffect(() => {
         const fetchProduct = async () => {
             setIsLoading(true);
-            const query = '*[_type == "product" && slug.current == $slug][0]{..., "category": category->{title}}';
+            const query = `*[_type == "product" && slug.current == $slug][0]{
+                ..., 
+                "category": category->{name},
+                "videoUrl": video.asset->url,
+                "images": images[]{
+                    _key,
+                    asset
+                }
+            }`;
             const params = { slug: productSlug };
-            const data = await client.fetch(query, params);
-            setProduct(data);
-            if (data && data.productMedia && data.productMedia.length > 0) {
-                setSelectedImage(data.productMedia[0]); // Mulinma mul weni image eka pennanna
+            try {
+                const data = await client.fetch(query, params);
+                setProduct(data);
+            } catch (error) {
+                console.error("Failed to fetch product details:", error);
+            } finally {
+                setIsLoading(false);
             }
-            setIsLoading(false);
         };
-
         fetchProduct();
     }, [productSlug]);
 
-    if (isLoading) {
-        return <div className="container" style={{padding: '50px', textAlign:'center'}}><h2>Loading Product...</h2></div>;
-    }
+    const mediaGallery = useMemo(() => {
+        if (!product) return [];
+        const items = [];
+        if (product.images) {
+            product.images.forEach(img => items.push({ type: 'image', ...img }));
+        }
+        if (product.envatoMediaLink) {
+             items.push({ type: 'video', url: product.envatoMediaLink, _key: 'video-preview' });
+        }
+        return items;
+    }, [product]);
 
-    if (!product) {
-        return <div className="container" style={{padding: '50px', textAlign:'center'}}><h2>Product not found!</h2></div>;
-    }
+    useEffect(() => {
+        if (mediaGallery.length > 0 && !selectedMedia) {
+            setSelectedMedia(mediaGallery[0]);
+        }
+    }, [mediaGallery, selectedMedia]);
     
-    const getMediaUrl = (mediaItem) => {
-        if (!mediaItem) return null;
-        if (mediaItem._type === 'image' && mediaItem.asset) {
-            return urlFor(mediaItem).url();
+    if (isLoading) { return <div className={styles.loader}>Loading Product...</div>; }
+    if (!product) { return <div className={styles.loader}>Product not found!</div>; }
+
+    const renderMainMedia = () => {
+        if (!selectedMedia) return null;
+
+        if (selectedMedia.type === 'video') {
+            const isYouTube = selectedMedia.url.includes('youtube.com') || selectedMedia.url.includes('youtu.be');
+            const videoId = isYouTube ? selectedMedia.url.split('v=')[1]?.split('&')[0] || selectedMedia.url.split('/').pop() : null;
+            
+            if (videoId) {
+                return <iframe src={`https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1`} title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen></iframe>;
+            }
+            return <video src={selectedMedia.url} controls autoPlay muted loop />;
         }
-        if (mediaItem._type === 'imageUrl' && mediaItem.url) {
-            return mediaItem.url;
-        }
-        return null;
+
+        return <img src={urlFor(selectedMedia.asset).url()} alt={product.name} />;
     };
 
     return (
         <div className={`${styles.productPage} container`}>
             <div className={styles.productLayout}>
-                <div className={styles.productImageSection}>
+                <div className={styles.productMediaSection}>
                     <div className={styles.mainImage}>
-                        {selectedImage && <img src={getMediaUrl(selectedImage)} alt={product.name} />}
+                        {renderMainMedia()}
                     </div>
                     <div className={styles.thumbnailGallery}>
-                        {product.productMedia?.map((media, index) => {
-                            const mediaUrl = getMediaUrl(media);
-                            if (mediaUrl) {
-                                return (
-                                    <div 
-                                        key={index} 
-                                        className={`${styles.thumbnail} ${selectedImage === media ? styles.active : ''}`}
-                                        onClick={() => setSelectedImage(media)}
-                                    >
-                                        <img src={mediaUrl} alt={`Thumbnail ${index + 1}`} />
-                                    </div>
-                                );
-                            }
-                            return null;
-                        })}
+                        {mediaGallery.map((media) => (
+                            <div 
+                                key={media._key} 
+                                className={`${styles.thumbnail} ${selectedMedia?._key === media._key ? styles.active : ''}`}
+                                onClick={() => setSelectedMedia(media)}
+                            >
+                                <img 
+                                    src={media.type === 'image' ? urlFor(media.asset).width(100).height(100).url() : 'https://placehold.co/100x100/1E293B/E2E8F0?text=Video'} 
+                                    alt="Thumbnail"
+                                />
+                            </div>
+                        ))}
                     </div>
                 </div>
                 <div className={styles.productDetails}>
-                    <span className={styles.category}>{product.category?.title}</span>
+                    <span className={styles.category}>{product.category?.name}</span>
                     <h1>{product.name}</h1>
-                    <p className={styles.description}>{product.description}</p>
-                    <div className={styles.price}>Rs. {product.price.toFixed(2)}</div>
+                    <p className={styles.description}>{product.shortDescription}</p>
+                    <div className={styles.price}>Rs. {product.price?.toFixed(2)}</div>
                     <div className={styles.actions}>
                         <button className={styles.addToCartBtn} onClick={() => addToCart(product)}>Add to Cart</button>
                     </div>
