@@ -1,41 +1,44 @@
+// File eka: components/FeaturesSection/FeaturesSection.js
+
 import React from 'react';
 import styles from './FeaturesSection.module.css';
 
+// --- Customer ge 'Why Choose' ha 'Mission' points walata data wenas karanna ---
 const featuresData = [
   {
     number: '01',
     title: 'Fast & Reliable',
-    description: 'Speed you can trust! Our advanced logistics network ensures timely and secure deliveries, no matter the destination.',
+    description: 'Your time is valuable. We ensure your orders arrive on time, every time, with the utmost care.',
     color: 'blue',
   },
   {
     number: '02',
-    title: 'Affordable Pricing',
-    description: 'Competitive rates with no hidden fees. Enjoy budget-friendly shipping solutions for individuals and businesses alike.',
+    title: 'Wide Coverage',
+    description: 'We are expanding! Serving major cities and suburbs across Sri Lanka to bring essentials closer to you.',
     color: 'dark',
   },
   {
     number: '03',
-    title: 'API & eCommerce Plugins',
-    description: 'Seamlessly integrate our shipping API with your Shopify, WooCommerce, or custom platform.',
+    title: 'Variety of Services',
+    description: 'Groceries, pharmacy, food, and parcels — get everything you need delivered from one single platform.',
     color: 'dark',
   },
   {
     number: '04',
-    title: 'E-Commerce Friendly',
-    description: 'Designed for online businesses, we offer COD, bulk shipping, and easy return management.',
+    title: 'Customer-Focused',
+    description: 'Your convenience is our priority. Enjoy easy ordering, transparent pricing, and real-time updates on your delivery.',
     color: 'blue',
   },
   {
     number: '05',
-    title: 'Live Tracking',
-    description: 'Know exactly where your parcel is at all times with our real-time tracking system.',
+    title: 'Our Mission: Quality',
+    description: 'To deliver all items quickly, safely, and reliably, while ensuring freshness, quality, and care in every single delivery.',
     color: 'blue',
   },
   {
     number: '06',
-    title: '24/7 Customer Support',
-    description: 'Our dedicated support team ensures your queries are answered quickly and efficiently.',
+    title: 'Our Mission: Innovation',
+    description: 'To provide exceptional customer service and continuously innovate our services to meet your evolving needs.',
     color: 'dark',
   },
 ];

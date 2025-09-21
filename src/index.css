@@ -1,19 +1,13 @@
 /* Global styles and CSS variables */
 :root {
-  --bg-color: #0A192F; /* Dark Blue */
-  --card-bg-color: #112240; /* Slightly lighter blue for cards */
-  --border-color: #233554; /* Border color */
-
-  --text-color: #E6F1FF; /* Light blue-white for main text */
-  --text-secondary: #8892B0; /* Gray-blue for secondary text */
-
-  --primary-accent: #E63946; /* Red for primary buttons/highlights */
-  --secondary-accent: #64FFDA; /* Aqua green for secondary accents/links */
-
-  --gradient-start: #0A192F; /* Gradient start for glow */
-  --gradient-end: #0B335E;   /* Gradient end for glow */
-
-  --header-height: 80px; /* උස */
+  --bg-color: #12100E;
+  --card-bg-color: #1C1A19;
+  --border-color: #3B3836;
+  --text-color: #F5EFE6;
+  --text-secondary: #A8A29E;
+  --primary-accent: #FFC107;
+  --secondary-accent: #F57C00;
+  --header-height: 80px;
 }
 
 /* Base styles */
@@ -29,11 +23,16 @@ html {
 
 body {
   font-family: 'Plus Jakarta Sans', sans-serif;
-  background-color: var(--bg-color);
   color: var(--text-color);
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background-color: var(--bg-color);
+  background-image: linear-gradient(
+    135deg,
+    var(--card-bg-color) 0%,
+    var(--bg-color) 75%
+  );
 }
 
 .container {
@@ -71,14 +70,14 @@ body::before {
   height: 100%;
   pointer-events: none;
   background: radial-gradient(
-    circle at 20% 20%, /* Top-left glow */
-    rgba(100, 255, 218, 0.08) 0%, /* secondary-accent with low opacity */
-    transparent 25%
+    circle at 15% 25%,
+    rgba(245, 124, 0, 0.15) 0%,
+    transparent 40%
   ),
   radial-gradient(
-    circle at 80% 80%, /* Bottom-right glow */
-    rgba(230, 57, 70, 0.08) 0%, /* primary-accent with low opacity */
-    transparent 25%
+    circle at 85% 75%,
+    rgba(255, 193, 7, 0.15) 0%,
+    transparent 40%
   );
-  z-index: -2; /* Background color එකටත් යටින් */
+  z-index: -2;
 }

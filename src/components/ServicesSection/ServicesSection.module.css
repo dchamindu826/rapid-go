@@ -27,19 +27,32 @@
     border: 1px solid var(--border-color);
     border-radius: 20px;
     padding: 35px;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    justify-content: space-between;
 }
 
 .card:hover {
     transform: translateY(-10px);
-    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
-    border-color: var(--secondary-accent);
+    border-color: #FFC107;
+    box-shadow: 0 15px 30px rgba(255, 193, 7, 0.15);
 }
 
 .cardIcon {
-    width: 70px;
-    height: 70px;
-    margin-bottom: 20px;
+    font-size: 3.5rem;
+    line-height: 1;
+    margin: 0 auto 20px auto;
+    color: #FFC107;
+    background-color: rgba(255, 255, 255, 0.05);
+    width: 80px;
+    height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 15px;
+    border: 1px solid var(--border-color);
 }
 
 .card h3 {
@@ -52,4 +65,22 @@
     font-size: 1rem;
     color: var(--text-secondary);
     line-height: 1.7;
+}
+
+.ctaButton {
+    display: inline-block;
+    background-color: var(--primary-accent);
+    color: #fffefb;
+    padding: 12px 25px;
+    text-decoration: none;
+    border-radius: 8px;
+    font-weight: 600;
+    margin-top: 20px;
+    transition: transform 0.2s, box-shadow 0.2s;
+    box-shadow: 0 4px 20px rgba(229, 57, 53, 0.25);
+}
+
+.ctaButton:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 7px 30px rgba(229, 57, 53, 0.35);
 }

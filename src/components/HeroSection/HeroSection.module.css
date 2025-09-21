@@ -1,11 +1,16 @@
 .hero {
     position: relative;
-    overflow: hidden;
+    width: 100%;
+    height: 100vh;
     display: flex;
     align-items: center;
-    gap: 60px;
-    min-height: calc(100vh - 80px);
-    padding: 40px 0;
+    overflow: hidden;
+}
+
+.heroContainer {
+    width: 100%;
+    position: relative;
+    z-index: 2;
 }
 
 .videoBackground {
@@ -15,36 +20,46 @@
     width: 100%;
     height: 100%;
     z-index: 0;
-    opacity: 0.1;
+}
+
+.videoBackground::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        to right, 
+        rgba(18, 16, 14, 0.9) 20%, 
+        rgba(18, 16, 14, 0.7) 45%, 
+        transparent 70%
+    );
+    z-index: 1;
 }
 
 .videoBackground video {
     width: 100%;
     height: 100%;
     object-fit: cover;
-}
-
-.heroContent, .heroImageContainer {
-    position: relative;
-    z-index: 1;
+    z-index: 0;
 }
 
 .heroContent {
-    flex: 1;
-    max-width: 550px;
+    max-width: 600px;
 }
 
 .heroTagline {
     font-size: 1rem;
     font-weight: 700;
-    color: var(--secondary-accent);
+    color: var(--primary-accent);
     margin-bottom: 20px;
     text-transform: uppercase;
     letter-spacing: 1px;
 }
 
 .heroTitle {
-    font-size: 4rem;
+    font-size: 4.2rem;
     font-weight: 800;
     line-height: 1.15;
     margin-bottom: 25px;
@@ -61,7 +76,7 @@
 
 .btn {
     background: var(--primary-accent);
-    color: white;
+    color: #12100E; /* Dark color for text on yellow button */
     border: none;
     padding: 16px 35px;
     font-weight: 700;
@@ -69,49 +84,30 @@
     border-radius: 8px;
     cursor: pointer;
     transition: transform 0.2s, box-shadow 0.2s;
-    box-shadow: 0 4px 20px rgba(229, 57, 53, 0.25);
+    box-shadow: 0 4px 30px rgba(255, 193, 7, 0.25);
 }
 
 .btn:hover {
     transform: translateY(-3px);
-    box-shadow: 0 7px 30px rgba(229, 57, 53, 0.35);
-}
-
-.heroImageContainer {
-    flex: 1.1;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.heroImage {
-    max-width: 100%;
-    height: auto;
-    max-height: 550px;
-    animation: pulseAnimation 5s ease-in-out infinite;
-}
-
-@keyframes pulseAnimation {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.03); }
-    100% { transform: scale(1); }
+    box-shadow: 0 7px 40px rgba(255, 193, 7, 0.35);
 }
 
 @media (max-width: 992px) {
     .hero {
-        flex-direction: column;
+        justify-content: center;
         text-align: center;
-        min-height: unset;
-        gap: 40px;
-        /* --- ALUTH WENAS KAMA --- */
-        padding-bottom: 80px; /* Hero section eke pahalin ida thibba */
+        height: 80vh;
+    }
+    .videoBackground::after {
+        background: rgba(18, 16, 14, 0.7); /* Mobile eke full overlay ekak denawa readability ekata */
+    }
+    .heroContent {
+        max-width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
     }
     .heroTitle {
         font-size: 3rem;
-    }
-    .heroImageContainer {
-        order: -1;
-        width: 80%;
-        margin-top: 20px;
     }
 }

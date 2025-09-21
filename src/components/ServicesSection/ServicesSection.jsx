@@ -1,45 +1,53 @@
 import React from 'react';
 import styles from './ServicesSection.module.css';
+import { Link } from 'react-router-dom';
 
 const servicesData = [
   {
-    title: 'Same-Day Delivery',
-    description: 'Need it fast? Our express delivery service gets your package to its destination within the same day.',
-    img: '/images/services/sameday.png',
+    icon: '📦',
+    title: 'Parcel & Courier Service',
+    description: 'Send your packages and documents with confidence. Fast, secure, and affordable delivery guaranteed.',
+    link: '/shop',
+    buttonText: 'Send a Parcel',
   },
   {
-    title: 'Live Tracking',
-    description: 'Stay updated with real-time tracking, SMS alerts, and delivery notifications so you’re always in the loop.',
-    img: '/images/services/livetracking.png',
-  },
-  // ... (anith services walatath me widiyatama local paths daanna)
-  {
-    title: 'Cash on Delivery (COD)',
-    description: 'We handle cash payments securely on behalf of businesses and remit funds directly to your account.',
-    img: '/images/services/cod.png',
+    icon: '🛒',
+    title: 'Supermarket Grocery Delivery',
+    description: 'Shop from top supermarkets like Cargills, Arpico, Keells & more - delivered fresh and fast.',
+    link: '/shop',
+    buttonText: 'Order Groceries',
   },
   {
-    title: 'Bulk Shipping',
-    description: 'Custom solutions for corporate clients, retailers, and e-commerce stores, ensuring seamless logistics.',
-    img: '/images/services/bulk.png',
+    icon: '💊',
+    title: 'Pharmacy Item Delivery',
+    description: 'Get essential medicines and pharmacy products delivered safely and reliably. Your health, our priority.',
+    link: '/shop',
+    buttonText: 'Order Medicines',
   },
   {
-    title: 'Door-to-Door Courier',
-    description: 'We pick up from your location and deliver straight to the recipient’s doorstep, ensuring ultimate convenience.',
-    img: '/images/services/doortodoor.png',
+    icon: '🍔',
+    title: 'Restaurant Food Delivery',
+    description: 'Enjoy hot, fresh meals from your nearest restaurants - delivered right to your door.',
+    link: '/shop',
+    buttonText: 'Order Food',
   },
   {
-    title: 'API & eCommerce Plugins',
-    description: 'Easily integrate with Shopify, WooCommerce, and other platforms for automated shipping.',
-    img: '/images/services/api.png',
+    icon: '💻',
+    title: 'Digital Products',
+    description: 'Get instant access to our exclusive collection of digital assets, tools, and creative packs.',
+    link: '/shop',
+    buttonText: 'Browse Products',
   },
 ];
 
-const ServiceCard = ({ title, description, img }) => (
+const ServiceCard = ({ icon, title, description, link, buttonText }) => (
   <div className={styles.card}>
-    <img src={img} alt={title} className={styles.cardIcon} />
+    <div className={styles.cardIcon}>{icon}</div>
     <h3>{title}</h3>
     <p>{description}</p>
+    <Link to={link} className={styles.ctaButton}>
+        {buttonText}
+    </Link>
   </div>
 );
 
@@ -47,8 +55,8 @@ const ServicesSection = () => {
   return (
     <section className={styles.services}>
       <div className="container">
-        <h2 className={styles.sectionTitle}>A Wide Range of Delivery Solutions</h2>
-        <p className={styles.sectionSubtitle}>For individuals, businesses, and e-commerce platforms.</p>
+        <h2 className={styles.sectionTitle}>All Your Delivery Needs, in One Place</h2>
+        <p className={styles.sectionSubtitle}>From your daily essentials to important parcels, we've got you covered.</p>
         <div className={styles.servicesGrid}>
           {servicesData.map((service) => (
             <ServiceCard key={service.title} {...service} />
