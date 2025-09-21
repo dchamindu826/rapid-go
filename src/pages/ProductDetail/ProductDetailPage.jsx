@@ -75,6 +75,7 @@ const ProductDetailPage = () => {
 
     return (
         <div className={`${styles.productPage} container`}>
+            <div className="page-wrapper container"></div>
             <div className={styles.productLayout}>
                 <div className={styles.productMediaSection}>
                     <div className={styles.mainImage}>
