@@ -33,10 +33,12 @@ const missionData = [
 const AboutPage = () => {
   return (
     <div className={styles.pageWrapper}>
+      <div className="page-wrapper container"></div>
       <div className={`${styles.aboutSectionContainer} container`}>
         
         {/* --- About Us wisthare --- */}
         <div className={styles.aboutContent}>
+          
           <h1>About RapidGo Delivery</h1>
           <p>
             RapidGo Delivery is Sri Lanka’s trusted delivery partner for all your needs — from 

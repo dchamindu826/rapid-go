@@ -87,6 +87,7 @@ const ProfilePage = () => {
 
     return (
         <div className={`${styles.profilePage} container`}>
+            <div className="page-wrapper container"></div>
             <h1>My Profile</h1>
             <div className={styles.profileLayout}>
                 <div className={styles.profileForm}>

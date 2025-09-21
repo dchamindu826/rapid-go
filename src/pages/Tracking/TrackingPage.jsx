@@ -70,6 +70,7 @@ const TrackingPage = () => {
 
     return (
         <div className={`${styles.pageContainer} container`}>
+            <div className="page-wrapper container"></div>
             <div className={styles.searchSection}>
                 <h1>Track Your Parcel</h1>
                 <p className={styles.subtitle}>Enter your tracking number to see the live progress of your delivery.</p>

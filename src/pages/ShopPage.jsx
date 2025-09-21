@@ -25,7 +25,9 @@ const ProductCard = ({ product }) => {
     };
 
     return (
+        
         <div className={styles.productCard}>
+            
             <Link to={`/product/${product.slug.current}`} className={styles.productLink}>
                 <div className={styles.productImageWrapper}>
                     <img src={getImageUrl(displayImage)} alt={product.name} />
@@ -84,7 +86,7 @@ const ShopPage = () => {
         .filter(product => product.name.toLowerCase().includes(searchTerm.toLowerCase()));
 
     return (
-        <div className={`${styles.shopPage} container`}>
+        <div className={`${styles.shopPage} page-wrapper container`}>
             <header className={styles.shopHeader}>
                 <h1>Digital Products</h1>
                 <p className={styles.subtitle}>High-quality templates, presets, and assets to supercharge your creative projects.</p>

@@ -1,72 +1,89 @@
 .header {
-    display: flex;
-    justify-content: space-between;
+    position: absolute; /* 'fixed' idan 'absolute' walata maru kara */
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 100;
+    padding: 25px 0;
+    transition: background-color 0.3s ease;
+    background-image: linear-gradient(to bottom, rgba(18, 16, 14, 0.7), transparent);
+}
+
+.headerContainer {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
     align-items: center;
-    padding: 20px 0;
-    border-bottom: 1px solid var(--border-color);
+    gap: 20px;
+}
+
+.logo {
+    justify-self: start;
 }
 
 .logo img {
-    width: 220px; /* Logo size eka 200px idan 220px walata wadi kara */
+    width: 180px;
     vertical-align: middle;
 }
 
 .nav {
     display: flex;
     gap: 10px;
+    justify-self: center;
 }
 
 .navLink {
     display: flex;
     align-items: center;
     gap: 8px;
-    padding: 10px 15px;
+    padding: 12px 18px;
     font-weight: 600;
+    font-size: 1rem;
     color: var(--text-secondary);
     text-decoration: none;
-    border-radius: 8px;
+    border-radius: 10px;
     transition: background-color 0.3s, color 0.3s;
 }
 
 .navLink:hover {
-    background-color: var(--card-bg-color);
-    color: var(--text-color);
+    background-color: rgba(28, 26, 25, 0.7);
+    color: #fff;
 }
 
 .navLink.active {
     background-color: var(--secondary-accent);
-    color: #fff;
+    color: #12100E;
 }
 
 .navLink .icon {
-    font-size: 1.1rem;
+    font-size: 1.2rem;
 }
 
 .headerActions {
     display: flex;
     align-items: center;
     gap: 15px;
+    justify-self: end;
 }
 
 .actionBtn {
     background: transparent;
-    border: 1px solid var(--border-color);
+    border: 1px solid rgba(255, 255, 255, 0.2);
     color: var(--text-secondary);
-    width: 40px;
-    height: 40px;
+    width: 48px;
+    height: 48px;
     border-radius: 50%;
     display: flex;
     justify-content: center;
     align-items: center;
     cursor: pointer;
-    font-size: 1.2rem;
+    font-size: 1.4rem;
     transition: background-color 0.3s, color 0.3s;
     position: relative;
 }
 
 .actionBtn:hover {
-    background-color: var(--card-bg-color);
-    color: var(--text-color);
+    background-color: rgba(28, 26, 25, 0.7);
+    color: #fff;
 }
 
 .cartBtn {
@@ -89,64 +106,41 @@
     align-items: center;
 }
 
-.mobileMenuBtn {
-    display: none;
-    background: none;
-    border: none;
-    color: var(--text-color);
-    font-size: 1.8rem;
-    cursor: pointer;
-    z-index: 1001;
-}
-
-@media (max-width: 992px) {
-    .nav {
-        position: fixed;
-        top: 0;
-        left: -100%;
-        width: 100%;
-        height: 100vh;
-        background-color: var(--bg-color);
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        gap: 20px;
-        transition: left 0.4s ease-in-out;
-        z-index: 1000;
-    }
-    .nav.mobileActive {
-        left: 0;
-    }
-    .navLink {
-        font-size: 1.5rem;
-    }
-    .mobileMenuBtn {
-        display: block;
-        order: 3; /* Hamburger icon eka anith ewata passe pennanna */
-    }
-    .headerActions {
-        /* MEKA THAMAI WENAS KAMA: display: none ain karala thiyenne */
-        display: flex; /* Icons pennanna */
-        gap: 10px;
-        order: 2; /* Logo ekata passe pennanna */
-    }
-    .logo {
-        order: 1;
-    }
-}
-
-/* Kalin thibba anith styles okkoma thiyeddi, pahalin me tika add karanna */
 .profileDropdown {
     position: relative;
     display: inline-block;
 }
 
 .profilePic {
-    width: 40px;
-    height: 40px;
+    width: 50px;
+    height: 50px;
     border-radius: 50%;
     cursor: pointer;
-    border: 2px solid var(--border-color);
+    border: 2px solid var(--primary-accent);
+    transition: box-shadow 0.3s ease;
+}
+
+.profilePic:hover {
+    box-shadow: 0 0 15px rgba(255, 193, 7, 0.4);
+}
+
+.profilePicIcon {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background-color: transparent;
+    border: 2px solid var(--primary-accent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: box-shadow 0.3s ease, color 0.3s ease;
+}
+
+.profilePicIcon:hover {
+    color: var(--primary-accent);
+    box-shadow: 0 0 15px rgba(255, 193, 7, 0.4);
 }
 
 .dropdownContent {
@@ -181,16 +175,52 @@
     background-color: var(--border-color);
 }
 
-/* ME CSS KOTASA oyage Header.module.css file eke pahalatama danna */
-.profilePicIcon {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    background-color: var(--card-bg-color);
-    border: 2px solid var(--border-color);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--text-secondary);
-    cursor: pointer;
+.mobileMenuBtn {
+    display: none;
+}
+
+@media (max-width: 992px) {
+    .nav {
+        position: fixed;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100vh;
+        background-color: var(--bg-color);
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        gap: 20px;
+        transition: left 0.4s ease-in-out;
+        z-index: 1000;
+    }
+    .nav.mobileActive {
+        left: 0;
+    }
+    .navLink {
+        font-size: 1.5rem;
+    }
+    .mobileMenuBtn {
+        display: block;
+        order: 3;
+        background: none;
+        border: none;
+        color: var(--text-color);
+        font-size: 1.8rem;
+        cursor: pointer;
+        z-index: 1001;
+    }
+
+    .profileDropdown {
+        margin-left: 8px; /* Profile icon eka tikak දකුණට karanna */
+    }
+
+    .headerActions {
+        display: flex;
+        gap: 30px;
+        order: 2;
+    }
+    .logo {
+        order: 1;
+    }
 }

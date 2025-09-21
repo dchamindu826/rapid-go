@@ -6,6 +6,7 @@ import { FaTiktok } from 'react-icons/fa'; // TikTok icon eka wena library ekaki
 const ContactPage = () => {
   return (
     <div className={`${styles.pageContainer} container`}>
+      <div className="page-wrapper container"></div>
       <div className={styles.titleSection}>
         <h1>Get in Touch</h1>
         <p className={styles.subtitle}>We are here for you! How can we help?</p>

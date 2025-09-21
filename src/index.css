@@ -81,3 +81,9 @@ body::before {
   );
   z-index: -2;
 }
+
+/* Page content eka header ekata yatin pennanna */
+.page-wrapper {
+  padding-top: 150px; /* Header eke usata + podi idak */
+  padding-bottom: 80px; /* Yatinuth podi idak */
+}
