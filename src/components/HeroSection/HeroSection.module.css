@@ -1,14 +1,13 @@
 .hero {
     position: relative;
     width: 100%;
-    height: 100vh; /* Sampurna screen eke usatama */
+    height: 100vh;
     display: flex;
     align-items: center;
     overflow: hidden;
 }
 
 .heroContainer {
-    width: 100%;
     position: relative;
     z-index: 2;
 }
@@ -22,35 +21,32 @@
     z-index: 0;
 }
 
-.videoBackground::after {
-    content: '';
+.videoBackground video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.overlay {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background: linear-gradient(
-        to right, 
-        rgba(18, 16, 14, 0.85) 20%, 
-        rgba(18, 16, 14, 0.7) 45%, 
-        transparent 70%
+    background: linear-gradient(to right, 
+        rgba(18, 16, 14, 0.8) 10%, 
+        rgba(18, 16, 14, 0.6) 40%, 
+        transparent 75%
     );
     z-index: 1;
 }
 
-.videoBackground video {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    z-index: 0;
-}
-
 .heroContent {
-    max-width: 650px; /* Text eka thiyena kotasa tikak loku kala */
+    max-width: 600px;
 }
 
 .heroTagline {
-    font-size: 1.1rem;
+    font-size: 1rem;
     font-weight: 700;
     color: var(--primary-accent);
     margin-bottom: 20px;
@@ -59,7 +55,7 @@
 }
 
 .heroTitle {
-    font-size: 4.5rem; /* Font eka loku kala */
+    font-size: 4rem;
     font-weight: 800;
     line-height: 1.15;
     margin-bottom: 25px;
@@ -67,10 +63,10 @@
 }
 
 .heroSubtitle {
-    font-size: 1.2rem;
+    font-size: 1.1rem;
     margin-bottom: 40px;
     color: var(--text-secondary);
-    max-width: 550px;
+    max-width: 500px;
     line-height: 1.7;
 }
 
@@ -78,12 +74,12 @@
     background: var(--primary-accent);
     color: #12100E;
     border: none;
-    padding: 18px 40px; /* Button eka loku kala */
+    padding: 16px 35px;
     font-weight: 700;
-    font-size: 1.1rem;
-    border-radius: 10px;
+    font-size: 1rem;
+    border-radius: 8px;
     cursor: pointer;
-    transition: transform 0.2s, box-shadow 0.2s;
+    transition: all 0.3s;
     box-shadow: 0 4px 30px rgba(255, 193, 7, 0.25);
 }
 
@@ -94,14 +90,11 @@
 
 @media (max-width: 992px) {
     .hero {
-        height: 90vh; /* Usa tikak adu kala */
-        text-align: center;
         justify-content: center;
-        padding-top: 120px; /* Header ekata ida denna padding wadi kala */
-        padding-bottom: 40px;
+        text-align: center;
     }
-    .videoBackground::after {
-        background: rgba(18, 16, 14, 0.75);
+    .overlay {
+        background: rgba(18, 16, 14, 0.7);
     }
     .heroContent {
         max-width: 100%;
@@ -110,6 +103,6 @@
         align-items: center;
     }
     .heroTitle {
-        font-size: 2.8rem; /* Font size eka poddak adjust kala */
+        font-size: 2.5rem;
     }
 }

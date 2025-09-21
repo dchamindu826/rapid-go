@@ -14,16 +14,10 @@ const Header = () => {
 
     useEffect(() => {
         const handleScroll = () => {
-            if (window.scrollY > 10) {
-                setIsScrolled(true);
-            } else {
-                setIsScrolled(false);
-            }
+            setIsScrolled(window.scrollY > 10);
         };
         window.addEventListener('scroll', handleScroll);
-        return () => {
-            window.removeEventListener('scroll', handleScroll);
-        };
+        return () => window.removeEventListener('scroll', handleScroll);
     }, []);
 
     const toggleMobileMenu = () => {
@@ -41,35 +35,23 @@ const Header = () => {
 
     return (
         <header className={`${styles.header} ${isScrolled ? styles.scrolled : ''}`}>
-            <div className={styles.headerContainer}>
+            <div className={`container ${styles.headerContainer}`}>
                 <Link to="/" className={styles.logo}>
                     <img src="/logo.png" alt="RapidGo Logo" />
                 </Link>
 
                 <nav className={`${styles.nav} ${isMobileMenuOpen ? styles.mobileActive : ''}`}>
-                    <NavLink to="/" className={styles.navLink} onClick={toggleMobileMenu} end>
-                        <span>Home</span>
-                    </NavLink>
-                    <NavLink to="/shop" className={styles.navLink} onClick={toggleMobileMenu}>
-                        <span>Shopping</span>
-                    </NavLink>
-                    <NavLink to="/tracking" className={styles.navLink} onClick={toggleMobileMenu}>
-                        <span>Tracking</span>
-                    </NavLink>
-                    <NavLink to="/about" className={styles.navLink} onClick={toggleMobileMenu}>
-                        <span>About</span>
-                    </NavLink>
-                    <NavLink to="/contact" className={styles.navLink} onClick={toggleMobileMenu}>
-                        <span>Contact Us</span>
-                    </NavLink>
+                    <NavLink to="/" className={styles.navLink} onClick={toggleMobileMenu} end>Home</NavLink>
+                    <NavLink to="/shop" className={styles.navLink} onClick={toggleMobileMenu}>Shopping</NavLink>
+                    <NavLink to="/tracking" className={styles.navLink} onClick={toggleMobileMenu}>Tracking</NavLink>
+                    <NavLink to="/about" className={styles.navLink} onClick={toggleMobileMenu}>About</NavLink>
+                    <NavLink to="/contact" className={styles.navLink} onClick={toggleMobileMenu}>Contact Us</NavLink>
                 </nav>
 
                 <div className={styles.headerActions}>
                     <Link to="/cart" className={`${styles.actionBtn} ${styles.cartBtn}`}>
                         <FiShoppingBag />
-                        {cartItems.length > 0 && (
-                            <span className={styles.cartCount}>{cartItems.length}</span>
-                        )}
+                        {cartItems.length > 0 && <span className={styles.cartCount}>{cartItems.length}</span>}
                     </Link>
                     
                     {currentUser ? (
@@ -91,11 +73,11 @@ const Header = () => {
                             <FiUser />
                         </Link>
                     )}
-                </div>
 
-                <button className={styles.mobileMenuBtn} onClick={toggleMobileMenu}>
-                    {isMobileMenuOpen ? <FiX /> : <FiMenu />}
-                </button>
+                    <button className={styles.mobileMenuBtn} onClick={toggleMobileMenu}>
+                        {isMobileMenuOpen ? <FiX /> : <FiMenu />}
+                    </button>
+                </div>
             </div>
         </header>
     );

@@ -10,7 +10,7 @@ const HeroSection = () => {
                     <source src="/videos/delivery-video.mp4" type="video/mp4" />
                 </video>
             </div>
-
+            <div className={styles.overlay}></div>
             <div className={`container ${styles.heroContainer}`}>
                 <div className={styles.heroContent}>
                     <p className={styles.heroTagline}>FAST & RELIABLE</p>
