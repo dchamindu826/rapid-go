@@ -212,12 +212,12 @@
     }
 
     .profileDropdown {
-        margin-left: 8px; /* Profile icon eka tikak දකුණට karanna */
+        margin-left: 13px; /* Profile icon eka tikak දකුණට karanna */
     }
 
     .headerActions {
         display: flex;
-        gap: 30px;
+        gap: 15px;
         order: 2;
     }
     .logo {
