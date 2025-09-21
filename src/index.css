@@ -33,6 +33,7 @@ body {
     var(--card-bg-color) 0%,
     var(--bg-color) 75%
   );
+  overflow-x: hidden; /* HORIZONTAL OVERFLOW EKA NAWATHWANNA */
 }
 
 .container {
@@ -84,6 +85,6 @@ body::before {
 
 /* Page content eka header ekata yatin pennanna */
 .page-wrapper {
-  padding-top: 150px; /* Header eke usata + podi idak */
-  padding-bottom: 80px; /* Yatinuth podi idak */
+  padding-top: 150px;
+  padding-bottom: 80px;
 }
