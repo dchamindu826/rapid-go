@@ -94,12 +94,14 @@
 
 @media (max-width: 992px) {
     .hero {
-        height: 80vh;
+        height: 90vh; /* Usa tikak adu kala */
         text-align: center;
         justify-content: center;
+        padding-top: 120px; /* Header ekata ida denna padding wadi kala */
+        padding-bottom: 40px;
     }
     .videoBackground::after {
-        background: rgba(18, 16, 14, 0.7);
+        background: rgba(18, 16, 14, 0.75);
     }
     .heroContent {
         max-width: 100%;
@@ -108,6 +110,6 @@
         align-items: center;
     }
     .heroTitle {
-        font-size: 3rem;
+        font-size: 2.8rem; /* Font size eka poddak adjust kala */
     }
 }
