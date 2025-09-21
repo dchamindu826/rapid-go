@@ -7,7 +7,7 @@ import ProtectedRoute from './components/ProtectedRoute';
 
 // Page Imports
 import HomePage from './pages/Home/HomePage';
-import ShopPage from './pages/ShopPage'; // <-- This is the corrected path
+import ShopPage from './pages/ShopPage';
 import TrackingPage from './pages/Tracking/TrackingPage';
 import AboutPage from './pages/About/AboutPage';
 import ContactPage from './pages/Contact/ContactPage';
@@ -21,29 +21,29 @@ import ThankYouPage from './pages/ThankYou/ThankYouPage';
 
 function App() {
   return (
-    <>
-      <div className="container">
-        <Header />
-      </div>
+    <div className="app-container">
+      <Header />
       
-      <Routes>
-        <Route path="/" element={<HomePage />} />
-        <Route path="/shop" element={<ShopPage />} />
-        <Route path="/product/:productId" element={<ProductDetailPage />} />
-        <Route path="/tracking" element={<TrackingPage />} />
-        <Route path="/about" element={<AboutPage />} />
-        <Route path="/contact" element={<ContactPage />} />
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/signup" element={<SignUpPage />} />
-        <Route path="/cart" element={<CartPage />} />
-        <Route path="/profile" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
-        <Route path="/checkout" element={<ProtectedRoute><CheckoutPage /></ProtectedRoute>} />
-        <Route path="/thank-you" element={<ThankYouPage />} />
-      </Routes>
+      <main>
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/shop" element={<ShopPage />} />
+          <Route path="/product/:productId" element={<ProductDetailPage />} />
+          <Route path="/tracking" element={<TrackingPage />} />
+          <Route path="/about" element={<AboutPage />} />
+          <Route path="/contact" element={<ContactPage />} />
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/signup" element={<SignUpPage />} />
+          <Route path="/cart" element={<CartPage />} />
+          <Route path="/profile" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
+          <Route path="/checkout" element={<ProtectedRoute><CheckoutPage /></ProtectedRoute>} />
+          <Route path="/thank-you" element={<ThankYouPage />} />
+        </Routes>
+      </main>
       
       <Footer />
       <FloatingButtons />
-    </>
+    </div>
   );
 }
 

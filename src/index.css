@@ -18,7 +18,6 @@
 }
 
 html, body, #root {
-  /* Meken sampurna app eka ma screen ekata fit karanawa */
   width: 100%;
   height: 100%;
 }
@@ -37,7 +36,6 @@ body {
   );
 }
 
-/* SAMPURNA APP EKA WRAP KARANA CONTAINER EKA */
 .app-container {
   width: 100%;
   overflow-x: hidden;
