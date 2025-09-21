@@ -20,9 +20,7 @@ const Header = () => {
                 setIsScrolled(false);
             }
         };
-
         window.addEventListener('scroll', handleScroll);
-
         return () => {
             window.removeEventListener('scroll', handleScroll);
         };
@@ -43,7 +41,7 @@ const Header = () => {
 
     return (
         <header className={`${styles.header} ${isScrolled ? styles.scrolled : ''}`}>
-            <div className={`container ${styles.headerContainer}`}>
+            <div className={styles.headerContainer}>
                 <Link to="/" className={styles.logo}>
                     <img src="/logo.png" alt="RapidGo Logo" />
                 </Link>

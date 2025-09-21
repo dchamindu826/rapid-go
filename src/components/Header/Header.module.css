@@ -1,88 +1,108 @@
 .header {
-    position: absolute; /* 'fixed' idan 'absolute' walata maru kara */
+    position: sticky;
     top: 0;
     left: 0;
     width: 100%;
-    z-index: 100;
+    z-index: 1000;
     padding: 25px 0;
-    transition: background-color 0.3s ease;
-    background-image: linear-gradient(to bottom, rgba(18, 16, 14, 0.7), transparent);
+    transition: background-color 0.4s ease, padding 0.4s ease, box-shadow 0.4s ease;
+    background-color: transparent;
+}
+
+.header.scrolled {
+    background-color: rgba(18, 16, 14, 0.85);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    padding: 20px 0;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
 }
 
 .headerContainer {
-    display: grid;
-    grid-template-columns: 1fr auto 1fr;
+    display: flex;
     align-items: center;
-    gap: 20px;
-}
-
-.logo {
-    justify-self: start;
+    justify-content: space-between;
+    width: 100%;
+    max-width: 1200px; /* Corresponds to container width */
+    margin: 0 auto;
+    padding: 0 20px; /* Corresponds to container padding */
 }
 
 .logo img {
     width: 180px;
     vertical-align: middle;
+    flex-shrink: 0;
 }
 
 .nav {
     display: flex;
-    gap: 10px;
-    justify-self: center;
+    gap: 25px;
+    margin: 0 auto; /* This will center the nav between logo and actions */
 }
 
 .navLink {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 12px 18px;
+    padding: 10px 5px;
     font-weight: 600;
-    font-size: 1rem;
+    font-size: 1.1rem;
     color: var(--text-secondary);
     text-decoration: none;
-    border-radius: 10px;
-    transition: background-color 0.3s, color 0.3s;
+    position: relative;
+    transition: color 0.3s ease;
+    white-space: nowrap;
+}
+
+.navLink::after {
+    content: '';
+    position: absolute;
+    bottom: -5px;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background-color: var(--primary-accent);
+    transform: scaleX(0);
+    transform-origin: bottom right;
+    transition: transform 0.4s ease-out;
 }
 
 .navLink:hover {
-    background-color: rgba(28, 26, 25, 0.7);
-    color: #fff;
+    color: var(--text-color);
+}
+
+.navLink:hover::after,
+.navLink.active::after {
+    transform: scaleX(1);
+    transform-origin: bottom left;
 }
 
 .navLink.active {
-    background-color: var(--secondary-accent);
-    color: #12100E;
-}
-
-.navLink .icon {
-    font-size: 1.2rem;
+    color: var(--text-color);
 }
 
 .headerActions {
     display: flex;
     align-items: center;
-    gap: 15px;
-    justify-self: end;
+    gap: 20px;
+    flex-shrink: 0;
 }
 
+/* --- All other styles remain the same --- */
 .actionBtn {
     background: transparent;
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    border: none;
     color: var(--text-secondary);
-    width: 48px;
-    height: 48px;
+    width: 50px;
+    height: 50px;
     border-radius: 50%;
     display: flex;
     justify-content: center;
     align-items: center;
     cursor: pointer;
-    font-size: 1.4rem;
+    font-size: 1.5rem;
     transition: background-color 0.3s, color 0.3s;
     position: relative;
 }
 
 .actionBtn:hover {
-    background-color: rgba(28, 26, 25, 0.7);
+    background-color: var(--card-bg-color);
     color: #fff;
 }
 
@@ -92,8 +112,8 @@
 
 .cartCount {
     position: absolute;
-    top: -5px;
-    right: -5px;
+    top: 0px;
+    right: 0px;
     background-color: var(--primary-accent);
     color: #fff;
     width: 20px;
@@ -159,68 +179,19 @@
     display: block;
 }
 
-.dropdownContent a, .dropdownContent button {
-    color: var(--text-color);
-    padding: 12px 16px;
-    text-decoration: none;
-    display: block;
-    background: none;
-    border: none;
-    width: 100%;
-    text-align: left;
-    cursor: pointer;
-}
-
-.dropdownContent a:hover, .dropdownContent button:hover {
-    background-color: var(--border-color);
-}
-
-.mobileMenuBtn {
-    display: none;
-}
-
 @media (max-width: 992px) {
+    .headerContainer {
+        padding: 0 15px; /* Depaththen ida thiyanna */
+    }
     .nav {
-        position: fixed;
-        top: 0;
-        left: -100%;
-        width: 100%;
-        height: 100vh;
-        background-color: var(--bg-color);
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        gap: 20px;
-        transition: left 0.4s ease-in-out;
-        z-index: 1000;
-    }
-    .nav.mobileActive {
-        left: 0;
-    }
-    .navLink {
-        font-size: 1.5rem;
+        display: none; /* Desktop nav eka mobile waladi hide karanna */
     }
     .mobileMenuBtn {
-        display: block;
-        order: 3;
+        display: block; /* Hamburger icon eka pennanna */
         background: none;
         border: none;
         color: var(--text-color);
-        font-size: 1.8rem;
+        font-size: 2rem;
         cursor: pointer;
-        z-index: 1001;
-    }
-
-    .profileDropdown {
-        margin-left: 13px; /* Profile icon eka tikak දකුණට karanna */
-    }
-
-    .headerActions {
-        display: flex;
-        gap: 15px;
-        order: 2;
-    }
-    .logo {
-        order: 1;
     }
 }
