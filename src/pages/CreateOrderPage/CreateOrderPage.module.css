@@ -1,0 +1,233 @@
+/* CreateOrderPage.module.css (UPDATED) */
+
+.pageHeader {
+    text-align: center;
+    margin-bottom: 50px;
+}
+.pageHeader h1 {
+    font-size: 3rem;
+    font-weight: 800;
+    margin-bottom: 10px;
+}
+.pageHeader p {
+    font-size: 1.2rem;
+    color: var(--text-secondary);
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.layoutGrid {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    gap: 40px;
+    align-items: flex-start;
+}
+
+.sidebar h3 {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 20px;
+}
+
+.categorySelector {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.categoryBtn {
+    background-color: transparent;
+    border: 1px solid transparent;
+    color: var(--text-secondary);
+    padding: 15px 20px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    border-radius: 10px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    transition: all 0.3s ease;
+    text-align: left;
+}
+.categoryBtn svg {
+    font-size: 1.4rem;
+}
+.categoryBtn:hover {
+    background-color: var(--card-bg-color);
+    color: var(--text-color);
+}
+.categoryBtn.active {
+    background-color: var(--card-bg-color);
+    color: var(--primary-accent);
+    border-color: var(--border-color);
+    font-weight: 700;
+}
+
+.formCard {
+    background-color: var(--card-bg-color);
+    padding: 40px;
+    border-radius: 15px;
+    border: 1px solid var(--border-color);
+    min-height: 400px; /* Added for consistent height */
+    display: flex; /* Added for centering */
+    flex-direction: column; /* Added for centering */
+    justify-content: center; /* Added for centering */
+}
+
+.orderForm {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+    width: 100%; /* Ensure form takes full width */
+}
+
+.orderForm h3 {
+    font-size: 1.6rem;
+    color: var(--text-color);
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.formGrid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 25px;
+}
+
+.formGroup {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.formGroup label {
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+.formGroup label .required {
+    color: var(--primary-accent);
+    font-size: 1.2em;
+    line-height: 0;
+}
+
+.formGroup input[type="text"],
+.formGroup input[type="tel"],
+.formGroup input[type="url"],
+.formGroup textarea {
+    width: 100%;
+    background-color: var(--bg-color);
+    border: 1px solid var(--border-color);
+    color: var(--text-color);
+    padding: 14px;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-family: inherit;
+    transition: border-color 0.3s;
+}
+.formGroup input::placeholder,
+.formGroup textarea::placeholder {
+    color: #555;
+}
+.formGroup input:focus,
+.formGroup textarea:focus {
+    outline: none;
+    border-color: var(--primary-accent);
+}
+
+.divider {
+    border: none;
+    border-top: 1px solid var(--border-color);
+    margin: 30px 0;
+}
+
+.submitBtn {
+    background-color: var(--primary-accent);
+    color: var(--bg-color);
+    border: none;
+    padding: 16px;
+    font-size: 1.1rem;
+    font-weight: 700;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    margin-top: 10px;
+}
+.submitBtn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 20px rgba(255, 193, 7, 0.2);
+}
+
+.loader,
+.submissionStatus {
+    text-align: center;
+    padding: 20px;
+    font-weight: 600;
+    margin-bottom: 20px;
+    border-radius: 8px;
+}
+.submissionStatus.success {
+    background-color: rgba(100, 255, 218, 0.1);
+    color: var(--secondary-accent);
+}
+.submissionStatus.error {
+    background-color: rgba(230, 57, 70, 0.1);
+    color: #E63946;
+}
+
+/* ===================================== */
+/* === COMING SOON EKE STYLE TIKA === */
+/* ===================================== */
+.comingSoon {
+    text-align: center;
+    color: var(--text-secondary);
+    padding: 40px;
+}
+.comingSoon svg {
+    font-size: 3rem;
+    margin-bottom: 20px;
+    color: var(--primary-accent);
+    opacity: 0.5;
+}
+.comingSoon h3 {
+    font-size: 1.8rem;
+    color: var(--text-color);
+    margin-bottom: 10px;
+}
+.comingSoon p {
+    font-size: 1rem;
+    max-width: 300px;
+    margin: 0 auto;
+}
+
+@media (max-width: 992px) {
+    .layoutGrid {
+        grid-template-columns: 1fr;
+        gap: 30px;
+    }
+    .sidebar {
+        border-bottom: 1px solid var(--border-color);
+        padding-bottom: 30px;
+    }
+    .categorySelector {
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+}
+@media (max-width: 768px) {
+    .formGrid {
+        grid-template-columns: 1fr;
+    }
+    .formCard {
+        padding: 25px;
+    }
+}

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
 import styles from './Header.module.css';
-import { FiHome, FiShoppingCart, FiTruck, FiInfo, FiMail, FiShoppingBag, FiUser, FiMenu, FiX } from 'react-icons/fi';
+import { FiHome, FiShoppingCart, FiTruck, FiInfo, FiMail, FiShoppingBag, FiUser, FiMenu, FiX, FiBox } from 'react-icons/fi'; // FiBox icon eka add kala
 import { useCart } from '../../contexts/CartContext';
 import { useAuth } from '../../contexts/AuthContext';
 
@@ -43,6 +43,7 @@ const Header = () => {
                 <nav className={`${styles.nav} ${isMobileMenuOpen ? styles.mobileActive : ''}`}>
                     <NavLink to="/" className={styles.navLink} onClick={toggleMobileMenu} end>Home</NavLink>
                     <NavLink to="/shop" className={styles.navLink} onClick={toggleMobileMenu}>Shopping</NavLink>
+                    <NavLink to="/create-order" className={styles.navLink} onClick={toggleMobileMenu}>Order Request</NavLink> {/* <-- ALUTH LINK EKA */}
                     <NavLink to="/tracking" className={styles.navLink} onClick={toggleMobileMenu}>Tracking</NavLink>
                     <NavLink to="/about" className={styles.navLink} onClick={toggleMobileMenu}>About</NavLink>
                     <NavLink to="/contact" className={styles.navLink} onClick={toggleMobileMenu}>Contact Us</NavLink>

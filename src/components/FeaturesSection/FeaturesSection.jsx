@@ -1,15 +1,15 @@
-// File eka: components/FeaturesSection/FeaturesSection.js
+// components/FeaturesSection/FeaturesSection.js (UPDATED)
 
 import React from 'react';
 import styles from './FeaturesSection.module.css';
 
-// --- Customer ge 'Why Choose' ha 'Mission' points walata data wenas karanna ---
+// Data tika update kara aluth 'accent' color ekata
 const featuresData = [
   {
     number: '01',
     title: 'Fast & Reliable',
     description: 'Your time is valuable. We ensure your orders arrive on time, every time, with the utmost care.',
-    color: 'blue',
+    color: 'accent', // Changed from 'blue'
   },
   {
     number: '02',
@@ -27,13 +27,13 @@ const featuresData = [
     number: '04',
     title: 'Customer-Focused',
     description: 'Your convenience is our priority. Enjoy easy ordering, transparent pricing, and real-time updates on your delivery.',
-    color: 'blue',
+    color: 'accent', // Changed from 'blue'
   },
   {
     number: '05',
     title: 'Our Mission: Quality',
     description: 'To deliver all items quickly, safely, and reliably, while ensuring freshness, quality, and care in every single delivery.',
-    color: 'blue',
+    color: 'accent', // Changed from 'blue'
   },
   {
     number: '06',
@@ -43,8 +43,9 @@ const featuresData = [
   },
 ];
 
+// CSS class eka 'accent' walata wenas kara
 const FeatureCard = ({ number, title, description, color }) => (
-  <div className={`${styles.card} ${color === 'blue' ? styles.blue : styles.dark}`}>
+  <div className={`${styles.card} ${color === 'accent' ? styles.accent : styles.dark}`}>
     <span className={styles.cardNumber}>{number}</span>
     <h3>{title}</h3>
     <p>{description}</p>

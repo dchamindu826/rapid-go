@@ -7,35 +7,35 @@ const servicesData = [
     icon: '📦',
     title: 'Parcel & Courier Service',
     description: 'Send your packages and documents with confidence. Fast, secure, and affordable delivery guaranteed.',
-    link: '/shop',
+    link: '/create-order?type=parcel', // <-- ALUTH LINK EKA
     buttonText: 'Send a Parcel',
   },
   {
     icon: '🛒',
     title: 'Supermarket Grocery Delivery',
     description: 'Shop from top supermarkets like Cargills, Arpico, Keells & more - delivered fresh and fast.',
-    link: '/shop',
+    link: '/create-order?type=grocery', // <-- ALUTH LINK EKA
     buttonText: 'Order Groceries',
   },
   {
     icon: '💊',
     title: 'Pharmacy Item Delivery',
     description: 'Get essential medicines and pharmacy products delivered safely and reliably. Your health, our priority.',
-    link: '/shop',
+    link: '/create-order?type=pharmacy', // <-- ALUTH LINK EKA
     buttonText: 'Order Medicines',
   },
   {
     icon: '🍔',
     title: 'Restaurant Food Delivery',
     description: 'Enjoy hot, fresh meals from your nearest restaurants - delivered right to your door.',
-    link: '/shop',
+    link: '/create-order?type=food', // <-- ALUTH LINK EKA
     buttonText: 'Order Food',
   },
   {
     icon: '💻',
     title: 'Digital Products',
     description: 'Get instant access to our exclusive collection of digital assets, tools, and creative packs.',
-    link: '/shop',
+    link: '/shop', // Meka /shop ekatama thiyenna one
     buttonText: 'Browse Products',
   },
 ];

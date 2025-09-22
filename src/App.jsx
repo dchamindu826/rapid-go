@@ -18,6 +18,7 @@ import ProfilePage from './pages/Profile/ProfilePage';
 import ProductDetailPage from './pages/ProductDetail/ProductDetailPage';
 import CheckoutPage from './pages/Checkout/CheckoutPage';
 import ThankYouPage from './pages/ThankYou/ThankYouPage';
+import CreateOrderPage from './pages/CreateOrderPage/CreateOrderPage';
 
 function App() {
   return (
@@ -38,6 +39,7 @@ function App() {
           <Route path="/profile" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
           <Route path="/checkout" element={<ProtectedRoute><CheckoutPage /></ProtectedRoute>} />
           <Route path="/thank-you" element={<ThankYouPage />} />
+          <Route path="/create-order" element={<CreateOrderPage />} />
         </Routes>
       </main>
       
