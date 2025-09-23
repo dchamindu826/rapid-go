@@ -28,7 +28,7 @@ const servicesData = [
     icon: '🍔',
     title: 'Restaurant Food Delivery',
     description: 'Enjoy hot, fresh meals from your nearest restaurants - delivered right to your door.',
-    link: '/create-order?type=food', // <-- ALUTH LINK EKA
+    link: '/restaurants', // <-- ALUTH LINK EKA
     buttonText: 'Order Food',
   },
   {

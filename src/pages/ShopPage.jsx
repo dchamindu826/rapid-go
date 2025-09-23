@@ -81,9 +81,9 @@ const ShopPage = () => {
         fetchContent();
     }, []);
 
-    const filteredProducts = products
-        .filter(product => selectedCategory === 'All' || product.category?.name === selectedCategory)
-        .filter(product => product.name.toLowerCase().includes(searchTerm.toLowerCase()));
+    const filteredProducts = products.filter(product =>
+  product.name && product.name.toLowerCase().includes(searchTerm.toLowerCase())
+);
 
     return (
         <div className={`${styles.shopPage} page-wrapper container`}>

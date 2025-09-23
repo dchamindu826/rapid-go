@@ -1,0 +1,126 @@
+.statusPage {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 80vh;
+}
+
+.statusBox {
+    background: var(--card-bg-color);
+    padding: 2.5rem;
+    border-radius: 15px;
+    text-align: center;
+    width: 100%;
+    max-width: 800px;
+    border: 1px solid var(--border-color);
+}
+
+.statusBox h1 {
+    margin-top: 0;
+    font-size: 2.5rem;
+}
+
+.statusBox p {
+    color: var(--text-secondary);
+    font-size: 1.1rem;
+}
+
+.timeline {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 3rem;
+    position: relative;
+}
+
+/* This is the horizontal line for DESKTOP view */
+.timeline::before {
+    content: '';
+    position: absolute;
+    top: 24px;
+    left: 10%;
+    width: 80%;
+    height: 4px;
+    background: var(--border-color);
+    z-index: 0;
+}
+
+.statusPoint {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    z-index: 1;
+    position: relative;
+    background-color: var(--card-bg-color); /* To cover the line */
+    padding: 0 10px;
+}
+
+.icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: var(--border-color);
+    color: var(--text-secondary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    border: 4px solid var(--card-bg-color);
+}
+
+.label {
+    font-weight: 500;
+    color: var(--text-secondary);
+    transition: color 0.3s ease;
+}
+
+/* This style is applied when a step is completed */
+.statusPoint.active .icon {
+    background: var(--primary-accent);
+    color: var(--bg-color);
+}
+.statusPoint.active .label {
+    color: var(--text-color);
+}
+
+.cancelled {
+    margin-top: 2rem;
+    color: #ff6b6b;
+}
+.cancelled h2 {
+    margin-top: 1rem;
+}
+
+
+/* --- MOBILE VIEW --- */
+@media (max-width: 768px) {
+    .statusBox {
+        padding: 1.5rem;
+    }
+    
+    .timeline {
+        flex-direction: column; /* Stack items vertically */
+        align-items: flex-start; /* Align to the left */
+        gap: 2rem;
+        margin-left: 1rem;
+    }
+
+    /* This is the vertical line for MOBILE view */
+    .timeline::before {
+        left: 23px; /* Center the line on the icon */
+        top: 5%;
+        width: 4px;
+        height: 90%;
+    }
+
+    .statusPoint {
+        flex-direction: row; /* Icon and text side-by-side */
+        text-align: left;
+        padding: 0;
+        background-color: transparent; /* No need for bg color on mobile */
+    }
+
+    .icon {
+        border: none;
+    }
+}

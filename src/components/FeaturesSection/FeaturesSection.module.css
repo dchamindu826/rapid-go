@@ -1,5 +1,3 @@
-/* FeaturesSection.module.css (UPDATED) */
-
 .features {
     padding: 100px 0;
     background-color: var(--bg-color);
@@ -19,27 +17,19 @@
 }
 
 .card {
+    background-color: var(--card-bg-color);
     border-radius: 20px;
     padding: 30px 35px;
     position: relative;
     overflow: hidden;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
+    /* --- FIX: Applied the border to ALL cards directly --- */
+    border-top: 4px solid var(--primary-accent);
+    box-shadow: 0 10px 30px rgba(255, 193, 7, 0.1);
 }
 
 .card:hover {
     transform: translateY(-10px);
-}
-
-.card.dark {
-    background-color: var(--card-bg-color);
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
-}
-
-/* === MEKA THAMA WENAS KALE === */
-.card.accent {
-    background-color: var(--card-bg-color);
-    border-top: 4px solid var(--primary-accent); /* Theme eke accent color eken border ekak add kara */
-    box-shadow: 0 10px 30px rgba(255, 193, 7, 0.1);
 }
 
 .cardNumber {

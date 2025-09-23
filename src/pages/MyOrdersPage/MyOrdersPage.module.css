@@ -1,0 +1,12 @@
+.ordersPage h1 { margin-bottom: 2rem; }
+.ordersList { display: flex; flex-direction: column; gap: 1rem; }
+.orderCard { background: var(--card-bg-color); padding: 1rem 1.5rem; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; text-decoration: none; color: var(--text-color); transition: background-color 0.2s; }
+.orderCard:hover { background: var(--border-color); }
+.orderId { font-weight: bold; display: block; }
+.orderDate { font-size: 0.8rem; color: var(--text-secondary); }
+.orderTotal { font-weight: 500; }
+.statusBadge { padding: 5px 10px; border-radius: 20px; font-size: 0.8rem; font-weight: bold; text-transform: capitalize; }
+.statusBadge.pending, .statusBadge.preparing { background-color: #fbb0243d; color: #f9b12b; }
+.statusBadge.onTheWay, .statusBadge.nearDestination { background-color: #38bdf83b; color: #38bdf8; }
+.statusBadge.completed { background-color: #34d3993c; color: #34d399; }
+.statusBadge.cancelled { background-color: #ff6b6b3b; color: #ff6b6b; }

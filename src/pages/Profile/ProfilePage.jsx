@@ -1,9 +1,12 @@
+// src/pages/Profile/ProfilePage.jsx (FIXED & COMPLETE)
+
 import React, { useState, useEffect, useCallback } from 'react';
 import styles from './ProfilePage.module.css';
 import { useAuth } from '../../contexts/AuthContext';
 import { doc, getDoc, updateDoc } from 'firebase/firestore';
 import { db } from '../../firebase';
-import { client, urlFor } from '../../sanityClient'; // <-- WENAS KAMA MEHI THIBE (CHANGE IS HERE)
+import { client } from '../../sanityClient'; 
+import { Download } from 'lucide-react';
 
 const ProfilePage = () => {
     const { currentUser } = useAuth();
@@ -16,16 +19,19 @@ const ProfilePage = () => {
 
         setIsLoading(true);
 
-        // Fetch user data from Firestore
         const userDocRef = doc(db, 'users', currentUser.uid);
         const userDoc = await getDoc(userDocRef);
         if (userDoc.exists()) {
             setProfileData(userDoc.data());
         }
 
-        // Fetch order data from Sanity
         const orderQuery = `*[_type == "order" && customerEmail == $email] | order(orderedAt desc){
-            _id, orderAmount, orderStatus, orderedAt, items
+            _id, orderAmount, orderStatus, orderedAt, 
+            items[]{
+              _key,
+              productName,
+              "googleDriveLink": *[_type == "product" && name == ^.productName][0].googleDriveLink
+            }
         }`;
         const orderParams = { email: currentUser.email };
         const orderData = await client.fetch(orderQuery, orderParams);
@@ -43,19 +49,6 @@ const ProfilePage = () => {
         }
         
         fetchAllData();
-
-        // Set up real-time listener for orders
-        const query = `*[_type == "order" && customerEmail == $email]`;
-        const params = { email: currentUser.email };
-
-        const subscription = client.listen(query, params).subscribe(update => {
-            // Refetch all data on any change for consistency
-            fetchAllData();
-        });
-
-        return () => {
-            subscription.unsubscribe();
-        };
 
     }, [currentUser, fetchAllData]);
 
@@ -77,17 +70,16 @@ const ProfilePage = () => {
         }
     };
 
-    if (isLoading && orders.length === 0) {
-        return <div className="container" style={{padding: '50px', textAlign: 'center'}}><h2>Loading Profile...</h2></div>
+    if (isLoading) {
+        return <div className="page-wrapper container" style={{textAlign: 'center'}}><h2>Loading Profile...</h2></div>
     }
 
     if (!currentUser) {
-        return <div className="container" style={{padding: '50px', textAlign: 'center'}}><h2>Please log in to view your profile.</h2></div>
+        return <div className="page-wrapper container" style={{textAlign: 'center'}}><h2>Please log in to view your profile.</h2></div>
     }
 
     return (
-        <div className={`${styles.profilePage} container`}>
-            <div className="page-wrapper container"></div>
+        <div className={`${styles.profilePage} page-wrapper container`}>
             <h1>My Profile</h1>
             <div className={styles.profileLayout}>
                 <div className={styles.profileForm}>
@@ -110,25 +102,26 @@ const ProfilePage = () => {
                             <span>Status</span>
                             <span>Action</span>
                         </div>
-                        {isLoading && orders.length === 0 ? (
-                            <p className={styles.noOrders}>Checking for your orders...</p>
-                        ) : orders.length > 0 ? orders.map(order => (
+                        {orders.length > 0 ? orders.map(order => (
                             <div key={order._id} className={styles.tableRow}>
                                 <span>{order.items?.map(item => item.productName).join(', ') || 'N/A'}</span>
                                 <span>Rs. {order.orderAmount ? order.orderAmount.toFixed(2) : '0.00'}</span>
                                 <span><span className={`${styles.status} ${styles[order.orderStatus]}`}>{order.orderStatus}</span></span>
                                 <span>
-                                    {order.orderStatus === 'approved' ? (
-                                        <a href={"#"} target="_blank" rel="noopener noreferrer" className={styles.downloadBtn}>
-                                            Download
-                                        </a>
-                                    ) : (
+                                    {order.orderStatus === 'approved' && order.items?.map(item => (
+                                        item.googleDriveLink ? (
+                                            <a key={item._key} href={item.googleDriveLink} target="_blank" rel="noopener noreferrer" className={styles.downloadBtn}>
+                                                <Download size={14}/> Download
+                                            </a>
+                                        ) : null
+                                    ))}
+                                    {order.orderStatus !== 'approved' && (
                                         <button className={styles.downloadBtn} disabled>Download</button>
                                     )}
                                 </span>
                             </div>
                         )) : (
-                            <p className={styles.noOrders}>You have no orders yet.</p>
+                            <p className={styles.noOrders}>You have no digital product orders yet.</p>
                         )}
                     </div>
                 </div>
@@ -137,4 +130,4 @@ const ProfilePage = () => {
     );
 };
 
-export default ProfilePage;
+export default ProfilePage; // <-- ERROR එක FIX කරන LINE එක
