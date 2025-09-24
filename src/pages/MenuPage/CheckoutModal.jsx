@@ -1,19 +1,25 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import ReactDOM from 'react-dom';
 import { useNavigate } from 'react-router-dom';
 import { client } from '../../sanityClient';
 import { useFoodCart } from '../../contexts/FoodCartContext';
 import { useAuth } from '../../contexts/AuthContext';
-import MapPickerModal from './MapPickerModal'; // <-- Map Component එක import කලා
+import MapPickerModal from './MapPickerModal';
 import styles from './MenuPage.module.css';
 import { X, MapPin, CreditCard } from 'lucide-react';
+import Swal from 'sweetalert2';
+import 'sweetalert2/dist/sweetalert2.min.css';
 
 const getDistance = (lat1, lon1, lat2, lon2) => {
-    const R = 6371;
+    const R = 6371; // Radius of the earth in km
     const dLat = (lat2 - lat1) * (Math.PI / 180);
     const dLon = (lon2 - lon1) * (Math.PI / 180);
-    const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) + Math.cos(lat1 * (Math.PI / 180)) * Math.cos(lat2 * (Math.PI / 180)) * Math.sin(dLon / 2) * Math.sin(dLon / 2);
+    const a =
+        Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+        Math.cos(lat1 * (Math.PI / 180)) * Math.cos(lat2 * (Math.PI / 180)) *
+        Math.sin(dLon / 2) * Math.sin(dLon / 2);
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-    return R * c;
+    return R * c; // Distance in km
 };
 
 const calculateDeliveryCharge = (distance) => {
@@ -30,17 +36,24 @@ export default function CheckoutModal({ restaurant, onClose }) {
     const [userLocation, setUserLocation] = useState(null);
     const [deliveryCharge, setDeliveryCharge] = useState(0);
     const [isPlacingOrder, setIsPlacingOrder] = useState(false);
-    const [isMapOpen, setIsMapOpen] = useState(false); // Map එකට අලුත් state එකක්
+    const [isMapOpen, setIsMapOpen] = useState(false);
 
-    // "Get My Location" button එකට
+    useEffect(() => {
+        // Prevent background from scrolling when the modal is open
+        document.body.classList.add('modal-open');
+        // Cleanup function to re-enable scrolling when the modal closes
+        return () => {
+            document.body.classList.remove('modal-open');
+        };
+    }, []);
+
     const handleGetMyLocation = () => {
         navigator.geolocation.getCurrentPosition(position => {
             const { latitude, longitude } = position.coords;
             handleLocationSelect({ lat: latitude, lng: longitude });
-        }, () => alert("Could not get your location. Please check browser permissions."));
+        }, () => Swal.fire('Location Error', 'Could not get your location. Please check browser permissions.', 'error'));
     };
 
-    // Map එකෙන් හෝ "Get My Location" එකෙන් location එක ආවම වැඩ කරන function එක
     const handleLocationSelect = (latlng) => {
         const { lat, lng } = latlng;
         setUserLocation({ latitude: lat, longitude: lng });
@@ -52,33 +65,52 @@ export default function CheckoutModal({ restaurant, onClose }) {
 
     const handlePlaceOrder = async (e) => {
         e.preventDefault();
-        if (!userLocation) return alert("Please provide your delivery location.");
+        if (!userLocation) {
+            Swal.fire('Location Needed', 'Please provide your delivery location.', 'warning');
+            return;
+        }
         setIsPlacingOrder(true);
         try {
             const newOrder = {
-                _type: 'foodOrder', receiverName: formData.name, receiverContact: formData.phone,
+                _type: 'foodOrder',
+                receiverName: formData.name,
+                receiverContact: formData.phone,
                 customerEmail: currentUser.email,
-                deliveryAddress: `https://www.google.com/maps?q=${userLocation.latitude},${userLocation.longitude}`,
-                notes: formData.notes, restaurant: { _type: 'reference', _ref: restaurant._id },
-                foodTotal: cartTotal, deliveryCharge: deliveryCharge, grandTotal: cartTotal + deliveryCharge,
-                paymentMethod: 'COD', orderStatus: 'pending', createdAt: new Date().toISOString(),
+                deliveryAddress: `https://www.google.com/maps/search/?api=1&query=${userLocation.latitude},${userLocation.longitude}`,
+                notes: formData.notes,
+                restaurant: { _type: 'reference', _ref: restaurant._id },
+                foodTotal: cartTotal,
+                deliveryCharge: deliveryCharge,
+                grandTotal: cartTotal + deliveryCharge,
+                paymentMethod: 'COD',
+                orderStatus: 'pending',
+                createdAt: new Date().toISOString(),
                 statusUpdates: [{ _key: Math.random().toString(), status: 'pending', timestamp: new Date().toISOString() }],
                 orderedItems: cartItems.map(item => ({
-                    _key: `${item._id}-${Math.random()}`, item: { _type: 'reference', _ref: item._id }, quantity: item.quantity,
+                    _key: `${item._id}-${Math.random()}`,
+                    item: { _type: 'reference', _ref: item._id },
+                    quantity: item.quantity,
                 })),
             };
             const createdOrder = await client.create(newOrder);
-            alert('Order placed successfully!');
+            Swal.fire({
+                icon: 'success',
+                title: 'Order Placed!',
+                text: 'Your order has been placed successfully.',
+                timer: 2000,
+                showConfirmButton: false,
+            });
             clearCart();
             navigate(`/order-status/${createdOrder._id}`);
         } catch (error) {
             console.error(error);
+            Swal.fire('Order Failed', 'There was an issue placing your order. Please try again.', 'error');
         } finally {
             setIsPlacingOrder(false);
         }
     };
 
-    return (
+    return ReactDOM.createPortal(
         <>
             {isMapOpen && <MapPickerModal onClose={() => setIsMapOpen(false)} onLocationSelect={handleLocationSelect} />}
             <div className={styles.modalBackdrop} onClick={onClose}>
@@ -90,13 +122,13 @@ export default function CheckoutModal({ restaurant, onClose }) {
                     <form onSubmit={handlePlaceOrder} className={styles.checkoutForm}>
                         <input type="text" placeholder="Receiver Name" required value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} />
                         <input type="tel" placeholder="Contact Number" required value={formData.phone} onChange={e => setFormData({...formData, phone: e.target.value})} />
-                        <textarea placeholder="Special notes" value={formData.notes} onChange={e => setFormData({...formData, notes: e.target.value})} />
+                        <textarea placeholder="Special notes for the restaurant or rider" value={formData.notes} onChange={e => setFormData({...formData, notes: e.target.value})} />
                         
                         <div className={styles.locationBox}>
                              <div className={styles.locationButtons}>
-                                <button type="button" onClick={handleGetMyLocation} className={styles.locationBtn}><MapPin size={16}/> Use My Current Location</button>
-                                <button type="button" onClick={() => setIsMapOpen(true)} className={styles.locationBtn}><MapPin size={16}/> Choose on Map</button>
-                            </div>
+                                 <button type="button" onClick={handleGetMyLocation} className={styles.locationBtn}><MapPin size={16}/> Use My Current Location</button>
+                                 <button type="button" onClick={() => setIsMapOpen(true)} className={styles.locationBtn}><MapPin size={16}/> Choose on Map</button>
+                             </div>
                             {userLocation && <div className={styles.feeDetails}><p>Delivery Fee will be: <strong>Rs. {deliveryCharge.toFixed(2)}</strong></p></div>}
                         </div>
                         
@@ -117,6 +149,7 @@ export default function CheckoutModal({ restaurant, onClose }) {
                     </form>
                 </div>
             </div>
-        </>
+        </>,
+        document.getElementById('modal-root')
     );
 }

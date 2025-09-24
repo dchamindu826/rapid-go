@@ -40,8 +40,6 @@ body {
 
 .app-container {
   width: 100%;
-  position: relative;
-  overflow: hidden; /* Me dekama aniwarya */
 }
 
 .container {
@@ -95,4 +93,9 @@ body::before {
 .page-wrapper {
   padding-top: 150px;
   padding-bottom: 80px;
+}
+
+.app-container.modal-open {
+  overflow: hidden;
+  /* Modal එක open වුණාම .app-container එකේ scroll එක නවත්වනවා */
 }

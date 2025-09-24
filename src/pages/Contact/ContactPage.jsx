@@ -25,8 +25,8 @@ const ContactPage = () => {
             <FiMapPin /><span>Kaduwela, Sri Lanka</span>
           </div>
           <div className={styles.socialIcons}>
-            <a href="#" target="_blank" rel="noopener noreferrer"><FiFacebook /></a>
-            <a href="#" target="_blank" rel="noopener noreferrer"><FaTiktok /></a>
+            <a href="https://www.facebook.com/share/1EWDr4iu6q/?mibextid=wwXIfr" target="_blank" rel="noopener noreferrer"><FiFacebook /></a>
+            <a href="https://www.tiktok.com/@rapid.go.delivery?_t=ZS-8znMYWYMc6M&_r=1" target="_blank" rel="noopener noreferrer"><FaTiktok /></a>
             <a href="https://wa.me/94706004033" target="_blank" rel="noopener noreferrer"><FiMessageCircle /></a>
           </div>
         </div>

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useParams } from 'react-router-dom';
 import { client, urlFor } from '../../sanityClient';
-import FoodCart from './FoodCart'; // Cart එක වෙනම component එකක් කලා
+import FoodCart from './FoodCart';
 import styles from './MenuPage.module.css';
 
 export default function MenuPage() {
@@ -11,6 +11,20 @@ export default function MenuPage() {
     const [allCategories, setAllCategories] = useState([]);
     const [activeCategory, setActiveCategory] = useState('All');
     const [isLoading, setIsLoading] = useState(true);
+    const [showCheckout, setShowCheckout] = useState(false);
+
+    // This useEffect will lock the background scroll when the modal is open
+    useEffect(() => {
+        if (showCheckout) {
+            document.body.style.overflow = 'hidden';
+        } else {
+            document.body.style.overflow = 'unset';
+        }
+        // Cleanup function to re-enable scroll if the component unmounts
+        return () => {
+            document.body.style.overflow = 'unset';
+        };
+    }, [showCheckout]);
 
     useEffect(() => {
         const fetchMenu = async () => {
@@ -39,14 +53,12 @@ export default function MenuPage() {
     }, [activeCategory, groupedMenu, restaurant]);
 
     if (isLoading) return <div className="page-wrapper container"><h1>Loading menu...</h1></div>;
-    if (!restaurant) return <div className="page-wrapper container"><h1>Restaurant not found.</h1></div>;
 
     return (
         <div className={`${styles.menuPage} page-wrapper container`}>
             <div className={styles.restaurantHeader}>
                 {restaurant.logo && <div className={styles.logoWrapper}><img src={urlFor(restaurant.logo).url()} alt={restaurant.name} /></div>}
                 <h1>{restaurant.name}</h1>
-                <p>{restaurant.description}</p>
             </div>
             <div className={styles.menuLayout}>
                 <div className={styles.menuContent}>
@@ -62,7 +74,7 @@ export default function MenuPage() {
                                 <p className={styles.itemDescription}>{item.description}</p>
                                 <div className={styles.cardFooter}>
                                     <span className={styles.itemPrice}>Rs. {item.price.toFixed(2)}</span>
-                                    <FoodCart item={item} /> {/* Add to Cart button is now part of the FoodCart component logic */}
+                                    <FoodCart item={item} />
                                 </div>
                             </div>
                             {item.image && <div className={styles.cardImage}><img src={urlFor(item.image).width(200).url()} alt={item.name} /></div>}
@@ -70,7 +82,12 @@ export default function MenuPage() {
                     ))}
                 </div>
                 <div className={styles.cartSidebar}>
-                    <FoodCart showSummary={true} restaurant={restaurant} />
+                    <FoodCart 
+                        showSummary={true} 
+                        restaurant={restaurant} 
+                        showCheckout={showCheckout}
+                        setShowCheckout={setShowCheckout}
+                    />
                 </div>
             </div>
         </div>

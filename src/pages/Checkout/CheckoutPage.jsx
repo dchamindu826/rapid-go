@@ -5,6 +5,8 @@ import { writeClient, urlFor } from '../../sanityClient';
 import { useAuth } from '../../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { FiUpload } from 'react-icons/fi';
+import Swal from 'sweetalert2';
+import 'sweetalert2/dist/sweetalert2.min.css';
 
 const CheckoutPage = () => {
     const { cartItems, clearCart } = useCart();
@@ -28,11 +30,11 @@ const CheckoutPage = () => {
 
     const handlePlaceOrder = async () => {
         if (!currentUser) {
-            alert('Please log in to place an order.');
+            Swal.fire('Login Required', 'Please log in to place an order.', 'info');
             return navigate('/login');
         }
         if (!customerDetails.name || !customerDetails.phone || !paymentProof) {
-            alert('Please fill your name, phone number and upload the payment proof.');
+            Swal.fire('Missing Details', 'Please fill your name, phone number and upload the payment proof.', 'warning');
             return;
         }
         setIsPlacingOrder(true);
@@ -59,12 +61,22 @@ const CheckoutPage = () => {
             await writeClient.create(newOrder);
             
             clearCart();
-            alert('Your order has been placed successfully!');
+            Swal.fire({
+                icon: 'success',
+                title: 'Order Placed!',
+                text: 'Your order has been placed successfully!',
+                timer: 2500,
+                showConfirmButton: false,
+            });
             navigate('/profile');
 
         } catch (err) {
             console.error('Order placement failed:', err);
-            alert('Something went wrong. Please try again.');
+            Swal.fire(
+                'Order Failed',
+                'Something went wrong. Please try again.',
+                'error'
+            );
         } finally {
             setIsPlacingOrder(false);
         }
@@ -107,8 +119,9 @@ const CheckoutPage = () => {
                             <p>Please transfer the total amount to the following account and upload the receipt.</p>
                             <ul>
                                 <li><strong>Bank:</strong> Commercial Bank</li>
-                                <li><strong>Account Name:</strong> RapidGo (Pvt) Ltd</li>
-                                <li><strong>Account No:</strong> 1000 1234 5678</li>
+                                <li><strong>Branch:</strong> Athurugiriya</li>
+                                <li><strong>Account Name:</strong> A G Lahiru Madushan</li>
+                                <li><strong>Account No:</strong> 8009580752</li>
                             </ul>
                         </div>
                     )}
@@ -117,7 +130,7 @@ const CheckoutPage = () => {
                         <div className={styles.paymentDetails}>
                             <h4>Binance Pay Details</h4>
                             <p>Please send the equivalent crypto amount to the following Binance Pay ID and upload a screenshot.</p>
-                             <ul><li><strong>Binance Pay ID:</strong> rapidgo_pay</li></ul>
+                             <ul><li><strong>Binance Pay ID:</strong> 775924027</li></ul>
                         </div>
                     )}
 

@@ -15,17 +15,15 @@ const ProductDetailPage = () => {
         const fetchProduct = async () => {
             setIsLoading(true);
             const query = `*[_type == "product" && slug.current == $slug][0]{
-                ..., 
-                "category": category->{name},
-                "videoUrl": video.asset->url,
-                "images": images[]{
-                    _key,
-                    asset
-                }
-            }`;
+    ...,
+        "category": category->{name},
+        "images": images[]{_key, asset}
+}`;
+
             const params = { slug: productSlug };
             try {
                 const data = await client.fetch(query, params);
+                console.log("Sanity Product Data:", data); // <-- DEBUGGING: Browser Console එක බලන්න
                 setProduct(data);
             } catch (error) {
                 console.error("Failed to fetch product details:", error);
@@ -38,17 +36,21 @@ const ProductDetailPage = () => {
 
     const mediaGallery = useMemo(() => {
         if (!product) return [];
+        
         const items = [];
+        // Envato link එක මුලින්ම එකතු කරනවා (තියෙනවා නම්)
+        if (product.envatoMediaLink) {
+            items.push({ type: 'video', url: product.envatoMediaLink, _key: 'envato-video-preview' });
+        }
+        // ඊළඟට Images ටික එකතු කරනවා
         if (product.images) {
             product.images.forEach(img => items.push({ type: 'image', ...img }));
-        }
-        if (product.envatoMediaLink) {
-             items.push({ type: 'video', url: product.envatoMediaLink, _key: 'video-preview' });
         }
         return items;
     }, [product]);
 
     useEffect(() => {
+        // mediaGallery එක හැදුනට පස්සේ, පළවෙනි item එක selectedMedia විදිහට දානවා
         if (mediaGallery.length > 0 && !selectedMedia) {
             setSelectedMedia(mediaGallery[0]);
         }
@@ -58,19 +60,29 @@ const ProductDetailPage = () => {
     if (!product) { return <div className={styles.loader}>Product not found!</div>; }
 
     const renderMainMedia = () => {
-        if (!selectedMedia) return null;
+        if (!selectedMedia) {
+            return <div className={styles.noMedia}>No Media Available</div>; // Media නැත්නම් මේක පෙන්නයි
+        }
 
         if (selectedMedia.type === 'video') {
-            const isYouTube = selectedMedia.url.includes('youtube.com') || selectedMedia.url.includes('youtu.be');
-            const videoId = isYouTube ? selectedMedia.url.split('v=')[1]?.split('&')[0] || selectedMedia.url.split('/').pop() : null;
+            // YouTube link check කරනවා
+            const youtubeRegex = /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/;
+            const match = selectedMedia.url.match(youtubeRegex);
             
-            if (videoId) {
-                return <iframe src={`https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1`} title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen></iframe>;
+            if (match && match[1]) {
+                const videoId = match[1];
+                return <iframe src={`https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&loop=1&playlist=${videoId}`} title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen></iframe>;
             }
+            // වෙනත් video link එකක් නම්
             return <video src={selectedMedia.url} controls autoPlay muted loop />;
         }
 
-        return <img src={urlFor(selectedMedia.asset).url()} alt={product.name} />;
+        // Image එකක් නම්
+        if (selectedMedia.asset) {
+           return <img src={urlFor(selectedMedia.asset).url()} alt={product.name} />;
+        }
+        
+        return <div className={styles.noMedia}>Media could not be loaded.</div>;
     };
 
     return (
@@ -89,7 +101,7 @@ const ProductDetailPage = () => {
                                 onClick={() => setSelectedMedia(media)}
                             >
                                 <img 
-                                    src={media.type === 'image' ? urlFor(media.asset).width(100).height(100).url() : 'https://placehold.co/100x100/1E293B/E2E8F0?text=Video'} 
+                                    src={media.type === 'image' && media.asset ? urlFor(media.asset).width(100).height(100).url() : 'https://placehold.co/100x100/1E293B/E2E8F0?text=Video'} 
                                     alt="Thumbnail"
                                 />
                             </div>
