@@ -87,3 +87,8 @@
     .productDetails h1 { font-size: 2rem; }
     .price { font-size: 2rem; }
 }
+
+.description {
+  /* Add this one line to your existing styles */
+  white-space: pre-wrap;
+}
