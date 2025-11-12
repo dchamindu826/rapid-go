@@ -67,19 +67,38 @@ export default function MenuPage() {
                             <button key={cat} onClick={() => setActiveCategory(cat)} className={activeCategory === cat ? styles.active : ''}>{cat}</button>
                         ))}
                     </div>
-                    {itemsToDisplay.map(item => (
-                        <div key={item._id} className={styles.menuItemCard}>
-                            <div className={styles.cardBody}>
-                                <h3>{item.name}</h3>
-                                <p className={styles.itemDescription}>{item.description}</p>
-                                <div className={styles.cardFooter}>
-                                    <span className={styles.itemPrice}>Rs. {item.price.toFixed(2)}</span>
-                                    <FoodCart item={item} />
-                                </div>
-                            </div>
-                            {item.image && <div className={styles.cardImage}><img src={urlFor(item.image).width(200).url()} alt={item.name} /></div>}
-                        </div>
-                    ))}
+                    {itemsToDisplay.map(item => {
+
+                        // --- (!!!) ALUTH LOGIC EKA MEKAI (!!!) ---
+                        // Price eka price field eken hari, variations[0].price eken hari ganna
+                        let displayPrice = 0;
+                        let pricePrefix = 'Rs. ';
+
+                        if (item.price) {
+                            // 1. Normal price eka thiyenawa nam
+                            displayPrice = item.price;
+                        } else if (item.variations && item.variations.length > 0) {
+                            // 2. Variations thiyenawa nam, palaweni eke price eka ganna
+                            displayPrice = item.variations[0].price;
+                            pricePrefix = 'From Rs. '; // "Starts at" wage pennanna
+                        }
+                        // --- (!!!) FIX EKA IWARAI (!!!) ---
+
+                        return (
+                            <div key={item._id} className={styles.menuItemCard}>
+                                <div className={styles.cardBody}>
+                                    <h3>{item.name}</h3>
+                                    <p className={styles.itemDescription}>{item.description}</p>
+                                    <div className={styles.cardFooter}>
+                                        {/* --- (!!!) FIX EKA DAAPU LINE EKA (!!!) --- */}
+                                        <span className={styles.itemPrice}>{pricePrefix}{displayPrice.toFixed(2)}</span>
+                                        <FoodCart item={item} />
+                                    </div>
+                                </div>
+                                {item.image && <div className={styles.cardImage}><img src={urlFor(item.image).width(200).url()} alt={item.name} /></div>}
+                            </div>
+                        );
+                    })}
                 </div>
                 <div className={styles.cartSidebar}>
                     <FoodCart 

@@ -1,94 +1,169 @@
-.productPage { 
-    padding: 60px 0 100px 0; 
+.productPage {
+    padding: 60px 0 100px 0;
 }
+
 .loader {
-    padding: 80px; text-align: center; font-size: 1.5rem; color: var(--text-secondary);
+    padding: 80px;
+    text-align: center;
+    font-size: 1.5rem;
+    color: var(--text-secondary);
 }
-.productLayout { 
-    display: grid; grid-template-columns: 1fr 1.2fr; gap: 60px; align-items: flex-start; 
+
+.productLayout {
+    display: grid;
+    grid-template-columns: 1fr 1.2fr;
+    gap: 60px;
+    align-items: flex-start;
 }
-.productMediaSection { 
-    display: flex; flex-direction: column; gap: 20px; position: sticky;
+
+.productMediaSection {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    position: sticky;
     top: 100px;
 }
-.mainImage { 
-    background: var(--card-bg-color); border: 1px solid var(--border-color); 
+
+.mainImage {
+    background: var(--card-bg-color);
+    border: 1px solid var(--border-color);
     border-radius: 20px;
-    aspect-ratio: 16 / 10; 
-    display:flex; align-items:center; justify-content:center;
+    aspect-ratio: 16 / 10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     position: relative;
     overflow: hidden;
 }
+
 .mainImage img,
 .mainImage iframe,
-.mainImage video { 
-    width: 100%; height: 100%; 
-    object-fit: cover; 
+.mainImage video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
     border-radius: 20px;
     position: absolute;
     top: 0;
     left: 0;
 }
 
-/* === WENAS KAMA MEHI THIBE === */
-.thumbnailGallery { 
-    /* Grid wenwuata Flexbox use kara, size eka control karanna */
-    display: flex; 
-    flex-wrap: wrap; /* Awashya nam anith paththata yanna */
-    gap: 15px; 
+.thumbnailGallery {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
 }
-.thumbnail { 
-    cursor: pointer; 
-    border: 2px solid var(--border-color); 
-    border-radius: 10px; 
-    overflow: hidden; 
-    transition: border-color 0.3s; 
+
+.thumbnail {
+    cursor: pointer;
+    border: 2px solid var(--border-color);
+    border-radius: 10px;
+    overflow: hidden;
+    transition: border-color 0.3s;
     position: relative;
     z-index: 2;
-    /* WENAS KAMA: Fixed size ekak demma */
     width: 90px;
     height: 90px;
-    flex-shrink: 0; /* Shrink wenna epa */
+    flex-shrink: 0;
 }
-/* === WENAS KAMA IWSAARAI === */
 
-.thumbnail:hover { 
-    border-color: var(--secondary-accent); 
+.thumbnail:hover {
+    border-color: var(--secondary-accent);
 }
-.thumbnail.active { 
-    border-color: var(--secondary-accent); box-shadow: 0 0 10px var(--secondary-accent); 
+
+.thumbnail.active {
+    border-color: var(--secondary-accent);
+    box-shadow: 0 0 10px var(--secondary-accent);
 }
-.thumbnail img { 
-    width: 100%; height: 100%; object-fit: cover; 
+
+.thumbnail img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
 }
-.category { 
-    font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 10px; font-weight: 600; 
+
+.category {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    margin-bottom: 10px;
+    font-weight: 600;
 }
-.productDetails h1 { 
-    font-size: 2.8rem; font-weight: 800; margin: 0; color: var(--text-color); 
-}
-.description { 
-    font-size: 1.1rem; color: var(--text-secondary); line-height: 1.8; margin: 25px 0; 
-}
-.price { 
-    font-size: 2.5rem; font-weight: 700; color: var(--secondary-accent); margin-bottom: 30px; 
-}
-.actions { 
-    display: flex; gap: 20px; 
-}
-.addToCartBtn { 
-    flex-grow: 1; padding: 15px; background-color: var(--primary-accent); 
-    color: #fff; border: none; border-radius: 8px; font-weight: 700; 
-    font-size: 1rem; cursor: pointer; 
-}
-@media (max-width: 992px) { 
-    .productLayout { grid-template-columns: 1fr; gap: 40px; } 
-    .productMediaSection { position: static; }
-    .productDetails h1 { font-size: 2rem; }
-    .price { font-size: 2rem; }
+
+.productDetails h1 {
+    font-size: 2.8rem;
+    font-weight: 800;
+    margin: 0;
+    color: var(--text-color);
 }
 
 .description {
-  /* Add this one line to your existing styles */
-  white-space: pre-wrap;
+    font-size: 1.1rem;
+    color: var(--text-secondary);
+    line-height: 1.8;
+    margin: 25px 0;
+    white-space: pre-wrap;
+}
+
+.price {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--secondary-accent);
+    margin-bottom: 30px;
+}
+
+.actions {
+    display: flex;
+    gap: 20px;
+}
+
+.addToCartBtn {
+    flex-grow: 1;
+    padding: 15px;
+    background-color: var(--primary-accent);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-weight: 700;
+    font-size: 1rem;
+    cursor: pointer;
+}
+
+.livePreviewBtn {
+    flex-grow: 1;
+    padding: 15px;
+    background-color: transparent;
+    color: var(--primary-accent);
+    border: 2px solid var(--primary-accent);
+    border-radius: 8px;
+    font-weight: 700;
+    font-size: 1rem;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+    text-align: center;
+    transition: all 0.3s;
+}
+
+.livePreviewBtn:hover {
+    background-color: var(--primary-accent);
+    color: #fff;
+}
+
+@media (max-width: 992px) {
+    .productLayout {
+        grid-template-columns: 1fr;
+        gap: 40px;
+    }
+
+    .productMediaSection {
+        position: static;
+    }
+
+    .productDetails h1 {
+        font-size: 2rem;
+    }
+
+    .price {
+        font-size: 2rem;
+    }
 }
