@@ -91,7 +91,9 @@ export default function MenuPage() {
                                     <p className={styles.itemDescription}>{item.description}</p>
                                     <div className={styles.cardFooter}>
                                         {/* --- (!!!) FIX EKA DAAPU LINE EKA (!!!) --- */}
-                                        <span className={styles.itemPrice}>{pricePrefix}{displayPrice.toFixed(2)}</span>
+                                        <span className={styles.itemPrice}>
+  {item.price ? `Rs. ${item.price.toFixed(2)}` : `From Rs. ${item.variations[0].price.toFixed(2)}`}
+</span>
                                         <FoodCart item={item} />
                                     </div>
                                 </div>
