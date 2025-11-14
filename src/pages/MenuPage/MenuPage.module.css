@@ -359,3 +359,12 @@
 :global(.leaflet-control-geosearch.bar .results > *:hover) {
   background-color: #444;
 }
+/* MenuPage.module.css (අගටම add කරන්න) */
+
+.summaryLine.faded {
+  color: #aaa; /* Faded text color */
+  font-size: 14px;
+}
+.summaryLine.faded span {
+  color: #aaa;
+}

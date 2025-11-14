@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import ReactDOM from 'react-dom';
 import { useNavigate } from 'react-router-dom';
-import { client } from '../../sanityClient'; // 'writeClient' wenna one order place karanna
+import { client } from '../../sanityClient';
 import { useFoodCart } from '../../contexts/FoodCartContext';
 import { useAuth } from '../../contexts/AuthContext';
 import styles from './MenuPage.module.css';
@@ -9,14 +9,14 @@ import { X, MapPin, CreditCard, CheckCircle, LocateFixed } from 'lucide-react';
 import Swal from 'sweetalert2';
 import 'sweetalert2/dist/sweetalert2.min.css';
 
-// --- (!!!) MAP IMPORTS ---
+// --- MAP IMPORTS ---
 import { MapContainer, TileLayer, Marker, useMap, useMapEvents } from 'react-leaflet';
 import { GeoSearchControl, OpenStreetMapProvider } from 'leaflet-geosearch';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import 'leaflet-geosearch/dist/geosearch.css';
 
-// --- (!!!) VITE ICON FIX ---
+// --- VITE ICON FIX ---
 import markerIcon2x from 'leaflet/dist/images/marker-icon-2x.png';
 import markerIcon from 'leaflet/dist/images/marker-icon.png';
 import markerShadow from 'leaflet/dist/images/marker-shadow.png';
@@ -27,9 +27,8 @@ L.Icon.Default.mergeOptions({
   iconUrl: markerIcon,
   shadowUrl: markerShadow,
 });
-// -----------------------------------------------------
 
-// --- (!!!) MAP HELPER COMPONENTS ---
+// --- MAP HELPER COMPONENTS ---
 const SearchField = ({ onLocationSelect }) => {
   const map = useMap();
   useEffect(() => {
@@ -68,10 +67,8 @@ const MapEvents = ({ position }) => {
     }, [position, map]);
     return null;
   }
-// -----------------------------------------------------
 
-
-// --- (!!!) DISTANCE & FEE LOGIC ---
+// --- DISTANCE & FEE LOGIC ---
 const getDistance = (lat1, lon1, lat2, lon2) => {
   const R = 6371; // Radius of the earth in km
   const dLat = (lat2 - lat1) * (Math.PI / 180);
@@ -84,16 +81,14 @@ const getDistance = (lat1, lon1, lat2, lon2) => {
   return R * c; // Distance in km
 };
 
-// (!!!) --- ALUTH FEE LOGIC EKA --- (!!!)
-const PER_KM_RATE = 40; // Note eke widihata Rs. 40 per km
+const PER_KM_RATE = 40; 
 
 const calculateHandlingFee = (distance) => {
   if (distance <= 0) return 0;
-  if (distance <= 4) return 60; // 0km - 4km = Rs. 60
-  if (distance <= 10) return 80; // 4km - 10km = Rs. 80
-  return 80; // 10km+ = Rs. 80 (Assumption)
+  if (distance <= 4) return 60; 
+  if (distance <= 10) return 80; 
+  return 80; 
 };
-// -----------------------------------------
 
 
 export default function CheckoutModal({ restaurant, onClose }) {
@@ -101,16 +96,18 @@ export default function CheckoutModal({ restaurant, onClose }) {
   const { currentUser } = useAuth();
   const navigate = useNavigate();
   const [formData, setFormData] = useState({ name: currentUser?.displayName || '', phone: '', notes: '' });
-  const [userLocation, setUserLocation] = useState(null); // FINAL location
+  const [userLocation, setUserLocation] = useState(null); 
   const [isPlacingOrder, setIsPlacingOrder] = useState(false);
   
-  const [isMapVisible, setIsMapVisible] = useState(false); // Map eka show/hide karanna
-  const [mapPosition, setMapPosition] = useState({ lat: 6.9271, lng: 79.8612 }); // Map eke marker eka
+  const [isMapVisible, setIsMapVisible] = useState(false); 
+  const [mapPosition, setMapPosition] = useState({ lat: 6.9271, lng: 79.8612 }); 
 
-  // (!!!) --- ALUTH STATE DEKA (Fee wenama pennanna) ---
   const [handlingFee, setHandlingFee] = useState(0);
   const [perKmCharge, setPerKmCharge] = useState(0);
-  // -----------------------------------------------------
+  
+  // (!!!) --- ALUTH STATE EKA (KM ගාන පෙන්නන්න) ---
+  const [distance, setDistance] = useState(0);
+  // --------------------------------------------------
 
   useEffect(() => {
     document.body.classList.add('modal-open');
@@ -126,12 +123,15 @@ export default function CheckoutModal({ restaurant, onClose }) {
     if (restaurant.location?.lat && restaurant.location?.lng) {
       const dist = getDistance(restaurant.location.lat, restaurant.location.lng, lat, lng);
       
-      // (!!!) ALUTH LOGIC EKEN FEE CALCULATE KIRIMA
       const newHandlingFee = calculateHandlingFee(dist);
       const newPerKmCharge = dist * PER_KM_RATE;
 
       setHandlingFee(newHandlingFee);
       setPerKmCharge(newPerKmCharge);
+      
+      // (!!!) --- KM ගාන STATE EKE SAVE KARANAWA ---
+      setDistance(dist);
+      // ---------------------------------------------
     }
   };
 
@@ -149,12 +149,13 @@ export default function CheckoutModal({ restaurant, onClose }) {
   };
 
   const handleConfirmMapLocation = () => {
-    handleLocationSelect(mapPosition); // Final location eka set karanawa
-    setIsMapVisible(false); // Map eka wahanawa
+    handleLocationSelect(mapPosition); 
+    setIsMapVisible(false); 
   };
   // --------------------------------
 
   const handlePlaceOrder = async (e) => {
+    // ... (handlePlaceOrder function eke wenasak na)
     e.preventDefault();
     if (!userLocation) {
       Swal.fire('Location Needed', 'Please provide your delivery location.', 'warning');
@@ -162,7 +163,7 @@ export default function CheckoutModal({ restaurant, onClose }) {
     }
     setIsPlacingOrder(true);
     
-    const totalDeliveryCost = handlingFee + perKmCharge; // Sanity ekata yawanna total eka
+    const totalDeliveryCost = handlingFee + perKmCharge;
     const totalGrandTotal = cartTotal + totalDeliveryCost;
 
     try {
@@ -179,7 +180,7 @@ export default function CheckoutModal({ restaurant, onClose }) {
         notes: formData.notes,
         restaurant: { _type: 'reference', _ref: restaurant._id },
         foodTotal: cartTotal,
-        deliveryCharge: totalDeliveryCost, // (Handling + PerKM) total eka
+        deliveryCharge: totalDeliveryCost, 
         grandTotal: totalGrandTotal,
         orderStatus: 'pending',
         createdAt: new Date().toISOString(),
@@ -191,7 +192,7 @@ export default function CheckoutModal({ restaurant, onClose }) {
         })),
       };
 
-      const createdOrder = await client.create(newOrder); // TODO: writeClient
+      const createdOrder = await client.create(newOrder); 
       
       Swal.fire({ icon: 'success', title: 'Order Placed!', timer: 2000, showConfirmButton: false });
       clearCart();
@@ -227,6 +228,7 @@ export default function CheckoutModal({ restaurant, onClose }) {
             )}
             
             <div className={styles.locationBox}>
+              {/* ... (Location box eke code eka wenas wenne na) ... */}
               {isMapVisible ? (
                 <div className={styles.mapEmbedContainer}>
                   <MapContainer
@@ -271,9 +273,13 @@ export default function CheckoutModal({ restaurant, onClose }) {
                   <span>Payment Method: <strong>Cash on Delivery (COD)</strong></span>
                 </div>
                 
-                {/* --- (!!!) ALUTH SUMMARY EKA (HANDLING FEE EKA WENAMA) --- */}
+                {/* --- (!!!) ALUTH SUMMARY EKA (DISTANCE EKA SAMAGA) --- */}
                 <div className={styles.summary}>
                   <div className={styles.summaryLine}><span>Subtotal</span><span>Rs. {cartTotal.toFixed(2)}</span></div>
+                  <div className={`${styles.summaryLine} ${styles.faded}`}>
+                    <span>Distance</span>
+                    <span>{distance.toFixed(2)} km</span>
+                  </div>
                   <div className={styles.summaryLine}><span>Handling Fee</span><span>Rs. {handlingFee.toFixed(2)}</span></div>
                   <div className={styles.summaryLine}><span>Delivery (Per KM)</span><span>Rs. {perKmCharge.toFixed(2)}</span></div>
                   <div className={`${styles.summaryLine} ${styles.total}`}>
