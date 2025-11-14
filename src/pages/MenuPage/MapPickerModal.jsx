@@ -1,51 +1,134 @@
-import React, { useState, useMemo } from 'react';
-import { MapContainer, TileLayer, Marker, useMapEvents } from 'react-leaflet';
-import styles from './MenuPage.module.css';
+import React, { useState, useEffect, useCallback } from 'react';
+import ReactDOM from 'react-dom';
+import { MapContainer, TileLayer, Marker, useMap, useMapEvents } from 'react-leaflet';
+import { GeoSearchControl, OpenStreetMapProvider } from 'leaflet-geosearch';
+import L from 'leaflet';
+import styles from './MapPickerModal.module.css';
+import { LocateFixed } from 'lucide-react'; // (!!!) ALUTH ICON EKA IMPORT KALA
 
-function LocationMarker({ position, setPosition }) {
-    const map = useMapEvents({
-        click(e) {
-            setPosition(e.latlng);
-            map.flyTo(e.latlng, map.getZoom());
-        },
+// --- LEAFLET CSS ---
+import 'leaflet/dist/leaflet.css';
+import 'leaflet-geosearch/dist/geosearch.css';
+
+// --- (!!!) VITE FIX EKA (require -> import) ---
+import markerIcon2x from 'leaflet/dist/images/marker-icon-2x.png';
+import markerIcon from 'leaflet/dist/images/marker-icon.png';
+import markerShadow from 'leaflet/dist/images/marker-shadow.png';
+
+// --- Leaflet icon fix ---
+delete L.Icon.Default.prototype._getIconUrl;
+L.Icon.Default.mergeOptions({
+  iconRetinaUrl: markerIcon2x,
+  iconUrl: markerIcon,
+  shadowUrl: markerShadow,
+});
+// -------------------------
+
+const SearchField = ({ onLocationSelect }) => {
+  const map = useMap();
+  useEffect(() => {
+    const provider = new OpenStreetMapProvider();
+    const searchControl = new GeoSearchControl({
+      provider: provider,
+      style: 'bar',
+      showMarker: false,
+      autoClose: true,
+      keepResult: true,
     });
+    map.addControl(searchControl);
+    map.on('geosearch/showlocation', (result) => {
+      onLocationSelect({ lat: result.location.y, lng: result.location.x });
+    });
+    return () => map.removeControl(searchControl);
+  }, [map, onLocationSelect]);
+  return null;
+};
 
-    return position === null ? null : (
-        <Marker position={position}></Marker>
-    );
-}
+const MapClickHandler = ({ setPosition }) => {
+  useMapEvents({
+    click(e) {
+      setPosition(e.latlng);
+    },
+  });
+  return null;
+};
 
 export default function MapPickerModal({ onClose, onLocationSelect }) {
-    const [position, setPosition] = useState(null);
-    
-    const handleConfirm = () => {
-        if (position) {
-            onLocationSelect(position);
-            onClose();
-        } else {
-            alert("Please select a location on the map by clicking on it.");
-        }
-    };
+  const [position, setPosition] = useState({ lat: 6.9271, lng: 79.8612 });
 
-    const initialPosition = useMemo(() => [6.9271, 79.8612], []); // Default to Colombo
+  const handleSetPosition = useCallback((latlng) => {
+    setPosition(latlng);
+  }, []);
 
-    return (
-        <div className={styles.modalBackdrop}>
-            <div className={`${styles.modalContent} ${styles.mapModal}`}>
-                <div className={styles.modalHeader}>
-                    <h2>Select Delivery Location</h2>
-                    <button onClick={onClose} className={styles.closeModalBtn}>×</button>
-                </div>
-                <p className={styles.mapInstruction}>Click on the map to set the destination.</p>
-                <MapContainer center={initialPosition} zoom={13} scrollWheelZoom={true} className={styles.mapContainer}>
-                    <TileLayer
-                        attribution='&copy; <a href="http://googleusercontent.com/copyright">OpenStreetMap</a> contributors'
-                        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                    />
-                    <LocationMarker position={position} setPosition={setPosition} />
-                </MapContainer>
-                <button onClick={handleConfirm} className={styles.placeOrderBtn}>Confirm Location</button>
-            </div>
-        </div>
+  const MapEvents = () => {
+    const map = useMap();
+    useEffect(() => {
+      if (map) {
+        map.flyTo(position, 15);
+      }
+    }, [position, map]);
+    return null;
+  }
+
+  const handleConfirmLocation = () => {
+    onLocationSelect(position);
+    onClose();
+  };
+
+  // --- (!!!) ALUTH FUNCTION EKA - "FIND ME" ---
+  const handleFindMe = () => {
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const { latitude, longitude } = position.coords;
+        handleSetPosition({ lat: latitude, lng: longitude });
+      },
+      () => {
+        alert('Could not get your location. Please check browser permissions.');
+      }
     );
+  };
+  // ---------------------------------------------
+
+  return ReactDOM.createPortal(
+    <div className={styles.modalBackdrop}>
+      <div className={styles.modalContent}>
+        <MapContainer
+          center={position}
+          zoom={13}
+          style={{ height: '100%', width: '100%' }}
+        >
+          <TileLayer
+            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+          />
+          <SearchField onLocationSelect={handleSetPosition} />
+          <MapClickHandler setPosition={handleSetPosition} />
+          <Marker position={position} />
+          <MapEvents />
+        </MapContainer>
+
+        {/* --- UI Buttons --- */}
+        
+        {/* (!!!) ALUTH "FIND ME" BUTTON EKA */}
+        <button 
+          className={`${styles.uiButton} ${styles.findMeButton}`} 
+          onClick={handleFindMe}
+          title="Use My Current Location"
+        >
+          <LocateFixed size={20} />
+        </button>
+
+        <button className={`${styles.uiButton} ${styles.closeButton}`} onClick={onClose}>
+          &times;
+        </button>
+
+        <div className={styles.confirmContainer}>
+          <button className={styles.confirmButton} onClick={handleConfirmLocation}>
+            Confirm This Location
+          </button>
+        </div>
+      </div>
+    </div>,
+    document.getElementById('modal-root')
+  );
 }

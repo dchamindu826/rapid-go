@@ -152,3 +152,210 @@
         font-size: 1.5rem;
     }
 }
+/* MenuPage.module.css (අන්තිමට add කරන්න) */
+
+.locationBox {
+  margin-top: 15px;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+}
+
+.locationBtnFull {
+  width: 100%;
+  padding: 15px;
+  font-size: 16px;
+  font-weight: 600;
+  color: #333;
+  background-color: #f0f0f0;
+  border: 1px dashed #ccc;
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: background-color 0.2s;
+}
+.locationBtnFull:hover {
+  background-color: #e5e5e5;
+}
+
+.locationSet {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 15px;
+  border: 1px solid #22C55E; /* Green border */
+  border-radius: 8px;
+  background-color: #F0FDF4; /* Light green */
+}
+.locationSet p {
+  font-size: 15px;
+  font-weight: 600;
+  color: #166534; /* Dark green */
+  margin: 0;
+}
+.locationSet span {
+  font-size: 12px;
+  color: #15803D;
+}
+.changeLocationBtn {
+  margin-left: auto;
+  font-size: 14px;
+  font-weight: 600;
+  color: #1d4ed8; /* Blue */
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 5px;
+}
+
+/* --- (!!!) PLACE ORDER BUTTON EKE COLOR FIX EKA --- */
+
+/* (Aluth) Mehema dammama 'disabled' nathi welawata kaha pata penawa */
+.placeOrderBtn {
+  width: 100%;
+  padding: 16px;
+  font-size: 16px;
+  font-weight: bold;
+  color: #1a1a1a; /* Dark text */
+  background-color: #FACC15; /* Yellow */
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  margin-top: 15px;
+  transition: all 0.2s ease;
+}
+.placeOrderBtn:hover {
+  background-color: #e6b800; /* Darker yellow */
+}
+
+/* (Aluth) Mehema dammama 'disabled' welawata grey penawa */
+.placeOrderBtn:disabled {
+  background-color: #555;
+  color: #888;
+  cursor: not-allowed;
+}
+
+
+/* --- (!!!) ALUTH EMBEDDED MAP STYLES --- */
+
+.locationBox {
+  margin-top: 15px;
+  border-radius: 8px;
+  background-color: #3a3a3a; /* Dark background */
+  border: 1px solid #444;
+}
+
+/* 1. Location Set Karanna Kalin Button Eka */
+.locationBtnFull {
+  width: 100%;
+  padding: 15px;
+  font-size: 16px;
+  font-weight: 600;
+  color: #f0f0f0;
+  background-color: #4a4a4a;
+  border: 1px dashed #666;
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: background-color 0.2s;
+}
+.locationBtnFull:hover {
+  background-color: #555;
+}
+
+/* 2. Location Set Karata Passe Box Eka */
+.locationSet {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 15px;
+  border: 1px solid #22C55E; /* Green border */
+  border-radius: 8px;
+  background-color: #1c3d2e; /* Dark green */
+}
+.locationSet p {
+  font-size: 15px;
+  font-weight: 600;
+  color: #a7f3d0; /* Light green text */
+  margin: 0;
+}
+.locationSet span {
+  font-size: 12px;
+  color: #6ee7b7;
+}
+.changeLocationBtn {
+  margin-left: auto;
+  font-size: 14px;
+  font-weight: 600;
+  color: #60a5fa; /* Blue */
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 5px;
+}
+
+/* 3. Map eka Embed karapu Container eka */
+.mapEmbedContainer {
+  position: relative;
+  width: 100%;
+  border-radius: 8px;
+  overflow: hidden; /* Round corners walata */
+}
+
+/* Map eka uda "Find Me" button eka */
+.mapFindMeBtn {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  z-index: 401; /* Map ekata udin */
+  background-color: white;
+  border: 1px solid #ccc;
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+  cursor: pointer;
+  color: #333;
+}
+
+/* Map ekata yat "Confirm" button eka */
+.mapConfirmBtn {
+  width: 100%;
+  padding: 14px;
+  font-size: 16px;
+  font-weight: 600;
+  color: #1a1a1a;
+  background-color: #FACC15; /* Yellow */
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+.mapConfirmBtn:hover {
+  background-color: #e6b800;
+}
+
+/* Leaflet search bar eka styles (dark mode) */
+:global(.leaflet-control-geosearch.bar form) {
+  background-color: #333;
+  border: 1px solid #555;
+}
+:global(.leaflet-control-geosearch.bar form input) {
+  background-color: #333;
+  color: #f0f0f0;
+}
+:global(.leaflet-control-geosearch.bar .results > *) {
+  background-color: #333;
+  border-bottom: 1px solid #555;
+  color: #f0f0f0;
+}
+:global(.leaflet-control-geosearch.bar .results > *:hover) {
+  background-color: #444;
+}
