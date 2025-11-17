@@ -368,3 +368,23 @@
 .summaryLine.faded span {
   color: #aaa;
 }
+
+/* MenuPage.module.css (CheckoutModal Search Fix) */
+
+/* Leaflet-geosearch results container eka */
+:global(.leaflet-control-geosearch .results) {
+  background-color: var(--card-bg-color, #2a2a2a) !important; /* Dark background set karanawa */
+  border: 1px solid var(--border-color, #444) !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+/* Search results list eke items walata text color denawa */
+:global(.leaflet-control-geosearch .results > li) {
+  color: var(--text-color, #f0f0f0) !important; /* Light text color denawa */
+  border-bottom: 1px solid #333;
+}
+
+/* Hover effect */
+:global(.leaflet-control-geosearch .results > li:hover) {
+  background-color: #a08c1d !important; /* Tikak laa background ekak denawa */
+}

@@ -12,8 +12,8 @@ import markerShadow from 'leaflet/dist/images/marker-shadow.png';
 
 // --- (!!!) ALUTH ICONS IMPORT KARAGATHTHA (!!!) ---
 import riderIconPng from '../../assets/rider-icon.png';
-import restaurantIconPng from '../../assets/restaurant-icon.png'; // <-- ALUTH ICON
-import customerIconPng from '../../assets/customer-icon.png';   // <-- ALUTH ICON
+import restaurantIconPng from '../../assets/restaurant-icon.png'; 
+import customerIconPng from '../../assets/customer-icon.png';  
 // --------------------------------------------------
 
 // --- Default Leaflet Icon Fix (maka ona naha, eth hoda purudak) ---
@@ -23,7 +23,7 @@ const DefaultIcon = L.icon({
   shadowUrl: markerShadow,
   iconSize: [25, 41], iconAnchor: [12, 41], popupAnchor: [1, -34],
 });
-L.Marker.prototype.options.icon = DefaultIcon; // Default icon eka set karanawa
+L.Marker.prototype.options.icon = DefaultIcon; 
 
 
 // (!!!) --- CUSTOM ICONS HADA GATHTHA THANA --- (!!!)
@@ -31,20 +31,20 @@ const RiderIcon = L.icon({
   iconUrl: riderIconPng,
   iconSize: [60, 60],
   iconAnchor: [30, 30],
-  popupAnchor: [0, -25],
+  popupAnchor: [0, -30],
 });
 
 const RestaurantIcon = L.icon({
-  iconUrl: restaurantIconPng, // oyage restaurant icon eka
-  iconSize: [70, 70],        // Size adjust karanna puluwan
-  iconAnchor: [35, 35],      // Icon eke "bottom" point eka map eke point ekata ganna
+  iconUrl: restaurantIconPng, 
+  iconSize: [70, 70],      
+  iconAnchor: [35, 35],     
   popupAnchor: [0, -40],
 });
 
 const CustomerIcon = L.icon({
-  iconUrl: customerIconPng,  // oyage customer icon eka
-  iconSize: [70, 70],        // Size adjust karanna puluwan
-  iconAnchor: [35, 35],      // Icon eke "bottom" point eka map eke point ekata ganna
+  iconUrl: customerIconPng,  
+  iconSize: [70, 70],      
+  iconAnchor: [35, 35],     
   popupAnchor: [0, -40],
 });
 // --------------------------------------------------
@@ -60,7 +60,7 @@ const AutoZoom = ({ bounds }) => {
   return null;
 };
 
-// --- Status Config ---
+// --- Status Config & Time Format (Wenasak Na) ---
 const statusConfig = {
   pending: { title: 'Order Placed', icon: <ShoppingBag size={20} />, description: "We've received your order." },
   preparing: { title: 'Preparing Food', icon: <ChefHat size={20} />, description: "The restaurant is preparing your food." },
@@ -115,12 +115,14 @@ const OrderStatusPage = () => {
     const fetchOrder = async () => {
       try {
         setLoading(true);
+        // (!!!) --- QUERY EKA UPDATE KIREEMA --- (!!!)
         const orderQuery = `*[_type == "foodOrder" && _id == $orderId][0] {
           ...,
           "statusHistory": statusUpdates, 
-          restaurant->{ name, location },
-          assignedRider->{ _id, fullName, currentLocation } 
+          restaurant->{ name, location, phone }, // <-- RESTAURANT PHONE ADD KALA
+          assignedRider->{ _id, fullName, currentLocation, phone } // <-- RIDER PHONE ADD KALA
         }`;
+        // ---------------------------------------------
         
         const data = await client.fetch(orderQuery, { orderId });
         
@@ -225,6 +227,7 @@ const OrderStatusPage = () => {
       </div>
 
       <div className={styles.timelineContainer}>
+        {/* ... (Timeline code eka wenasak na) ... */}
         {Object.keys(statusConfig).map((statusKey, index) => {
           if (statusKey === 'cancelled') return null; 
           const statusInfo = statusConfig[statusKey];
@@ -257,6 +260,26 @@ const OrderStatusPage = () => {
           );
         })}
       </div>
+      
+      {/* (!!!) --- CALL BUTTONS SECTION EKA --- (!!!) */}
+      <div className={styles.contactButtons}>
+        
+        {/* 1. Restaurant Call Button (Always Visible) */}
+        {order.restaurant?.phone && (
+          <a href={`tel:${order.restaurant.phone}`} className={`${styles.callButton} ${styles.restaurantCall}`}>
+            Call Restaurant
+          </a>
+        )}
+
+        {/* 2. Rider Call Button (Visible only when Assigned or On The Way) */}
+        {(order.orderStatus === 'assigned' || order.orderStatus === 'onTheWay') && order.assignedRider?.phone && (
+          <a href={`tel:${order.assignedRider.phone}`} className={`${styles.callButton} ${styles.riderCall}`}>
+            Call Rider ({order.assignedRider.fullName || 'Rider'})
+          </a>
+        )}
+      </div>
+      {/* --------------------------------------------- */}
+
 
       <div className={styles.mapContainer}>
         {showLiveMap ? (
@@ -268,12 +291,9 @@ const OrderStatusPage = () => {
               attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
             />
 
-            {/* (!!!) --- CUSTOM ICONS USE KALA THANA --- (!!!) */}
             <Marker position={restaurantPos} icon={RestaurantIcon}><Popup>Restaurant</Popup></Marker>
             <Marker position={customerPos} icon={CustomerIcon}><Popup>Your Location</Popup></Marker>
             <Marker position={riderPos} icon={RiderIcon}><Popup>Your Rider</Popup></Marker>
-            {/* -------------------------------------------------- */}
-
             <AutoZoom bounds={bounds} />
           </MapContainer>
         ) : (

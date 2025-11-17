@@ -229,3 +229,60 @@
   color: var(--text-secondary);
   padding: 20px;
 }
+
+/* --- CALL BUTTONS STYLES --- */
+
+.contactButtons {
+    grid-column: 1 / -1; /* Full width ganna */
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 1rem 0;
+    margin-top: 10px;
+}
+
+.callButton {
+    text-decoration: none;
+    padding: 12px 15px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 1rem;
+    text-align: center;
+    transition: background-color 0.2s, transform 0.1s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+/* 1. Restaurant Button Style (Default) */
+.restaurantCall {
+    background-color: var(--border-color); /* Darker grey */
+    color: var(--text-color);
+}
+.restaurantCall:hover {
+    background-color: #555;
+    transform: translateY(-1px);
+}
+
+/* 2. Rider Button Style (Primary Action) */
+.riderCall {
+    background-color: var(--primary-accent); /* Yellow */
+    color: var(--primary-accent-dark); /* Dark text */
+}
+.riderCall:hover {
+    background-color: #e6b800;
+    transform: translateY(-1px);
+}
+
+/* Desktop: Buttons yan yana thiyanna */
+@media (min-width: 768px) {
+    .contactButtons {
+        flex-direction: row;
+        justify-content: flex-start;
+    }
+    .callButton {
+        width: auto;
+        min-width: 200px;
+    }
+}

@@ -168,29 +168,35 @@ export default function CheckoutModal({ restaurant, onClose }) {
 
     try {
       const newOrder = {
-        _type: 'foodOrder',
-        receiverName: formData.name,
-        receiverContact: formData.phone,
-        customerEmail: currentUser.email,
-        customerLocation: {
-          _type: 'geopoint',
-          lat: userLocation.latitude,
-          lng: userLocation.longitude,
-        },
-        notes: formData.notes,
-        restaurant: { _type: 'reference', _ref: restaurant._id },
-        foodTotal: cartTotal,
-        deliveryCharge: totalDeliveryCost, 
-        grandTotal: totalGrandTotal,
-        orderStatus: 'pending',
-        createdAt: new Date().toISOString(),
-        statusUpdates: [{ _key: Math.random().toString(), status: 'pending', timestamp: new Date().toISOString() }],
-        orderedItems: cartItems.map(item => ({
-          _key: `${item._id}-${Math.random()}`,
-          item: { _type: 'reference', _ref: item._id },
-          quantity: item.quantity,
-        })),
-      };
+        _type: 'foodOrder',
+        receiverName: formData.name,
+        receiverContact: formData.phone,
+        customerEmail: currentUser.email,
+        customerLocation: {
+          _type: 'geopoint',
+          lat: userLocation.latitude,
+          lng: userLocation.longitude,
+        },
+        notes: formData.notes,
+        restaurant: { _type: 'reference', _ref: restaurant._id },
+        foodTotal: cartTotal,
+
+        // --- (!!!) ALUTH FIX EKA MEKE (!!!) ---
+        deliveryCharge: totalDeliveryCost,  // Meka total eka (handling + perKm)
+        handlingFee: handlingFee,        // Meka company eke salli
+        perKmCharge: perKmCharge,      // Meka riderge salli
+        // ------------------------------------
+
+        grandTotal: totalGrandTotal,
+        orderStatus: 'pending',
+        createdAt: new Date().toISOString(),
+        statusUpdates: [{ _key: Math.random().toString(), status: 'pending', timestamp: new Date().toISOString() }],
+        orderedItems: cartItems.map(item => ({
+          _key: `${item._id}-${Math.random()}`,
+          item: { _type: 'reference', _ref: item._id },
+          quantity: item.quantity,
+        })),
+      };
 
       const createdOrder = await client.create(newOrder); 
       
