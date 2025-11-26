@@ -1,116 +1,230 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useParams } from 'react-router-dom';
 import { client, urlFor } from '../../sanityClient';
-import FoodCart from './FoodCart';
+import { useFoodCart } from '../../contexts/FoodCartContext';
+import { Search, Plus, Star, Clock, X, ShoppingBag, ChevronRight } from 'lucide-react';
 import styles from './MenuPage.module.css';
+import CheckoutModal from './CheckoutModal';
 
-export default function MenuPage() {
+const MenuPage = () => {
     const { slug } = useParams();
+    const { addToCart, cartItems, cartTotal } = useFoodCart();
+    
     const [restaurant, setRestaurant] = useState(null);
-    const [groupedMenu, setGroupedMenu] = useState({});
-    const [allCategories, setAllCategories] = useState([]);
+    const [menuItems, setMenuItems] = useState([]);
+    const [categories, setCategories] = useState(['All']);
     const [activeCategory, setActiveCategory] = useState('All');
-    const [isLoading, setIsLoading] = useState(true);
-    const [showCheckout, setShowCheckout] = useState(false);
+    const [searchQuery, setSearchQuery] = useState('');
+    const [loading, setLoading] = useState(true);
+    const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
 
-    // This useEffect will lock the background scroll when the modal is open
-    useEffect(() => {
-        if (showCheckout) {
-            document.body.style.overflow = 'hidden';
-        } else {
-            document.body.style.overflow = 'unset';
-        }
-        // Cleanup function to re-enable scroll if the component unmounts
-        return () => {
-            document.body.style.overflow = 'unset';
-        };
-    }, [showCheckout]);
+    // Variation Selection States
+    const [selectedItemForVar, setSelectedItemForVar] = useState(null);
+    const [selectedVariation, setSelectedVariation] = useState(null);
 
     useEffect(() => {
-        const fetchMenu = async () => {
-            setIsLoading(true);
-            const query = `*[_type == "restaurant" && slug.current == $slug][0]{ ..., "menuItems": *[_type == "menuItem" && references(^._id)]{ ..., "categories": categories[]->{_id, title}}}`;
-            const data = await client.fetch(query, { slug });
-            if (data) {
-                setRestaurant(data);
-                const categories = ['All', ...new Set(data.menuItems.flatMap(item => item.categories ? item.categories.map(c => c.title) : []))];
-                setAllCategories(categories);
-                const groups = data.menuItems.reduce((acc, item) => {
-                    const categoryTitles = item.categories?.length ? item.categories.map(c => c.title) : ['General'];
-                    categoryTitles.forEach(title => { (acc[title] = acc[title] || []).push(item); });
-                    return acc;
-                }, {});
-                setGroupedMenu(groups);
+        const fetchData = async () => {
+            try {
+                const restaurantQuery = `*[_type == "restaurant" && slug.current == $slug][0]`;
+                const restaurantData = await client.fetch(restaurantQuery, { slug });
+                setRestaurant(restaurantData);
+
+                if (restaurantData) {
+                    const menuQuery = `*[_type == "menuItem" && restaurant._ref == $restoId] {
+                        _id, name, description, image, price, variations,
+                        "categoryName": category->name
+                    }`;
+                    const menuData = await client.fetch(menuQuery, { restoId: restaurantData._id });
+                    setMenuItems(menuData);
+
+                    const uniqueCategories = ['All', ...new Set(menuData.map(item => item.categoryName).filter(Boolean))];
+                    setCategories(uniqueCategories);
+                }
+            } catch (error) {
+                console.error("Error:", error);
+            } finally {
+                setLoading(false);
             }
-            setIsLoading(false);
         };
-        fetchMenu();
+        fetchData();
     }, [slug]);
 
-    const itemsToDisplay = useMemo(() => {
-        if (activeCategory === 'All') return restaurant?.menuItems || [];
-        return groupedMenu[activeCategory] || [];
-    }, [activeCategory, groupedMenu, restaurant]);
+    const filteredItems = useMemo(() => {
+        return menuItems.filter(item => {
+            const matchesSearch = item.name.toLowerCase().includes(searchQuery.toLowerCase());
+            const matchesCategory = activeCategory === 'All' || item.categoryName === activeCategory;
+            return matchesSearch && matchesCategory;
+        });
+    }, [menuItems, searchQuery, activeCategory]);
 
-    if (isLoading) return <div className="page-wrapper container"><h1>Loading menu...</h1></div>;
+    const handleItemClick = (item) => {
+        if (item.variations && item.variations.length > 0) {
+            setSelectedItemForVar(item);
+            setSelectedVariation(item.variations[0]);
+        } else {
+            addToCart(item);
+        }
+    };
+
+    const confirmVariationAdd = () => {
+        if (selectedItemForVar && selectedVariation) {
+            const cartItem = {
+                ...selectedItemForVar,
+                _id: `${selectedItemForVar._id}-${selectedVariation._key}`,
+                name: `${selectedItemForVar.name} (${selectedVariation.size})`,
+                price: selectedVariation.price
+            };
+            addToCart(cartItem);
+            setSelectedItemForVar(null);
+        }
+    };
+
+    const getPriceDisplay = (item) => {
+        if (item.price) return `Rs. ${item.price.toFixed(2)}`;
+        if (item.variations && item.variations.length > 0) {
+            const minPrice = Math.min(...item.variations.map(v => v.price));
+            return `From Rs. ${minPrice.toFixed(0)}`;
+        }
+        return '';
+    };
+
+    if (loading) return <div className={styles.loader}>Loading Menu...</div>;
+    if (!restaurant) return <div className={styles.loader}>Restaurant not found.</div>;
 
     return (
-        <div className={`${styles.menuPage} page-wrapper container`}>
-            <div className={styles.restaurantHeader}>
-                {restaurant.logo && <div className={styles.logoWrapper}><img src={urlFor(restaurant.logo).url()} alt={restaurant.name} /></div>}
-                <h1>{restaurant.name}</h1>
-            </div>
-            <div className={styles.menuLayout}>
-                <div className={styles.menuContent}>
-                    <div className={styles.categoryFilters}>
-                        {allCategories.map(cat => (
-                            <button key={cat} onClick={() => setActiveCategory(cat)} className={activeCategory === cat ? styles.active : ''}>{cat}</button>
-                        ))}
+        <div className={styles.pageWrapper}>
+            
+            {/* --- 1. HERO HEADER --- */}
+            <div className={styles.heroHeader}>
+                <div className={styles.headerContent}>
+                    {restaurant.logo ? (
+                        <img src={urlFor(restaurant.logo).url()} alt={restaurant.name} className={styles.logoImg} />
+                    ) : (
+                        <div className={styles.placeholderLogo}>{restaurant.name.charAt(0)}</div>
+                    )}
+                    <div className={styles.restaurantDetails}>
+                        <h1>{restaurant.name}</h1>
+                        <p>{restaurant.description || "Fresh food, delivered fast."}</p>
+                        <div className={styles.badges}>
+                            <span><Clock size={14}/> 30 min</span>
+                            <span><Star size={14} fill="#FACC15" color="#FACC15"/> 4.8</span>
+                        </div>
                     </div>
-                    {itemsToDisplay.map(item => {
-
-                        // --- (!!!) ALUTH LOGIC EKA MEKAI (!!!) ---
-                        // Price eka price field eken hari, variations[0].price eken hari ganna
-                        let displayPrice = 0;
-                        let pricePrefix = 'Rs. ';
-
-                        if (item.price) {
-                            // 1. Normal price eka thiyenawa nam
-                            displayPrice = item.price;
-                        } else if (item.variations && item.variations.length > 0) {
-                            // 2. Variations thiyenawa nam, palaweni eke price eka ganna
-                            displayPrice = item.variations[0].price;
-                            pricePrefix = 'From Rs. '; // "Starts at" wage pennanna
-                        }
-                        // --- (!!!) FIX EKA IWARAI (!!!) ---
-
-                        return (
-                            <div key={item._id} className={styles.menuItemCard}>
-                                <div className={styles.cardBody}>
-                                    <h3>{item.name}</h3>
-                                    <p className={styles.itemDescription}>{item.description}</p>
-                                    <div className={styles.cardFooter}>
-                                        {/* --- (!!!) FIX EKA DAAPU LINE EKA (!!!) --- */}
-                                        <span className={styles.itemPrice}>
-  {item.price ? `Rs. ${item.price.toFixed(2)}` : `From Rs. ${item.variations[0].price.toFixed(2)}`}
-</span>
-                                        <FoodCart item={item} />
-                                    </div>
-                                </div>
-                                {item.image && <div className={styles.cardImage}><img src={urlFor(item.image).width(200).url()} alt={item.name} /></div>}
-                            </div>
-                        );
-                    })}
                 </div>
-                <div className={styles.cartSidebar}>
-                    <FoodCart 
-                        showSummary={true} 
-                        restaurant={restaurant} 
-                        showCheckout={showCheckout}
-                        setShowCheckout={setShowCheckout}
+            </div>
+
+            {/* --- 2. STICKY SEARCH & TABS --- */}
+            <div className={styles.stickyNav}>
+                <div className={styles.searchBox}>
+                    <Search size={18} className={styles.searchIcon} />
+                    <input 
+                        type="text" 
+                        placeholder={`Search in ${restaurant.name}...`}
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
                     />
                 </div>
+                <div className={styles.tabs}>
+                    {categories.map(cat => (
+                        <button 
+                            key={cat} 
+                            className={`${styles.tabBtn} ${activeCategory === cat ? styles.activeTab : ''}`}
+                            onClick={() => setActiveCategory(cat)}
+                        >
+                            {cat}
+                        </button>
+                    ))}
+                </div>
             </div>
+
+            {/* --- 3. CREATIVE MENU GRID --- */}
+            <div className={styles.menuGrid}>
+                {filteredItems.map(item => (
+                    <div key={item._id} className={styles.foodCard} onClick={() => handleItemClick(item)}>
+                        <div className={styles.cardImage}>
+                            {item.image ? (
+                                <img src={urlFor(item.image).width(300).height(200).url()} alt={item.name} />
+                            ) : (
+                                <div className={styles.noImage}><ShoppingBag size={30}/></div>
+                            )}
+                            <button className={styles.addBtn}><Plus size={18}/></button>
+                        </div>
+                        <div className={styles.cardContent}>
+                            <div className={styles.cardHeaderRow}>
+                                <h3>{item.name}</h3>
+                                <span className={styles.price}>{getPriceDisplay(item)}</span>
+                            </div>
+                            <p className={styles.desc}>{item.description}</p>
+                            
+                            {/* Variations Badges */}
+                            {item.variations && item.variations.length > 0 && (
+                                <div className={styles.tags}>
+                                    {item.variations.map(v => (
+                                        <span key={v._key} className={styles.sizeTag}>{v.size}</span>
+                                    ))}
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                ))}
+            </div>
+
+            {/* --- 4. FLOATING CART --- */}
+            {cartItems.length > 0 && (
+                <div className={styles.floatingCart} onClick={() => setIsCheckoutOpen(true)}>
+                    <div className={styles.cartLeft}>
+                        <div className={styles.countBadge}>{cartItems.length}</div>
+                        <span>View Cart</span>
+                    </div>
+                    <div className={styles.cartRight}>
+                        Rs. {cartTotal.toFixed(2)} <ChevronRight size={18}/>
+                    </div>
+                </div>
+            )}
+
+            {/* --- 5. VARIATION MODAL --- */}
+            {selectedItemForVar && (
+                <div className={styles.modalOverlay}>
+                    <div className={styles.varModal}>
+                        <div className={styles.varHeader}>
+                            <h3>Select Size</h3>
+                            <button onClick={() => setSelectedItemForVar(null)}><X size={24}/></button>
+                        </div>
+                        <div className={styles.varBody}>
+                            <p className={styles.varInstruction}>Required • Choose 1</p>
+                            {selectedItemForVar.variations.map(v => (
+                                <label key={v._key} className={`${styles.varOption} ${selectedVariation?._key === v._key ? styles.selectedOption : ''}`}>
+                                    <div className={styles.radioGroup}>
+                                        <input 
+                                            type="radio" 
+                                            name="size" 
+                                            checked={selectedVariation?._key === v._key}
+                                            onChange={() => setSelectedVariation(v)}
+                                        />
+                                        <span className={styles.varName}>{v.size}</span>
+                                    </div>
+                                    <span className={styles.varPrice}>+ Rs.{v.price}</span>
+                                </label>
+                            ))}
+                        </div>
+                        <div className={styles.varFooter}>
+                            <button className={styles.addToOrderBtn} onClick={confirmVariationAdd}>
+                                Add • Rs. {selectedVariation?.price}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* --- 6. CHECKOUT MODAL --- */}
+            {isCheckoutOpen && (
+                <CheckoutModal 
+                    restaurant={restaurant} 
+                    onClose={() => setIsCheckoutOpen(false)} 
+                />
+            )}
         </div>
     );
-}
+};
+
+export default MenuPage;

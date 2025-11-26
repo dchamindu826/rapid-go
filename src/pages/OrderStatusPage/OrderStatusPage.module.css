@@ -1,6 +1,6 @@
-/* OrderStatusPage.module.css (Lassana Version) */
+/* OrderStatusPage.module.css (FINAL FIXED VERSION) */
 
-/* --- DARK MODE VARIABLES (me palaweni tika oyage global.css eke danna) --- */
+/* --- DARK MODE VARIABLES --- */
 :root {
   --bg-color: #1a1a1a;
   --card-bg-color: #2a2a2a;
@@ -10,25 +10,22 @@
   --primary-accent: #FACC15; /* Yellow */
   --primary-accent-dark: #1a1a1a;
   --success-color: #22C55E; /* Green */
+  --danger-color: #22C55E; /* Red for Cancelled */
 }
-/* ------------------------------------------------------------------ */
 
-
+/* --- Main Layout --- */
 .statusPage {
   padding: 1rem;
   max-width: 1000px;
   margin: 2rem auto;
-  
-  /* --- Layout eka hadamu (Timeline eka + Map eka) --- */
   display: grid;
-  grid-template-columns: 1fr; /* Mobile waladi ekak yata ekak */
+  grid-template-columns: 1fr;
   gap: 2rem;
 }
 
-/* Desktop waladi dekata bedamu */
 @media (min-width: 768px) {
   .statusPage {
-    grid-template-columns: 1fr 1fr; /* Left: Timeline, Right: Map */
+    grid-template-columns: 1fr 1fr;
     padding: 2rem;
   }
 }
@@ -36,7 +33,7 @@
 .statusHeader {
   text-align: left;
   margin-bottom: 1rem;
-  grid-column: 1 / -1; /* Header eka bedde udatama */
+  grid-column: 1 / -1;
 }
 .statusHeader h1 {
   margin: 0;
@@ -71,27 +68,33 @@
   display: flex;
   position: relative;
   padding-bottom: 2rem;
-  padding-left: 2.5rem; /* Icon ekata ida */
+  padding-left: 2.5rem;
 }
+/* (!!!) FIX: Remove padding from last item */
 .timelineItem:last-child {
-  padding-bottom: 0; /* Anthima ekata yatin padding ona na */
+  padding-bottom: 0;
 }
 
-/* --- (!!!) VETICAL LINE EKA (Lassana karapu thana) --- */
+/* --- Vertical Line Logic --- */
 .timelineItem::before {
   content: '';
   position: absolute;
-  left: 17px; /* Icon eke madin yanna (40px/2) - (line width 6px/2) */
+  left: 17px;
   top: 0;
   height: 100%;
-  width: 6px; /* Line eka tikak mahatha kala */
-  background: var(--border-color); /* Default line color */
+  width: 6px;
+  background: var(--border-color);
 }
 .timelineItem:first-child::before {
-  top: 20px; /* Uda item eke icon eken patan ganna */
+  top: 20px;
 }
 .timelineItem:last-child::before {
-  height: 20px; /* Anthima item eke icon eken iwara wenna */
+  height: 20px; /* End at the icon */
+}
+
+/* (!!!) FIX: Remove line for Cancelled status */
+.timelineItem.cancelled::before {
+  display: none;
 }
 
 .timelineIcon {
@@ -104,12 +107,10 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 2; /* Line ekata udin penna */
+  z-index: 2;
 }
 
-.timelineContent {
-  flex: 1;
-}
+.timelineContent { flex: 1; }
 .timelineHeader {
   display: flex;
   justify-content: space-between;
@@ -131,77 +132,57 @@
   color: var(--text-secondary);
 }
 
-/* --- Status Colors (Lassana karapu thana) --- */
+/* --- Status Colors --- */
 
-/* 1. Pending (Future) Status */
-.timelineItem.pending .timelineContent {
-  opacity: 0.5; /* PENDING ewa fade karamu */
-}
+/* 1. Pending */
+.timelineItem.pending .timelineContent { opacity: 0.5; }
 .timelineItem.pending .timelineIcon {
   background: var(--border-color);
   color: var(--text-secondary);
-  border: 4px solid var(--bg-color); /* Background eken kapanna */
+  border: 4px solid var(--bg-color);
 }
-.timelineItem.pending .timestamp {
-  display: none;
-}
+.timelineItem.pending .timestamp { display: none; }
 
-/* 2. Active (Current) Status (Yellow) */
-.timelineItem.active {
-  /* Active eke line eke color eka wenas karamu */
-  border-bottom-color: transparent; /* No dashed border */
-}
-.timelineItem.active::before {
-   background: var(--primary-accent); /* Line eka kaha pata karamu */
-}
-.timelineItem.active h4 {
-  color: var(--primary-accent);
-}
+/* 2. Active */
+.timelineItem.active { border-bottom-color: transparent; }
+.timelineItem.active::before { background: var(--primary-accent); }
+.timelineItem.active h4 { color: var(--primary-accent); }
 .timelineItem.active .timelineIcon {
   background: var(--primary-accent);
   color: var(--primary-accent-dark);
   border: 4px solid var(--bg-color);
 }
-/* Active eken passe ewa (pending) wala line eka normal karamu */
-.timelineItem.active ~ .timelineItem::before {
-  background: var(--border-color);
-}
-.timelineItem.active ~ .timelineItem:last-child::before {
-  height: 20px;
-}
+/* Line color transition */
+.timelineItem.active ~ .timelineItem::before { background: var(--border-color); }
+.timelineItem.active ~ .timelineItem:last-child::before { height: 20px; }
 
-/* 3. Done (Past) Status (Green) */
-.timelineItem.done {
-  /* Done eke line eka green karamu */
-}
-.timelineItem.done::before {
-  background: var(--success-color); 
-}
+/* 3. Done */
+.timelineItem.done::before { background: var(--success-color); }
 .timelineItem.done .timelineIcon {
   background: var(--success-color);
   color: white;
   border: 4px solid var(--bg-color);
 }
-.timelineItem.done .timelineContent {
-  opacity: 0.8; /* Done ewa tikak fade karamu */
+.timelineItem.done .timelineContent { opacity: 0.8; }
+.timelineItem.done h4 { color: var(--text-color); }
+.timelineItem.done .timestamp { color: var(--success-color); }
+
+/* 4. (!!!) CANCELLED (New) */
+.timelineItem.cancelled h4 { color: var(--danger-color); }
+.timelineItem.cancelled .timelineIcon {
+  background: var(--danger-color);
+  color: white;
+  border: 4px solid var(--bg-color);
 }
-.timelineItem.done h4 {
-  color: var(--text-color); 
-}
-.timelineItem.done .timestamp {
-  color: var(--success-color);
-}
+.timelineItem.cancelled .timelineContent { opacity: 1; }
 
 
-/* Spinning Icon Animation */
-.spinningIcon {
-  animation: spin 1.5s linear infinite;
-}
+/* --- Animations --- */
+.spinningIcon { animation: spin 1.5s linear infinite; }
 @keyframes spin {
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
 }
-
 
 /* --- Map Styles --- */
 .mapContainer {
@@ -214,11 +195,10 @@
 }
 @media (min-width: 768px) {
   .mapContainer {
-    height: 100%; /* Desktop waladi timeline eke usatama */
+    height: 100%;
     min-height: 500px;
   }
 }
-
 .mapPlaceholder {
   height: 100%;
   display: flex;
@@ -230,59 +210,52 @@
   padding: 20px;
 }
 
-/* --- CALL BUTTONS STYLES --- */
-
+/* --- Contact Buttons --- */
 .contactButtons {
-    grid-column: 1 / -1; /* Full width ganna */
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    padding: 1rem 0;
-    margin-top: 10px;
+  grid-column: 1 / -1;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 1rem 0;
+  margin-top: 10px;
 }
-
 .callButton {
-    text-decoration: none;
-    padding: 12px 15px;
-    border-radius: 8px;
-    font-weight: 600;
-    font-size: 1rem;
-    text-align: center;
-    transition: background-color 0.2s, transform 0.1s;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
+  text-decoration: none;
+  padding: 12px 15px;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 1rem;
+  text-align: center;
+  transition: background-color 0.2s, transform 0.1s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
 }
-
-/* 1. Restaurant Button Style (Default) */
 .restaurantCall {
-    background-color: var(--border-color); /* Darker grey */
-    color: var(--text-color);
+  background-color: var(--border-color);
+  color: var(--text-color);
 }
 .restaurantCall:hover {
-    background-color: #555;
-    transform: translateY(-1px);
+  background-color: #555;
+  transform: translateY(-1px);
 }
-
-/* 2. Rider Button Style (Primary Action) */
 .riderCall {
-    background-color: var(--primary-accent); /* Yellow */
-    color: var(--primary-accent-dark); /* Dark text */
+  background-color: var(--primary-accent);
+  color: var(--primary-accent-dark);
 }
 .riderCall:hover {
-    background-color: #e6b800;
-    transform: translateY(-1px);
+  background-color: #e6b800;
+  transform: translateY(-1px);
 }
 
-/* Desktop: Buttons yan yana thiyanna */
 @media (min-width: 768px) {
-    .contactButtons {
-        flex-direction: row;
-        justify-content: flex-start;
-    }
-    .callButton {
-        width: auto;
-        min-width: 200px;
-    }
+  .contactButtons {
+    flex-direction: row;
+    justify-content: flex-start;
+  }
+  .callButton {
+    width: auto;
+    min-width: 200px;
+  }
 }

@@ -1,11 +1,11 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom';
 import { useNavigate } from 'react-router-dom';
 import { client } from '../../sanityClient';
 import { useFoodCart } from '../../contexts/FoodCartContext';
 import { useAuth } from '../../contexts/AuthContext';
-import styles from './MenuPage.module.css';
-import { X, MapPin, CreditCard, CheckCircle, LocateFixed } from 'lucide-react';
+import styles from './CheckoutModal.module.css';
+import { X, MapPin, CreditCard, CheckCircle, LocateFixed, Trash2, ArrowLeft } from 'lucide-react';
 import Swal from 'sweetalert2';
 import 'sweetalert2/dist/sweetalert2.min.css';
 
@@ -68,9 +68,9 @@ const MapEvents = ({ position }) => {
     return null;
   }
 
-// --- DISTANCE & FEE LOGIC ---
+// --- DISTANCE CALCULATION (Haversine Formula) ---
 const getDistance = (lat1, lon1, lat2, lon2) => {
-  const R = 6371; // Radius of the earth in km
+  const R = 6371; 
   const dLat = (lat2 - lat1) * (Math.PI / 180);
   const dLon = (lon2 - lon1) * (Math.PI / 180);
   const a =
@@ -78,36 +78,37 @@ const getDistance = (lat1, lon1, lat2, lon2) => {
     Math.cos(lat1 * (Math.PI / 180)) * Math.cos(lat2 * (Math.PI / 180)) *
     Math.sin(dLon / 2) * Math.sin(dLon / 2);
   const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-  return R * c; // Distance in km
+  return R * c; 
 };
 
-const PER_KM_RATE = 40; 
-
-const calculateHandlingFee = (distance) => {
+// --- (!!!) NEW DELIVERY CHARGE LOGIC (Based on Table) ---
+const calculateDeliveryFee = (distance) => {
   if (distance <= 0) return 0;
-  if (distance <= 4) return 60; 
-  if (distance <= 10) return 80; 
-  return 80; 
+  if (distance <= 2) return 150;
+  if (distance <= 4) return 200;
+  if (distance <= 6) return 250;
+  if (distance <= 8) return 300;
+  if (distance <= 10) return 350;
+  if (distance <= 12) return 400;
+  
+  // Above 12km: Rs. 50 per KM
+  return distance * 50; 
 };
-
 
 export default function CheckoutModal({ restaurant, onClose }) {
-  const { cartItems, cartTotal, clearCart } = useFoodCart();
+  const { cartItems, cartTotal, clearCart, removeFromCart } = useFoodCart();
   const { currentUser } = useAuth();
   const navigate = useNavigate();
+  
+  const [currentStep, setCurrentStep] = useState('cart'); 
   const [formData, setFormData] = useState({ name: currentUser?.displayName || '', phone: '', notes: '' });
   const [userLocation, setUserLocation] = useState(null); 
   const [isPlacingOrder, setIsPlacingOrder] = useState(false);
-  
-  const [isMapVisible, setIsMapVisible] = useState(false); 
   const [mapPosition, setMapPosition] = useState({ lat: 6.9271, lng: 79.8612 }); 
 
-  const [handlingFee, setHandlingFee] = useState(0);
-  const [perKmCharge, setPerKmCharge] = useState(0);
-  
-  // (!!!) --- ALUTH STATE EKA (KM ගාන පෙන්නන්න) ---
+  // Combined Delivery Charge
+  const [deliveryCharge, setDeliveryCharge] = useState(0);
   const [distance, setDistance] = useState(0);
-  // --------------------------------------------------
 
   useEffect(() => {
     document.body.classList.add('modal-open');
@@ -123,19 +124,15 @@ export default function CheckoutModal({ restaurant, onClose }) {
     if (restaurant.location?.lat && restaurant.location?.lng) {
       const dist = getDistance(restaurant.location.lat, restaurant.location.lng, lat, lng);
       
-      const newHandlingFee = calculateHandlingFee(dist);
-      const newPerKmCharge = dist * PER_KM_RATE;
+      // (!!!) Calculate using new function
+      const fee = calculateDeliveryFee(dist);
 
-      setHandlingFee(newHandlingFee);
-      setPerKmCharge(newPerKmCharge);
-      
-      // (!!!) --- KM ගාන STATE EKE SAVE KARANAWA ---
+      setDeliveryCharge(fee);
       setDistance(dist);
-      // ---------------------------------------------
     }
+    setCurrentStep('checkout');
   };
 
-  // --- MAP FUNCTIONS ---
   const handleFindMe = () => {
     navigator.geolocation.getCurrentPosition(
       (position) => {
@@ -148,55 +145,45 @@ export default function CheckoutModal({ restaurant, onClose }) {
     );
   };
 
-  const handleConfirmMapLocation = () => {
-    handleLocationSelect(mapPosition); 
-    setIsMapVisible(false); 
-  };
-  // --------------------------------
-
   const handlePlaceOrder = async (e) => {
-    // ... (handlePlaceOrder function eke wenasak na)
     e.preventDefault();
     if (!userLocation) {
-      Swal.fire('Location Needed', 'Please provide your delivery location.', 'warning');
+      Swal.fire('Location Needed', 'Please set your delivery location.', 'warning');
       return;
     }
     setIsPlacingOrder(true);
     
-    const totalDeliveryCost = handlingFee + perKmCharge;
-    const totalGrandTotal = cartTotal + totalDeliveryCost;
+    const totalGrandTotal = cartTotal + deliveryCharge;
 
     try {
       const newOrder = {
-        _type: 'foodOrder',
-        receiverName: formData.name,
-        receiverContact: formData.phone,
-        customerEmail: currentUser.email,
-        customerLocation: {
-          _type: 'geopoint',
-          lat: userLocation.latitude,
-          lng: userLocation.longitude,
-        },
-        notes: formData.notes,
-        restaurant: { _type: 'reference', _ref: restaurant._id },
-        foodTotal: cartTotal,
-
-        // --- (!!!) ALUTH FIX EKA MEKE (!!!) ---
-        deliveryCharge: totalDeliveryCost,  // Meka total eka (handling + perKm)
-        handlingFee: handlingFee,        // Meka company eke salli
-        perKmCharge: perKmCharge,      // Meka riderge salli
-        // ------------------------------------
-
-        grandTotal: totalGrandTotal,
-        orderStatus: 'pending',
-        createdAt: new Date().toISOString(),
-        statusUpdates: [{ _key: Math.random().toString(), status: 'pending', timestamp: new Date().toISOString() }],
-        orderedItems: cartItems.map(item => ({
-          _key: `${item._id}-${Math.random()}`,
-          item: { _type: 'reference', _ref: item._id },
-          quantity: item.quantity,
-        })),
-      };
+        _type: 'foodOrder',
+        receiverName: formData.name,
+        receiverContact: formData.phone,
+        customerEmail: currentUser.email,
+        customerLocation: {
+          _type: 'geopoint',
+          lat: userLocation.latitude,
+          lng: userLocation.longitude,
+        },
+        notes: formData.notes,
+        restaurant: { _type: 'reference', _ref: restaurant._id },
+        foodTotal: cartTotal,
+        
+        // Save Delivery Charge
+        deliveryCharge: deliveryCharge,
+        grandTotal: totalGrandTotal,
+        
+        orderStatus: 'pending',
+        createdAt: new Date().toISOString(),
+        statusUpdates: [{ _key: Math.random().toString(), status: 'pending', timestamp: new Date().toISOString() }],
+        orderedItems: cartItems.map(item => ({
+          _key: `${item._id}-${Math.random()}`,
+          item: { _type: 'reference', _ref: item._id.split('-')[0] },
+          quantity: item.quantity,
+          name: item.name 
+        })),
+      };
 
       const createdOrder = await client.create(newOrder); 
       
@@ -212,96 +199,144 @@ export default function CheckoutModal({ restaurant, onClose }) {
     }
   };
   
-  const grandTotal = cartTotal + handlingFee + perKmCharge;
+  const grandTotal = cartTotal + deliveryCharge;
+
+  // --- UI PARTS ---
+
+  const renderCartView = () => (
+    <div className={styles.cartViewContainer}>
+      <div className={styles.cartList}>
+        {cartItems.length === 0 ? (
+           <p className={styles.emptyMsg}>Your cart is empty.</p>
+        ) : (
+          cartItems.map((item) => (
+            <div key={item._id} className={styles.cartItemRow}>
+               <div className={styles.cartItemDetails}>
+                  <span className={styles.itemName}>{item.name}</span>
+                  <span className={styles.itemPrice}>
+                    {item.quantity} x Rs.{item.price}
+                  </span>
+               </div>
+               <button className={styles.deleteBtn} onClick={() => removeFromCart(item._id)}>
+                  <Trash2 size={18} />
+               </button>
+            </div>
+          ))
+        )}
+      </div>
+
+      {cartItems.length > 0 && (
+        <>
+            <div className={styles.cartTotalRow}>
+                <span>Subtotal</span>
+                <strong>Rs. {cartTotal.toFixed(2)}</strong>
+            </div>
+            <div className={styles.cartActions}>
+                <button className={styles.clearCartBtn} onClick={clearCart}>
+                    Clear
+                </button>
+                <button className={styles.checkoutBtn} onClick={() => setCurrentStep('checkout')}>
+                    Proceed
+                </button>
+            </div>
+        </>
+      )}
+    </div>
+  );
+
+  const renderCheckoutForm = () => (
+    <form onSubmit={handlePlaceOrder} className={styles.checkoutForm}>
+        <div className={styles.backLink} onClick={() => setCurrentStep('cart')}>
+            <ArrowLeft size={16}/> Back to Cart
+        </div>
+
+        <input type="text" placeholder="Receiver Name" required value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} />
+        <input type="tel" placeholder="Contact Number" required value={formData.phone} onChange={e => setFormData({...formData, phone: e.target.value})} />
+        <textarea placeholder="Special notes (e.g., Gate code)" value={formData.notes} onChange={e => setFormData({...formData, notes: e.target.value})} />
+        
+        <div className={styles.locationBox}>
+            {userLocation ? (
+            <div className={styles.locationSet}>
+                <CheckCircle size={20} color="#34D399" />
+                <div>
+                <p>Delivery location set</p>
+                <span>{userLocation.latitude.toFixed(4)}, {userLocation.longitude.toFixed(4)}</span>
+                </div>
+                <button type="button" onClick={() => setCurrentStep('map')} className={styles.changeLocationBtn}>Change</button>
+            </div>
+            ) : (
+            <button type="button" onClick={() => setCurrentStep('map')} className={styles.locationBtnFull}>
+                <MapPin size={18}/> Set Delivery Location
+            </button>
+            )}
+        </div>
+
+        <div className={styles.paymentMethod}>
+            <CreditCard size={18} />
+            <span>Method: <strong>Cash on Delivery (COD)</strong></span>
+        </div>
+        
+        <div className={styles.summary}>
+            <div className={styles.summaryLine}><span>Subtotal</span><span>Rs. {cartTotal.toFixed(2)}</span></div>
+            <div className={styles.summaryLine}>
+                <span>Delivery Charge ({distance.toFixed(1)}km)</span>
+                <span>Rs. {deliveryCharge.toFixed(2)}</span>
+            </div>
+            <div className={`${styles.summaryLine} ${styles.total}`}>
+            <span>TOTAL</span>
+            <span>Rs. {grandTotal.toFixed(2)}</span>
+            </div>
+        </div>
+
+        <button type="submit" className={styles.placeOrderBtn} disabled={isPlacingOrder || !userLocation}>
+            {isPlacingOrder ? 'Placing Order...' : 'Confirm Order'}
+        </button>
+    </form>
+  );
+
+  const renderMap = () => (
+    <div className={styles.mapEmbedContainer}>
+        <div className={styles.backLink} onClick={() => setCurrentStep('checkout')} style={{marginBottom: '10px', display: 'flex', alignItems: 'center', gap: '5px', cursor: 'pointer', color: '#FACC15'}}>
+            <ArrowLeft size={16}/> Back to Form
+        </div>
+        <div className={styles.mapWrapper}>
+            <MapContainer center={mapPosition} zoom={15} style={{ height: '100%', width: '100%' }} zoomControl={false}>
+                <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+                <SearchField onLocationSelect={setMapPosition} />
+                <MapClickHandler setPosition={setMapPosition} />
+                <Marker position={mapPosition} />
+                <MapEvents position={mapPosition} />
+            </MapContainer>
+            
+            <button type="button" className={styles.mapFindMeBtn} onClick={handleFindMe}>
+                <LocateFixed size={20} />
+            </button>
+            <button type="button" className={styles.mapConfirmBtn} onClick={() => handleLocationSelect(mapPosition)}>
+                Confirm Location
+            </button>
+        </div>
+    </div>
+  );
+
+  let title = "Your Cart";
+  if (currentStep === 'checkout') title = "Checkout";
+  if (currentStep === 'map') title = "Set Location";
 
   return ReactDOM.createPortal(
     <>
       <div className={styles.modalBackdrop} onClick={onClose}>
         <div className={styles.modalContent} onClick={e => e.stopPropagation()}>
           <div className={styles.modalHeader}>
-            <h2>Confirm Your Order</h2>
-            <button className={styles.closeModalBtn} onClick={onClose}><X size={24}/></button>
+            <h2>{title}</h2>
+            <button className={styles.closeModalBtn} onClick={onClose}><X size={20}/></button>
           </div>
 
-          <form onSubmit={handlePlaceOrder} className={styles.checkoutForm}>
-            
-            {!isMapVisible && (
-              <>
-                <input type="text" placeholder="Receiver Name" required value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} />
-                <input type="tel" placeholder="Contact Number" required value={formData.phone} onChange={e => setFormData({...formData, phone: e.target.value})} />
-                <textarea placeholder="Special notes for the restaurant or rider" value={formData.notes} onChange={e => setFormData({...formData, notes: e.target.value})} />
-              </>
-            )}
-            
-            <div className={styles.locationBox}>
-              {/* ... (Location box eke code eka wenas wenne na) ... */}
-              {isMapVisible ? (
-                <div className={styles.mapEmbedContainer}>
-                  <MapContainer
-                    center={mapPosition}
-                    zoom={13}
-                    style={{ height: '300px', width: '100%' }}
-                    zoomControl={false}
-                  >
-                    <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-                    <SearchField onLocationSelect={setMapPosition} />
-                    <MapClickHandler setPosition={setMapPosition} />
-                    <Marker position={mapPosition} />
-                    <MapEvents position={mapPosition} />
-                  </MapContainer>
-                  <button type="button" className={styles.mapFindMeBtn} onClick={handleFindMe}>
-                    <LocateFixed size={18} />
-                  </button>
-                  <button type="button" className={styles.mapConfirmBtn} onClick={handleConfirmMapLocation}>
-                    Confirm Location & Continue
-                  </button>
-                </div>
-              ) : userLocation ? (
-                <div className={styles.locationSet}>
-                  <CheckCircle size={20} color="#22C55E" />
-                  <div>
-                    <p>Delivery location is set.</p>
-                    <span>(Lat: {userLocation.latitude.toFixed(4)}, Lng: {userLocation.longitude.toFixed(4)})</span>
-                  </div>
-                  <button type="button" onClick={() => setIsMapVisible(true)} className={styles.changeLocationBtn}>Change</button>
-                </div>
-              ) : (
-                <button type="button" onClick={() => setIsMapVisible(true)} className={styles.locationBtnFull}>
-                  <MapPin size={16}/> Set Delivery Location
-                </button>
-              )}
-            </div>
-            
-            {!isMapVisible && (
-              <>
-                <div className={styles.paymentMethod}>
-                  <CreditCard size={16} />
-                  <span>Payment Method: <strong>Cash on Delivery (COD)</strong></span>
-                </div>
-                
-                {/* --- (!!!) ALUTH SUMMARY EKA (DISTANCE EKA SAMAGA) --- */}
-                <div className={styles.summary}>
-                  <div className={styles.summaryLine}><span>Subtotal</span><span>Rs. {cartTotal.toFixed(2)}</span></div>
-                  <div className={`${styles.summaryLine} ${styles.faded}`}>
-                    <span>Distance</span>
-                    <span>{distance.toFixed(2)} km</span>
-                  </div>
-                  <div className={styles.summaryLine}><span>Handling Fee</span><span>Rs. {handlingFee.toFixed(2)}</span></div>
-                  <div className={styles.summaryLine}><span>Delivery (Per KM)</span><span>Rs. {perKmCharge.toFixed(2)}</span></div>
-                  <div className={`${styles.summaryLine} ${styles.total}`}>
-                    <span>TOTAL</span>
-                    <span>Rs. {grandTotal.toFixed(2)}</span>
-                  </div>
-                </div>
-                {/* --------------------------------------------------------- */}
+          <div className={styles.modalBody}>
+             {currentStep === 'cart' && renderCartView()}
+             {currentStep === 'checkout' && renderCheckoutForm()}
+             {currentStep === 'map' && renderMap()}
+          </div>
 
-                <button type="submit" className={styles.placeOrderBtn} disabled={isPlacingOrder || !userLocation}>
-                  {isPlacingOrder ? 'Placing Order...' : 'Place Order'}
-                </button>
-              </>
-            )}
-            
-          </form>
         </div>
       </div>
     </>,

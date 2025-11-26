@@ -1,0 +1,141 @@
+/* src/pages/MenuPage/CheckoutModal.module.css */
+
+.modalBackdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(5px);
+    display: flex;
+    z-index: 99999;
+    
+    /* (!!!) FIX: CENTER THE MODAL ON ALL SCREENS */
+    align-items: center; 
+    justify-content: center;
+    padding: 20px;
+}
+
+.modalContent {
+    background: #1e1e1e;
+    padding: 20px;
+    border: 1px solid #333;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.6);
+    position: relative;
+    display: flex;
+    flex-direction: column;
+
+    /* (!!!) FIX: Rounded corners everywhere, Centered Box */
+    width: 100%;
+    max-width: 500px; 
+    border-radius: 20px; 
+    max-height: 90vh; 
+    animation: zoomIn 0.2s ease-out;
+}
+
+@keyframes zoomIn { from { transform: scale(0.95); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+
+.modalHeader {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px solid #333;
+    flex-shrink: 0;
+}
+.modalHeader h2 { margin: 0; color: #fff; font-size: 1.4rem; font-weight: 700; }
+
+.closeModalBtn {
+    background: #333; border: none; color: #fff; cursor: pointer;
+    width: 32px; height: 32px; border-radius: 50%; 
+    display: flex; align-items: center; justify-content: center;
+}
+
+.modalBody {
+    overflow-y: auto;
+    padding-right: 5px;
+    flex: 1;
+}
+
+/* --- CART VIEW STYLES --- */
+.cartViewContainer { display: flex; flex-direction: column; height: 100%; }
+.cartList { flex: 1; overflow-y: auto; margin-bottom: 15px; }
+.emptyMsg { color: #888; text-align: center; margin-top: 40px; }
+
+.cartItemRow {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 12px; background: #252525; border-radius: 10px; margin-bottom: 10px;
+}
+.cartItemDetails { display: flex; flex-direction: column; }
+.itemName { font-weight: bold; color: #fff; font-size: 1rem; }
+.itemPrice { color: #FACC15; font-size: 0.9rem; }
+.deleteBtn { background: none; border: none; color: #ef4444; cursor: pointer; padding: 5px; }
+
+.cartTotalRow {
+    display: flex; justify-content: space-between; 
+    font-size: 1.1rem; padding: 15px 0; border-top: 1px solid #333; margin-top: auto;
+}
+.cartActions { display: flex; gap: 10px; }
+.clearCartBtn { 
+    flex: 1; padding: 12px; background: #333; color: #fff; border: none; border-radius: 10px; cursor: pointer; font-weight: bold; 
+}
+.checkoutBtn {
+    flex: 2; padding: 12px; background: #FACC15; color: #000; border: none; border-radius: 10px; cursor: pointer; font-weight: bold;
+}
+
+/* --- FORM STYLES --- */
+.checkoutForm { display: flex; flex-direction: column; gap: 12px; }
+.backLink { color: #FACC15; font-size: 0.9rem; cursor: pointer; display: flex; align-items: center; gap: 5px; margin-bottom: 5px; }
+
+.checkoutForm input, .checkoutForm textarea {
+    width: 100%; padding: 14px; border-radius: 12px;
+    border: 1px solid #444; background: #121212; color: #fff;
+    font-size: 1rem; outline: none; font-family: inherit;
+}
+.checkoutForm input:focus, .checkoutForm textarea:focus { border-color: #FACC15; }
+
+.locationBox { border: 1px dashed #444; padding: 15px; border-radius: 12px; background: #181818; }
+.locationBtnFull {
+    width: 100%; padding: 15px; background: #333; color: #fff; border: none;
+    border-radius: 10px; font-weight: bold; cursor: pointer;
+    display: flex; align-items: center; justify-content: center; gap: 10px;
+}
+.locationSet {
+    display: flex; align-items: center; gap: 15px;
+    background: rgba(6, 78, 59, 0.4); border: 1px solid #065f46;
+    padding: 15px; border-radius: 10px;
+}
+.locationSet p { margin: 0; color: #fff; font-weight: bold; }
+.locationSet span { color: #6ee7b7; font-size: 0.85rem; display: block; }
+.changeLocationBtn {
+    margin-left: auto; color: #FACC15; background: none; border: none;
+    cursor: pointer; font-weight: bold; text-decoration: underline;
+}
+
+/* --- MAP STYLES --- */
+.mapEmbedContainer { height: 100%; display: flex; flex-direction: column; }
+.mapWrapper { position: relative; border-radius: 12px; overflow: hidden; height: 350px; width: 100%; }
+.mapFindMeBtn {
+    position: absolute; top: 15px; right: 15px; z-index: 1000 !important;
+    background: #fff; color: #000; border: none; width: 40px; height: 40px;
+    border-radius: 50%; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    display: flex; align-items: center; justify-content: center;
+}
+.mapConfirmBtn {
+    position: absolute; bottom: 15px; left: 50%; transform: translateX(-50%);
+    z-index: 1000 !important;
+    width: 90%; background: #FACC15; color: #000;
+    padding: 14px; font-weight: 800; border: none;
+    cursor: pointer; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.4);
+}
+
+/* --- PAYMENT & SUMMARY --- */
+.paymentMethod { display: flex; align-items: center; gap: 10px; background: #252525; padding: 12px; border-radius: 10px; color: #ccc; }
+.summary { background: #121212; padding: 15px; border-radius: 12px; border: 1px solid #333; }
+.summaryLine { display: flex; justify-content: space-between; margin-bottom: 8px; color: #aaa; }
+.summaryLine span:last-child { color: #fff; }
+.total { font-size: 1.2rem; font-weight: bold; color: #FACC15 !important; margin-top: 12px; padding-top: 12px; border-top: 1px solid #333; }
+.placeOrderBtn {
+    width: 100%; padding: 18px; background: #FACC15; color: #000;
+    font-weight: 800; font-size: 1.1rem; border: none; border-radius: 12px; cursor: pointer;
+    box-shadow: 0 5px 20px rgba(250, 204, 21, 0.2); margin-top: 10px;
+}
+.placeOrderBtn:disabled { background: #555; cursor: not-allowed; box-shadow: none; }
