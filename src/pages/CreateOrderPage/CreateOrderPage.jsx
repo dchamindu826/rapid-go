@@ -1,17 +1,18 @@
 // CreateOrderPage.jsx (UPDATED)
 
 import React, { useState, useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom'; // useNavigate add kala
 import styles from './CreateOrderPage.module.css';
 import { client } from '../../sanityClient';
-import { FiBox, FiShoppingCart, FiPlusSquare, FiCamera, FiClock } from 'react-icons/fi'; // FiClock imported
+import { FiBox, FiShoppingCart, FiPlusSquare, FiCamera, FiClock } from 'react-icons/fi';
 
 const SubmissionStatus = ({ status, message }) => (
     <div className={`${styles.submissionStatus} ${styles[status]}`}>{message}</div>
 );
 
-// --- PARCEL FORM EKA (Wenasak Na) ---
+// --- ParcelForm Component (Wenasak na, kalin eka wagema thiyanna) ---
 const ParcelForm = ({ onSubmit }) => {
+    // ... (Kalin code eka ehemama thiyanna) ...
     const [formData, setFormData] = useState({
         pickupContactName: '', pickupContactPhone: '', pickupAddress: '',
         deliveryAddress: '', destinationMapLink: '',
@@ -21,8 +22,9 @@ const ParcelForm = ({ onSubmit }) => {
     
     return (
         <form className={styles.orderForm} onSubmit={(e) => onSubmit(e, formData, 'parcel')}>
-            <h3>Pickup Details</h3>
-            <div className={styles.formGrid}>
+             <h3>Pickup Details</h3>
+             {/* ... Form Fields tika ehemama thiyanna ... */}
+             <div className={styles.formGrid}>
                 <div className={styles.formGroup}><label>Pickup Contact Name <span className={styles.required}>*</span></label><input type="text" name="pickupContactName" onChange={handleChange} value={formData.pickupContactName} required /></div>
                 <div className={styles.formGroup}><label>Pickup Contact Phone <span className={styles.required}>*</span></label><input type="tel" name="pickupContactPhone" onChange={handleChange} value={formData.pickupContactPhone} required /></div>
             </div>
@@ -43,60 +45,59 @@ const ParcelForm = ({ onSubmit }) => {
     );
 };
 
-// ===========================================
-// === ALUTH COMING SOON COMPONENT EKA ===
-// ===========================================
-const ComingSoonPlaceholder = () => {
-    return (
-        <div className={styles.comingSoon}>
-            <FiClock />
-            <h3>Coming Soon!</h3>
-            <p>This service is under development and will be available shortly.</p>
-        </div>
-    );
-};
+const ComingSoonPlaceholder = () => (
+    <div className={styles.comingSoon}>
+        <FiClock />
+        <h3>Coming Soon!</h3>
+        <p>This service is under development and will be available shortly.</p>
+    </div>
+);
 
-
-// --- PRADHANA PAGE COMPONENT EKA ---
 const CreateOrderPage = () => {
     const [orderType, setOrderType] = useState('parcel');
     const [submission, setSubmission] = useState({ status: null, message: '' });
     const [isSubmitting, setIsSubmitting] = useState(false);
+    
     const location = useLocation();
+    const navigate = useNavigate(); // Hook for redirection
 
     useEffect(() => {
         const params = new URLSearchParams(location.search);
         const type = params.get('type');
-        if (type && ['parcel', 'grocery', 'pharmacy', 'food'].includes(type)) {
+        // Food type eka URL eken awoth redirect karanawa
+        if (type === 'food') {
+            navigate('/restaurants');
+        } else if (type && ['parcel', 'grocery', 'pharmacy'].includes(type)) {
             setOrderType(type);
         }
-    }, [location]);
+    }, [location, navigate]);
 
-    // HandleSubmit function eka dan parcel walata witharak wada karanna haduwe
+    // Button click ekedi wada karana function eka
+    const handleCategoryChange = (type) => {
+        if (type === 'food') {
+            navigate('/restaurants'); // Redirect to restaurant page
+        } else {
+            setOrderType(type);
+        }
+    };
+
     const handleSubmit = async (e, formData, type) => {
         e.preventDefault();
         setSubmission({ status: null, message: '' });
         setIsSubmitting(true);
 
         try {
-            // This logic now only applies to parcels
             const doc = {
                 _type: 'deliveryOrder',
                 orderType: type,
                 orderId: `#RG${Date.now().toString().slice(-6)}`,
                 status: 'pending',
-                customerName: formData.customerName,
-                customerPhone: formData.customerPhone,
-                pickupContactName: formData.pickupContactName,
-                pickupContactPhone: formData.pickupContactPhone,
-                pickupAddress: formData.pickupAddress,
-                deliveryAddress: formData.deliveryAddress,
-                destinationMapLink: formData.destinationMapLink,
+                ...formData
             };
             
             await client.create(doc);
             setSubmission({ status: 'success', message: 'Your parcel request has been placed successfully!' });
-            e.target.reset(); // Reset the form fields
+            e.target.reset();
 
         } catch (error) {
             console.error("Order submission failed:", error);
@@ -124,7 +125,11 @@ const CreateOrderPage = () => {
                 <aside className={styles.sidebar}>
                     <div className={styles.categorySelector}>
                         {categories.map(cat => (
-                             <button key={cat.name} className={`${styles.categoryBtn} ${orderType === cat.name ? styles.active : ''}`} onClick={() => setOrderType(cat.name)}>
+                             <button 
+                                key={cat.name} 
+                                className={`${styles.categoryBtn} ${orderType === cat.name ? styles.active : ''}`} 
+                                onClick={() => handleCategoryChange(cat.name)} // Changed onClick handler
+                             >
                                 {cat.icon}
                                 <span>{cat.label}</span>
                             </button>
@@ -136,9 +141,8 @@ const CreateOrderPage = () => {
                     {isSubmitting && <div className={styles.loader}>Submitting...</div>}
                     {!isSubmitting && submission.status && <SubmissionStatus status={submission.status} message={submission.message} />}
 
-                    {/* === MEKA THAMA PRADHANA WENAS KAMA === */}
                     {orderType === 'parcel' && <ParcelForm onSubmit={handleSubmit} />}
-                    {['grocery', 'pharmacy', 'food'].includes(orderType) && <ComingSoonPlaceholder />}
+                    {['grocery', 'pharmacy'].includes(orderType) && <ComingSoonPlaceholder />}
                 </main>
             </div>
         </div>

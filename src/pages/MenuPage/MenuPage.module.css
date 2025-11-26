@@ -1,191 +1,477 @@
 /* src/pages/MenuPage/MenuPage.module.css */
 
-/* --- Global Layout --- */
 .pageWrapper {
-    background-color: #121212;
     min-height: 100vh;
-    color: #fff;
-    padding-bottom: 150px; 
-    padding-top: 80px;
+    padding-bottom: 100px;
+    position: relative;
+    background-color: #121212;
 }
 
-/* --- 1. Hero Header --- */
+/* --- 1. HERO HEADER (UPDATED) --- */
 .heroHeader {
-    padding: 25px 20px;
-    background: linear-gradient(180deg, #1a1a1a 0%, #0d0d0d 100%);
-    border-bottom: 1px solid #222;
-}
-.headerContent {
-    max-width: 1000px; margin: 0 auto;
-    display: flex; align-items: center; gap: 20px;
-}
-.logoImg {
-    width: 80px; height: 80px; border-radius: 50%;
-    border: 3px solid #FACC15; object-fit: cover; background: #fff;
-    box-shadow: 0 0 15px rgba(250, 204, 21, 0.2);
-}
-.placeholderLogo {
-    width: 80px; height: 80px; border-radius: 50%;
-    background: #333; display: flex; align-items: center;
-    justify-content: center; font-size: 2.5rem; color: #FACC15; border: 3px solid #FACC15;
-}
-.restaurantDetails h1 { margin: 0; font-size: 1.6rem; color: #FACC15; font-weight: 800; }
-.restaurantDetails p { margin: 5px 0; color: #aaa; font-size: 0.9rem; }
-.badges { display: flex; gap: 10px; margin-top: 10px; }
-.badges span {
-    font-size: 0.75rem; color: #eee; background: rgba(255,255,255,0.1);
-    padding: 4px 12px; border-radius: 20px;
-    display: flex; align-items: center; gap: 5px; border: 1px solid #333;
+    background: linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 100%);
+    color: #fff;
+    /* FIX: Top Padding increased to 120px to clear the Navbar */
+    padding: 120px 20px 40px; 
+    text-align: center;
+    position: relative;
+    border-bottom: 1px solid #333;
+    z-index: 1; /* Lower z-index to stay below navbar if overlapped */
 }
 
-/* --- 2. Sticky Nav --- */
+.headerContent {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+}
+
+.logoImg {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #FACC15;
+    background: #fff;
+    box-shadow: 0 0 25px rgba(250, 204, 21, 0.2);
+    padding: 4px;
+}
+
+.placeholderLogo {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #222, #000);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.5rem;
+    color: #FACC15;
+    border: 3px solid #FACC15;
+    box-shadow: 0 0 25px rgba(250, 204, 21, 0.2);
+}
+
+.restaurantDetails h1 {
+    margin: 0;
+    font-size: 2rem;
+    font-weight: 800;
+    background: linear-gradient(to right, #FACC15, #fff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.restaurantDetails p {
+    margin: 8px 0;
+    color: #aaa;
+    font-size: 0.95rem;
+}
+
+.badges {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    margin-top: 10px;
+}
+
+.badges span {
+    font-size: 0.8rem;
+    color: #eee;
+    background: rgba(255, 255, 255, 0.05);
+    padding: 5px 14px;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    border: 1px solid #333;
+}
+
+/* --- 2. Sticky Nav (UPDATED) --- */
 .stickyNav {
-    position: sticky; top: 60px; z-index: 90;
+    position: sticky;
+    /* FIX: Adjusted top value if navbar is tall */
+    top: 80px; 
+    z-index: 90;
     background: rgba(18, 18, 18, 0.95);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
-    padding: 15px 0; border-bottom: 1px solid #333;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+    padding: 15px 0;
+    border-bottom: 1px solid #333;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
 }
 
-/* (!!!) FIX: REDUCED SEARCH BAR WIDTH --- */
 .searchBox {
-    /* Changed from 90% to 350px/100% max */
     width: 100%;
-    max-width: 380px; 
-    margin: 0 auto 15px; 
+    max-width: 380px;
+    margin: 0 auto 15px;
     position: relative;
+    padding: 0 15px;
 }
-/* ------------------------------------ */
 
-.searchIcon { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: #888; }
+.searchIcon {
+    position: absolute;
+    left: 30px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #888;
+}
+
 .searchBox input {
-    width: 100%; padding: 12px 12px 12px 45px;
-    background: #222; border: 1px solid #333;
-    border-radius: 50px; color: #fff; font-size: 1rem; outline: none;
+    width: 100%;
+    padding: 12px 12px 12px 45px;
+    background: #222;
+    border: 1px solid #333;
+    border-radius: 50px;
+    color: #fff;
+    font-size: 1rem;
+    outline: none;
     transition: border 0.3s;
 }
-.searchBox input:focus { border-color: #FACC15; }
+
+.searchBox input:focus {
+    border-color: #FACC15;
+}
 
 .tabs {
-    max-width: 1000px; margin: 0 auto;
-    display: flex; gap: 10px; overflow-x: auto;
-    padding: 0 20px 5px; scrollbar-width: none;
+    max-width: 1000px;
+    margin: 0 auto;
+    display: flex;
+    gap: 10px;
+    overflow-x: auto;
+    padding: 0 20px 5px;
+    scrollbar-width: none;
 }
-.tabs::-webkit-scrollbar { display: none; }
+
+.tabs::-webkit-scrollbar {
+    display: none;
+}
+
 .tabBtn {
-    background: #222; color: #bbb; padding: 8px 18px;
-    border-radius: 25px; border: 1px solid transparent;
-    white-space: nowrap; cursor: pointer; font-weight: 600; font-size: 0.9rem;
+    background: #222;
+    color: #bbb;
+    padding: 8px 18px;
+    border-radius: 25px;
+    border: 1px solid transparent;
+    white-space: nowrap;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 0.9rem;
     transition: all 0.2s;
 }
-.activeTab { 
-    background: #FACC15; color: #000; 
+
+.activeTab {
+    background: #FACC15;
+    color: #000;
     box-shadow: 0 4px 10px rgba(250, 204, 21, 0.3);
 }
 
-/* --- 3. Menu Grid --- */
+/* --- 3. Menu Grid & Cards --- */
 .menuGrid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 20px; padding: 20px;
-    max-width: 1200px; margin: 0 auto;
+    gap: 20px;
+    padding: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
 }
 
 @media (max-width: 480px) {
     .menuGrid {
-        grid-template-columns: 1fr; 
-        padding: 15px; gap: 15px;
+        grid-template-columns: 1fr;
+        padding: 15px;
     }
 }
 
 .foodCard {
-    background: #1e1e1e; border-radius: 16px;
-    border: 1px solid #2a2a2a; overflow: hidden;
-    display: flex; flex-direction: column;
-    transition: transform 0.2s; cursor: pointer;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+    background: #1e1e1e;
+    border-radius: 16px;
+    border: 1px solid #2a2a2a;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.2s;
+    cursor: pointer;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
 }
-.foodCard:active { transform: scale(0.98); }
-.cardImage { height: 180px; position: relative; width: 100%; }
-.cardImage img { width: 100%; height: 100%; object-fit: cover; }
-.noImage { width: 100%; height: 100%; background: #2a2a2a; display: flex; align-items: center; justify-content: center; }
+
+.foodCard:active {
+    transform: scale(0.98);
+}
+
+.cardImage {
+    height: 180px;
+    position: relative;
+    width: 100%;
+}
+
+.cardImage img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.noImage {
+    width: 100%;
+    height: 100%;
+    background: #2a2a2a;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #555;
+}
+
 .addBtn {
-    position: absolute; bottom: 10px; right: 10px;
-    width: 40px; height: 40px; border-radius: 50%;
-    background: #fff; color: #000; border: none;
-    display: flex; align-items: center; justify-content: center;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: #fff;
+    color: #000;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
     transition: transform 0.2s;
 }
-.foodCard:hover .addBtn { background: #FACC15; transform: scale(1.1); }
-.cardContent { padding: 15px; flex: 1; display: flex; flex-direction: column; }
-.cardHeaderRow { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px; }
-.cardHeaderRow h3 { margin: 0; font-size: 1.1rem; color: #fff; font-weight: 700; line-height: 1.3; }
-.price { font-weight: 700; color: #FACC15; font-size: 1rem; white-space: nowrap; margin-left: 10px; }
-.desc { color: #888; font-size: 0.85rem; margin: 0 0 12px 0; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-.tags { display: flex; gap: 6px; margin-top: auto; flex-wrap: wrap; }
-.sizeTag { font-size: 0.7rem; background: #333; color: #ccc; padding: 3px 8px; border-radius: 4px; }
 
-/* --- 4. Floating Cart (View Cart Button) --- */
-.floatingCart {
-    /* (!!!) FIX: Added !important to ensure it stays fixed */
-    position: fixed !important; 
-    bottom: 30px !important;
-    left: 50%; 
-    transform: translateX(-50%);
-    
-    width: 90%; 
-    max-width: 450px;
-    
-    background: #FACC15; color: #000;
-    padding: 16px 24px; border-radius: 50px;
-    display: flex; justify-content: space-between; align-items: center;
-    font-weight: bold; font-size: 1.05rem;
-    
-    /* (!!!) FIX: Extremely High Z-Index */
-    z-index: 2147483647; 
-    
-    box-shadow: 0 10px 25px rgba(250, 204, 21, 0.4); 
-    cursor: pointer;
-    animation: floatUp 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+.foodCard:hover .addBtn {
+    background: #FACC15;
+    transform: scale(1.1);
 }
 
-@keyframes floatUp { from { transform: translate(-50%, 100%); opacity: 0; } to { transform: translate(-50%, 0); opacity: 1; } }
+.cardContent {
+    padding: 15px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
 
-.cartLeft { display: flex; align-items: center; gap: 12px; }
-.countBadge { background: #000; color: #fff; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.85rem; font-weight: bold; }
+.cardHeaderRow {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 6px;
+}
+
+.cardHeaderRow h3 {
+    margin: 0;
+    font-size: 1.1rem;
+    color: #fff;
+    font-weight: 700;
+    line-height: 1.3;
+}
+
+.price {
+    color: #FACC15;
+    font-weight: 700;
+    font-size: 1.1rem;
+    margin-left: 10px;
+    white-space: nowrap;
+}
+
+.desc {
+    color: #9ca3af;
+    font-size: 0.85rem;
+    line-height: 1.4;
+    margin-top: 5px;
+    margin-bottom: 10px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: auto;
+}
+
+.sizeTag {
+    font-size: 0.7rem;
+    background: #333;
+    color: #ccc;
+    padding: 2px 8px;
+    border-radius: 4px;
+    border: 1px solid #444;
+}
+
+/* --- 4. FLOATING CART --- */
+.floatingCart {
+    position: fixed;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 90%;
+    max-width: 450px;
+    background-color: #FACC15;
+    color: #000;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 24px;
+    border-radius: 50px;
+    box-shadow: 0 10px 30px rgba(250, 204, 21, 0.4);
+    cursor: pointer;
+    z-index: 1000;
+    font-weight: 700;
+    font-size: 1.1rem;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.floatingCart:hover {
+    transform: translateX(-50%) scale(1.02);
+}
+
+.floatingCart:active {
+    transform: translateX(-50%) scale(0.98);
+}
+
+.floatingCartAbsolute {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    box-shadow: 0 5px 15px rgba(250, 204, 21, 0.2);
+}
+
+.cartLeft {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.countBadge {
+    background-color: #000;
+    color: #FACC15;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.9rem;
+    font-weight: bold;
+}
+
+.cartRight {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
 
 /* --- 5. Variation Modal --- */
 .modalOverlay {
-    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-    background: rgba(0,0,0,0.85); backdrop-filter: blur(5px);
-    z-index: 10000; 
-    display: flex; align-items: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(5px);
+    z-index: 10000;
+    display: flex;
+    align-items: center;
     justify-content: center;
 }
+
 .varModal {
-    background: #1e1e1e; width: 100%; max-width: 500px;
-    border-radius: 20px; padding: 25px;
-    border-top: 1px solid #333; 
+    background: #1e1e1e;
+    width: 100%;
+    max-width: 500px;
+    border-radius: 20px;
+    padding: 25px;
+    border-top: 1px solid #333;
     animation: slideUp 0.3s;
-    max-height: 85vh; overflow-y: auto;
+    max-height: 85vh;
+    overflow-y: auto;
 }
-.varHeader { display: flex; justify-content: space-between; margin-bottom: 20px; align-items: center; }
-.varHeader h3 { margin: 0; color: #fff; font-size: 1.2rem; }
-.varHeader button { background: #333; border: none; color: #fff; padding: 6px; border-radius: 50%; cursor: pointer; display: flex; }
+
+.varHeader {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    align-items: center;
+}
+
+.varHeader h3 {
+    margin: 0;
+    color: #fff;
+    font-size: 1.2rem;
+}
+
+.varHeader button {
+    background: #333;
+    border: none;
+    color: #fff;
+    padding: 6px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+}
+
 .varOption {
-    display: flex; justify-content: space-between; padding: 16px;
-    background: #252525; border-radius: 12px; margin-bottom: 12px;
-    border: 2px solid transparent; cursor: pointer; transition: all 0.2s;
+    display: flex;
+    justify-content: space-between;
+    padding: 16px;
+    background: #252525;
+    border-radius: 12px;
+    margin-bottom: 12px;
+    border: 2px solid transparent;
+    cursor: pointer;
+    transition: all 0.2s;
 }
-.selectedOption { border-color: #FACC15; background: #333; }
-.radioGroup { display: flex; gap: 12px; color: #fff; align-items: center; }
-.radioGroup input { accent-color: #FACC15; width: 18px; height: 18px; }
-.varPrice { color: #FACC15; font-weight: bold; }
+
+.selectedOption {
+    border-color: #FACC15;
+    background: #333;
+}
+
+.radioGroup {
+    display: flex;
+    gap: 12px;
+    color: #fff;
+    align-items: center;
+}
+
+.radioGroup input {
+    accent-color: #FACC15;
+    width: 18px;
+    height: 18px;
+}
+
+.varPrice {
+    color: #FACC15;
+    font-weight: bold;
+}
+
 .addToOrderBtn {
-    width: 100%; background: #FACC15; color: #000; padding: 16px; font-size: 1.1rem;
-    border: none; border-radius: 12px; font-weight: bold; margin-top: 20px; cursor: pointer;
+    width: 100%;
+    background: #FACC15;
+    color: #000;
+    padding: 16px;
+    font-size: 1.1rem;
+    border: none;
+    border-radius: 12px;
+    font-weight: bold;
+    margin-top: 20px;
+    cursor: pointer;
     box-shadow: 0 5px 15px rgba(250, 204, 21, 0.3);
 }
-@keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+
+.loader {
+    text-align: center;
+    padding: 50px;
+    color: #888;
+    font-size: 1.2rem;
+}
+
+@keyframes slideUp {
+    from { transform: translateY(100%); }
+    to { transform: translateY(0); }
+}

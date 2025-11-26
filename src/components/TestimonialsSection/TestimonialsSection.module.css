@@ -206,3 +206,162 @@
         margin: 0 auto;
     }
 }
+
+/* ... Kalin thibba CSS ehemama thiyanna ... */
+
+/* --- New Action Bar Styles --- */
+.actionBar {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 40px;
+}
+
+.googleBtn {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: #fff;
+    color: #333;
+    border: 1px solid #ddd;
+    padding: 10px 20px;
+    border-radius: 50px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+.googleBtn:hover {
+    background: #f9f9f9;
+    transform: translateY(-2px);
+}
+
+.loggedInView {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    background: var(--card-bg-color);
+    padding: 8px 15px;
+    border-radius: 50px;
+    border: 1px solid var(--border-color);
+}
+
+.userBadge {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 600;
+    color: var(--text-color);
+}
+
+.userBadge img {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+}
+
+.writeBtn {
+    background: var(--primary-accent);
+    color: #000;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 20px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.logoutBtn {
+    background: transparent;
+    border: none;
+    color: var(--text-secondary);
+    cursor: pointer;
+    font-size: 1.2rem;
+}
+
+/* --- Modal Styles --- */
+.modalOverlay {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.7);
+    z-index: 1000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.modalContent {
+    background: var(--card-bg-color);
+    padding: 30px;
+    border-radius: 15px;
+    width: 100%;
+    max-width: 500px;
+    border: 1px solid var(--border-color);
+}
+
+.userInfo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 20px 0;
+}
+
+.userInfo img {
+    width: 40px; height: 40px;
+    border-radius: 50%;
+}
+
+.ratingSelect {
+    margin-bottom: 20px;
+}
+
+.starSelect {
+    display: flex;
+    gap: 5px;
+    margin-top: 5px;
+}
+
+textarea {
+    width: 100%;
+    background: rgba(0,0,0,0.2);
+    border: 1px solid var(--border-color);
+    color: var(--text-color);
+    padding: 15px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    resize: vertical;
+}
+
+.modalActions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.cancelBtn {
+    background: transparent;
+    color: var(--text-secondary);
+    border: 1px solid var(--border-color);
+    padding: 10px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.submitBtn {
+    background: var(--primary-accent);
+    color: #000;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.noReviews {
+    text-align: center;
+    padding: 40px;
+    color: var(--text-secondary);
+}

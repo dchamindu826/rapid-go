@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react'; // useRef import kara
 import { useParams } from 'react-router-dom';
 import { client } from '../../sanityClient';
 import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
@@ -56,6 +56,16 @@ const OrderStatusPage = () => {
   const [estimatedTime, setEstimatedTime] = useState(null);
   const [activeRiderId, setActiveRiderId] = useState(null);
 
+  // --- (NEW) Ref to track current status without causing re-renders ---
+  const orderStatusRef = useRef(null);
+
+  // Update the Ref whenever order status changes
+  useEffect(() => {
+    if (order) {
+        orderStatusRef.current = order.orderStatus;
+    }
+  }, [order]);
+
   useEffect(() => {
     if (!orderId) return;
 
@@ -108,21 +118,28 @@ const OrderStatusPage = () => {
 
         setLoading(false);
 
-        // --- (!!!) AUTO REFRESH LISTENER (FIX) ---
-        // Listen for ANY change in the order
+        // --- (!!!) AUTO REFRESH LISTENER (FIXED) ---
         orderSubscription = client.listen(`*[_type == "foodOrder" && _id == $orderId]`, { orderId })
           .subscribe(async (update) => {
             console.log("Order Update Detected:", update.result?.orderStatus);
             
-            // (!!!) HERE IS THE FIX: Re-fetch full data immediately
-            // Listener sends raw data, we need expanded data (with rider info)
+            const newStatus = update.result?.orderStatus;
+            const currentStatus = orderStatusRef.current; // Get the old status from Ref
+
+            // --- (NEW) CHECK IF STATUS CHANGED TO ASSIGNED OR ON THE WAY ---
+            // If the status changes to 'assigned' and it wasn't assigned before, RELOAD PAGE
+            if ((newStatus === 'assigned' || newStatus === 'onTheWay') && currentStatus !== 'assigned' && currentStatus !== 'onTheWay') {
+                console.log("Rider Assigned! Refreshing page to show map...");
+                window.location.reload(); // <--- MEKA THAMA AUTO REFRESH EKA
+                return;
+            }
+
+            // Normal update logic (if not reloading)
             const freshData = await client.fetch(query, { orderId });
             setOrder(freshData);
 
-            // If rider exists now, start tracking
             if (freshData.assignedRider?._id) {
                 startRiderListener(freshData.assignedRider._id);
-                // Update local rider location immediately
                 if (freshData.assignedRider.currentLocation) {
                     setRiderLocation(freshData.assignedRider.currentLocation);
                 }
@@ -170,7 +187,6 @@ const OrderStatusPage = () => {
 
       <div className={styles.timelineContainer}>
         {Object.keys(statusConfig).map((statusKey, index) => {
-          // Filter Logic
           if (statusKey === 'cancelled' && order.orderStatus !== 'cancelled') return null;
           if (order.orderStatus === 'cancelled' && statusKey !== 'cancelled' && statusKey !== 'pending') return null;
 
@@ -182,7 +198,6 @@ const OrderStatusPage = () => {
           let itemClass = styles.timelineItem;
           let icon = <Circle size={20} />;
 
-          // Status Styling Logic
           if (order.orderStatus === 'cancelled' && statusKey === 'cancelled') {
              itemClass = `${styles.timelineItem} ${styles.cancelled}`;
              icon = <XCircle size={20} color="red" />;
