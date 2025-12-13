@@ -68,8 +68,10 @@ const MapEvents = ({ position }) => {
     return null;
   }
 
-// --- DISTANCE CALCULATION (Haversine Formula) ---
-const getDistance = (lat1, lon1, lat2, lon2) => {
+// --- DISTANCE CALCULATION HELPER (Fallback) ---
+// This is the "Straight Line" calculation (Haversine)
+// Used only if the API fails.
+const getStraightLineDistance = (lat1, lon1, lat2, lon2) => {
   const R = 6371; 
   const dLat = (lat2 - lat1) * (Math.PI / 180);
   const dLon = (lon2 - lon1) * (Math.PI / 180);
@@ -81,18 +83,48 @@ const getDistance = (lat1, lon1, lat2, lon2) => {
   return R * c; 
 };
 
-// --- (!!!) NEW DELIVERY CHARGE LOGIC (Based on Table) ---
-const calculateDeliveryFee = (distance) => {
-  if (distance <= 0) return 0;
-  if (distance <= 2) return 150;
-  if (distance <= 4) return 200;
-  if (distance <= 6) return 250;
-  if (distance <= 8) return 300;
-  if (distance <= 10) return 350;
-  if (distance <= 12) return 400;
+// --- (!!!) NEW: GET ROAD DISTANCE FROM OSRM API ---
+const getRoadDistance = async (lat1, lon1, lat2, lon2) => {
+  try {
+    // Calling OSRM Public API
+    const response = await fetch(
+      `https://router.project-osrm.org/route/v1/driving/${lon1},${lat1};${lon2},${lat2}?overview=false`
+    );
+    const data = await response.json();
+    
+    if (data.code === 'Ok' && data.routes && data.routes.length > 0) {
+      // OSRM returns distance in meters, convert to KM
+      return data.routes[0].distance / 1000;
+    }
+    return null;
+  } catch (error) {
+    console.error("Error fetching road distance:", error);
+    return null;
+  }
+};
+
+// --- DELIVERY CHARGE LOGIC ---
+const calculateDeliveryDetails = (distance) => {
+  if (distance <= 0) return { courierFee: 0, handlingFee: 0 };
+
+  let courierFee = 0;
+  let handlingFee = 0;
+
+  if (distance <= 2) {
+    courierFee = 60;
+    handlingFee = 60;
+  } else if (distance <= 7) {
+    courierFee = distance * 50;
+    handlingFee = 60;
+  } else {
+    courierFee = distance * 40;
+    handlingFee = 0;
+  }
   
-  // Above 12km: Rs. 50 per KM
-  return distance * 50; 
+  return { 
+    courierFee: Math.round(courierFee), 
+    handlingFee: handlingFee 
+  };
 };
 
 export default function CheckoutModal({ restaurant, onClose }) {
@@ -105,10 +137,13 @@ export default function CheckoutModal({ restaurant, onClose }) {
   const [userLocation, setUserLocation] = useState(null); 
   const [isPlacingOrder, setIsPlacingOrder] = useState(false);
   const [mapPosition, setMapPosition] = useState({ lat: 6.9271, lng: 79.8612 }); 
+  
+  // Loading state for distance calculation
+  const [calculatingDistance, setCalculatingDistance] = useState(false);
 
-  // Combined Delivery Charge
-  const [deliveryCharge, setDeliveryCharge] = useState(0);
   const [distance, setDistance] = useState(0);
+  const [courierFee, setCourierFee] = useState(0);
+  const [handlingFee, setHandlingFee] = useState(0);
 
   useEffect(() => {
     document.body.classList.add('modal-open');
@@ -117,18 +152,29 @@ export default function CheckoutModal({ restaurant, onClose }) {
     };
   }, []);
 
-  const handleLocationSelect = (latlng) => {
+  // --- (!!!) UPDATED: ASYNC HANDLER FOR LOCATION SELECT ---
+  const handleLocationSelect = async (latlng) => {
     const { lat, lng } = latlng;
     setUserLocation({ latitude: lat, longitude: lng });
 
     if (restaurant.location?.lat && restaurant.location?.lng) {
-      const dist = getDistance(restaurant.location.lat, restaurant.location.lng, lat, lng);
-      
-      // (!!!) Calculate using new function
-      const fee = calculateDeliveryFee(dist);
+      setCalculatingDistance(true); // Show loading state if you want
 
-      setDeliveryCharge(fee);
+      // 1. Try to get Road Distance (API)
+      let dist = await getRoadDistance(restaurant.location.lat, restaurant.location.lng, lat, lng);
+
+      // 2. If API fails (returns null), fallback to Straight Line
+      if (dist === null) {
+        console.warn("Falling back to straight-line distance");
+        dist = getStraightLineDistance(restaurant.location.lat, restaurant.location.lng, lat, lng);
+      }
+      
+      const { courierFee, handlingFee } = calculateDeliveryDetails(dist);
+
       setDistance(dist);
+      setCourierFee(courierFee);
+      setHandlingFee(handlingFee);
+      setCalculatingDistance(false);
     }
     setCurrentStep('checkout');
   };
@@ -153,7 +199,8 @@ export default function CheckoutModal({ restaurant, onClose }) {
     }
     setIsPlacingOrder(true);
     
-    const totalGrandTotal = cartTotal + deliveryCharge;
+    const totalDeliveryCharge = courierFee + handlingFee;
+    const totalGrandTotal = cartTotal + totalDeliveryCharge;
 
     try {
       const newOrder = {
@@ -169,11 +216,8 @@ export default function CheckoutModal({ restaurant, onClose }) {
         notes: formData.notes,
         restaurant: { _type: 'reference', _ref: restaurant._id },
         foodTotal: cartTotal,
-        
-        // Save Delivery Charge
-        deliveryCharge: deliveryCharge,
+        deliveryCharge: totalDeliveryCharge, 
         grandTotal: totalGrandTotal,
-        
         orderStatus: 'pending',
         createdAt: new Date().toISOString(),
         statusUpdates: [{ _key: Math.random().toString(), status: 'pending', timestamp: new Date().toISOString() }],
@@ -199,7 +243,7 @@ export default function CheckoutModal({ restaurant, onClose }) {
     }
   };
   
-  const grandTotal = cartTotal + deliveryCharge;
+  const grandTotal = cartTotal + courierFee + handlingFee;
 
   // --- UI PARTS ---
 
@@ -276,15 +320,33 @@ export default function CheckoutModal({ restaurant, onClose }) {
             <span>Method: <strong>Cash on Delivery (COD)</strong></span>
         </div>
         
+        {/* --- SUMMARY SECTION --- */}
         <div className={styles.summary}>
-            <div className={styles.summaryLine}><span>Subtotal</span><span>Rs. {cartTotal.toFixed(2)}</span></div>
             <div className={styles.summaryLine}>
-                <span>Delivery Charge ({distance.toFixed(1)}km)</span>
-                <span>Rs. {deliveryCharge.toFixed(2)}</span>
+                <span>Order Value</span>
+                <span>Rs. {cartTotal.toFixed(2)}</span>
             </div>
+            
+            <div className={styles.summaryLine} style={{fontSize: '0.9em', color: '#888'}}>
+                <span>Distance {calculatingDistance && '(Calculating...)'}</span>
+                <span>{distance.toFixed(2)} km</span>
+            </div>
+
+            <div className={styles.summaryLine}>
+                <span>Courier Charge</span>
+                <span>Rs. {courierFee.toFixed(2)}</span>
+            </div>
+
+            {handlingFee > 0 && (
+                <div className={styles.summaryLine}>
+                    <span>Handling Fee</span>
+                    <span>Rs. {handlingFee.toFixed(2)}</span>
+                </div>
+            )}
+
             <div className={`${styles.summaryLine} ${styles.total}`}>
-            <span>TOTAL</span>
-            <span>Rs. {grandTotal.toFixed(2)}</span>
+                <span>TOTAL</span>
+                <span>Rs. {grandTotal.toFixed(2)}</span>
             </div>
         </div>
 

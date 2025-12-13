@@ -139,3 +139,44 @@
     box-shadow: 0 5px 20px rgba(250, 204, 21, 0.2); margin-top: 10px;
 }
 .placeOrderBtn:disabled { background: #555; cursor: not-allowed; box-shadow: none; }
+
+/* --- FIX FOR SEARCH RESULTS VISIBILITY (Checkout Modal) --- */
+
+/* Search Results Box එකේ පසුබිම සුදු පාට කරන්න */
+:global(.leaflet-control-geosearch .results) {
+    background: #ffffff !important;
+    color: #000000 !important;
+    border-radius: 8px;
+    margin-top: 5px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2) !important;
+    width: 100%;
+    z-index: 9999 !important; /* අනිත් ඒවට වඩා උඩින් පෙන්වන්න */
+}
+
+/* ලිස්ට් එකේ තියෙන වචන (Results) කළු පාට කරන්න */
+:global(.leaflet-control-geosearch .results > *) {
+    color: #000000 !important; 
+    background-color: #ffffff !important;
+    padding: 10px !important;
+    border-bottom: 1px solid #eee;
+    font-size: 14px;
+    cursor: pointer;
+    text-align: left; /* වම් පැත්තට align කරන්න */
+}
+
+/* Mouse එක උඩට ගියාම පාට වෙනස් වෙන්න (Hover Effect) */
+:global(.leaflet-control-geosearch .results > *:hover),
+:global(.leaflet-control-geosearch .results > .active) {
+    background-color: #f0f0f0 !important;
+    color: #000000 !important;
+    border-left: 3px solid #FACC15; /* Select වුනාම පොඩි කහ පාට ඉරක් */
+}
+
+/* සමහර වෙලාවට Leaflet එකෙන් එන පරණ styles අයින් කරන්න */
+:global(.leaflet-control-geosearch form) {
+    background: #fff !important;
+    border-radius: 8px;
+}
+:global(.leaflet-control-geosearch form input) {
+    color: #000 !important;
+}

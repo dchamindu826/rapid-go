@@ -1,16 +1,14 @@
-// src/pages/MenuPage/MenuPage.jsx
-
 import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import { client, urlFor } from '../../sanityClient';
 import { useFoodCart } from '../../contexts/FoodCartContext';
-import { Search, Plus, Star, Clock, X, ShoppingBag, ChevronRight } from 'lucide-react';
+import { Search, Plus, Star, Clock, X, ShoppingBag, ChevronRight, AlertTriangle } from 'lucide-react';
 import styles from './MenuPage.module.css';
 import CheckoutModal from './CheckoutModal';
 
 const MenuPage = () => {
     const { slug } = useParams();
-    const { addToCart, cartItems, cartTotal } = useFoodCart();
+    const { addToCart, cartItems, cartTotal, cartRestaurantId, clearCart } = useFoodCart();
 
     const [restaurant, setRestaurant] = useState(null);
     const [menuItems, setMenuItems] = useState([]);
@@ -24,9 +22,13 @@ const MenuPage = () => {
     const [selectedItemForVar, setSelectedItemForVar] = useState(null);
     const [selectedVariation, setSelectedVariation] = useState(null);
 
-    // Scroll Detection for Floating Cart (Footer Overlay Fix)
+    // Scroll Detection for Floating Cart
     const [isFooterVisible, setIsFooterVisible] = useState(false);
     const pageWrapperRef = useRef(null);
+
+    // --- CONFLICT HANDLING STATE ---
+    const [showConflictModal, setShowConflictModal] = useState(false);
+    const [pendingItemToAdd, setPendingItemToAdd] = useState(null);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -55,26 +57,20 @@ const MenuPage = () => {
         fetchData();
     }, [slug]);
 
-    // Enhanced Scroll Logic to detect Footer
     useEffect(() => {
         const handleScroll = () => {
             if (!pageWrapperRef.current) return;
-
             const scrollY = window.scrollY;
             const windowHeight = window.innerHeight;
             const fullHeight = document.documentElement.scrollHeight;
-            
-            // Footer Height assumption (adjust 300 if your footer is bigger/smaller)
-            const footerOffset = 300; 
+            const footerOffset = 350; 
 
-            // Check if we are near bottom
             if (scrollY + windowHeight >= fullHeight - footerOffset) {
                 setIsFooterVisible(true);
             } else {
                 setIsFooterVisible(false);
             }
         };
-
         window.addEventListener('scroll', handleScroll);
         return () => window.removeEventListener('scroll', handleScroll);
     }, []);
@@ -87,12 +83,39 @@ const MenuPage = () => {
         });
     }, [menuItems, searchQuery, activeCategory]);
 
+    // --- LOGIC FIX: Check Restaurant Mismatch on Add ---
+    const handleAddToCartSafe = (item, isVariation = false) => {
+        if (cartItems.length === 0) {
+            addToCart(item, restaurant._id);
+            return;
+        }
+        if (cartRestaurantId && cartRestaurantId !== restaurant._id) {
+            setPendingItemToAdd(item);
+            setShowConflictModal(true);
+        } else {
+            addToCart(item, restaurant._id);
+        }
+    };
+
+    // --- UPDATED FIX FOR DOUBLE POPUP ---
+    const handleConfirmClearCart = () => {
+        clearCart(); 
+        setShowConflictModal(false);
+        setTimeout(() => {
+            if (pendingItemToAdd) {
+                addToCart(pendingItemToAdd, restaurant._id);
+                setPendingItemToAdd(null);
+            }
+        }, 200);
+    };
+
+    // --- ITEM CLICK HANDLERS ---
     const handleItemClick = (item) => {
         if (item.variations && item.variations.length > 0) {
             setSelectedItemForVar(item);
             setSelectedVariation(item.variations[0]);
         } else {
-            addToCart(item);
+            handleAddToCartSafe(item);
         }
     };
 
@@ -104,7 +127,7 @@ const MenuPage = () => {
                 name: `${selectedItemForVar.name} (${selectedVariation.size})`,
                 price: selectedVariation.price
             };
-            addToCart(cartItem);
+            handleAddToCartSafe(cartItem, true); 
             setSelectedItemForVar(null);
         }
     };
@@ -121,11 +144,17 @@ const MenuPage = () => {
     if (loading) return <div className={styles.loader}>Loading Menu...</div>;
     if (!restaurant) return <div className={styles.loader}>Restaurant not found.</div>;
 
-    return (
-        <div className={styles.pageWrapper} ref={pageWrapperRef}>
+    const coverImageUrl = restaurant.coverImage ? urlFor(restaurant.coverImage).url() : null;
+    const showFloatingCart = cartItems.length > 0 && cartRestaurantId === restaurant._id;
 
-            {/* --- 1. HERO HEADER (Creative Design) --- */}
-            <div className={styles.heroHeader}>
+    return (
+        <div className={styles.pageWrapper} ref={pageWrapperRef} style={{ position: 'relative' }}>
+            
+            {/* --- HERO HEADER --- */}
+            <div 
+                className={styles.heroHeader}
+                style={coverImageUrl ? { backgroundImage: `url(${coverImageUrl})` } : {}}
+            >
                 <div className={styles.headerContent}>
                     {restaurant.logo ? (
                         <img src={urlFor(restaurant.logo).url()} alt={restaurant.name} className={styles.logoImg} />
@@ -143,7 +172,7 @@ const MenuPage = () => {
                 </div>
             </div>
 
-            {/* --- 2. STICKY SEARCH & TABS --- */}
+            {/* --- STICKY NAV --- */}
             <div className={styles.stickyNav}>
                 <div className={styles.searchBox}>
                     <Search size={18} className={styles.searchIcon} />
@@ -167,11 +196,15 @@ const MenuPage = () => {
                 </div>
             </div>
 
-            {/* --- 3. CREATIVE MENU GRID --- */}
-            <div className={styles.menuGrid}>
+            {/* --- MENU GRID --- */}
+            <div className={`${styles.menuGrid} menu-grid-mobile-override`}>
                 {filteredItems.map(item => (
-                    <div key={item._id} className={styles.foodCard} onClick={() => handleItemClick(item)}>
-                        <div className={styles.cardImage}>
+                    <div 
+                        key={item._id} 
+                        className={`${styles.foodCard} menu-item-card`} 
+                        onClick={() => handleItemClick(item)}
+                    >
+                        <div className={`${styles.cardImage} menu-item-image`}>
                             {item.image ? (
                                 <img src={urlFor(item.image).width(300).height(200).url()} alt={item.name} />
                             ) : (
@@ -179,14 +212,16 @@ const MenuPage = () => {
                             )}
                             <button className={styles.addBtn}><Plus size={18} /></button>
                         </div>
-                        <div className={styles.cardContent}>
+                        
+                        <div className={`${styles.cardContent} menu-item-content`}>
                             <div className={styles.cardHeaderRow}>
                                 <h3>{item.name}</h3>
-                                <span className={styles.price}>{getPriceDisplay(item)}</span>
+                                <span className={`${styles.price} desktop-only-price`}>{getPriceDisplay(item)}</span>
                             </div>
+                            
                             <p className={styles.desc}>{item.description}</p>
+                            <span className="mobile-only-price">{getPriceDisplay(item)}</span>
 
-                            {/* Variations Badges */}
                             {item.variations && item.variations.length > 0 && (
                                 <div className={styles.tags}>
                                     {item.variations.map(v => (
@@ -199,8 +234,8 @@ const MenuPage = () => {
                 ))}
             </div>
 
-            {/* --- 4. FLOATING CART (Footer Fix Applied) --- */}
-            {cartItems.length > 0 && (
+            {/* --- CART OVERLAY --- */}
+            {showFloatingCart && (
                 <div
                     className={`${styles.floatingCart} ${isFooterVisible ? styles.floatingCartAbsolute : ''}`}
                     onClick={() => setIsCheckoutOpen(true)}
@@ -215,7 +250,7 @@ const MenuPage = () => {
                 </div>
             )}
 
-            {/* --- 5. VARIATION MODAL --- */}
+            {/* --- VARIATION MODAL --- */}
             {selectedItemForVar && (
                 <div className={styles.modalOverlay}>
                     <div className={styles.varModal}>
@@ -249,13 +284,153 @@ const MenuPage = () => {
                 </div>
             )}
 
-            {/* --- 6. CHECKOUT MODAL --- */}
+            {/* --- CONFLICT RESOLUTION MODAL --- */}
+            {showConflictModal && (
+                <div className={styles.modalOverlay} style={{zIndex: 1100}}>
+                    <div className={styles.varModal} style={{maxWidth: '320px', textAlign:'center', padding:'20px'}}>
+                        <div style={{display:'flex', justifyContent:'center', marginBottom:'15px', color:'#ef4444'}}>
+                            <AlertTriangle size={40} />
+                        </div>
+                        <h3 style={{marginBottom:'10px'}}>Start a new basket?</h3>
+                        <p style={{fontSize:'0.9rem', color:'#666', marginBottom:'20px'}}>
+                            Your cart contains items from another restaurant. Would you like to clear the cart and add this item?
+                        </p>
+                        <div style={{display:'flex', gap:'10px'}}>
+                            <button 
+                                onClick={() => { setShowConflictModal(false); setPendingItemToAdd(null); }}
+                                style={{flex:1, padding:'10px', borderRadius:'8px', border:'1px solid #ddd', background:'transparent', color:'#fff'}}
+                            >
+                                No
+                            </button>
+                            <button 
+                                onClick={handleConfirmClearCart}
+                                style={{flex:1, padding:'10px', borderRadius:'8px', border:'none', background:'#E11D48', color:'white'}}
+                            >
+                                Yes, Clear
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* --- CHECKOUT MODAL --- */}
             {isCheckoutOpen && (
                 <CheckoutModal
                     restaurant={restaurant}
                     onClose={() => setIsCheckoutOpen(false)}
                 />
             )}
+
+            {/* --- STYLES INJECTION (MOBILE FIXES) --- */}
+            <style>{`
+                .mobile-only-price { display: none; }
+                .${styles.floatingCartAbsolute} {
+                     position: absolute !important;
+                     bottom: 20px !important; 
+                }
+
+                @media (max-width: 768px) {
+                    /* --- 1. Fix Grid Spacing for Mobile --- */
+                    .menu-grid-mobile-override {
+                        display: flex !important;
+                        flex-direction: column !important;
+                        gap: 0px !important; /* Removed large gap */
+                        padding: 10px 15px !important;
+                    }
+
+                    /* --- 2. Fix Card Appearance ("Cut Rectangle" Issue) --- */
+                    .menu-item-card {
+                        display: flex !important;
+                        flex-direction: row !important;
+                        align-items: center !important;
+                        
+                        /* Adjusted Padding to reduce space between items */
+                        padding: 12px 0px !important;
+                        
+                        gap: 15px !important;
+                        height: auto !important;
+                        min-height: 100px;
+                        
+                        /* REMOVE Desktop Border & Radius to fix "Cut" look */
+                        border: none !important; 
+                        border-radius: 0 !important;
+                        background: transparent !important;
+                        box-shadow: none !important;
+                        
+                        /* Keep only bottom divider */
+                        border-bottom: 1px solid rgba(255,255,255,0.1) !important; 
+                    }
+
+                    .menu-item-image {
+                        width: 90px !important; /* Slightly smaller for better fit */
+                        height: 90px !important;
+                        flex-shrink: 0 !important;
+                        border-radius: 12px !important;
+                        overflow: hidden;
+                        background: #222; /* Fallback background */
+                    }
+                    
+                    .menu-item-image img {
+                        width: 100% !important;
+                        height: 100% !important;
+                        object-fit: cover !important;
+                    }
+
+                    .menu-item-content {
+                        flex: 1 !important;
+                        display: flex !important;
+                        flex-direction: column !important;
+                        justify-content: center !important;
+                        text-align: left !important;
+                        overflow: hidden; /* Prevent text spill */
+                    }
+
+                    .menu-item-content h3 {
+                        font-size: 1rem !important;
+                        font-weight: 600 !important;
+                        color: #fff;
+                        margin-bottom: 4px !important;
+                    }
+
+                    .menu-item-content p {
+                        font-size: 0.8rem !important;
+                        color: #aaa !important;
+                        margin-bottom: 4px !important;
+                    }
+
+                    .desktop-only-price { display: none !important; }
+                    .mobile-only-price {
+                        display: block !important;
+                        font-weight: bold !important;
+                        color: #FACC15 !important;
+                        font-size: 0.95rem !important;
+                        margin-top: 2px !important;
+                    }
+
+                    .${styles.tags} {
+                        margin-top: 6px !important;
+                        justify-content: flex-start !important;
+                    }
+                    
+                    .${styles.sizeTag} {
+                        font-size: 0.7rem !important;
+                        padding: 2px 6px !important;
+                        background: #333;
+                        color: #fff;
+                        border: 1px solid #444;
+                    }
+
+                    .${styles.addBtn} {
+                        width: 28px !important;
+                        height: 28px !important;
+                        right: 4px !important;
+                        bottom: 4px !important;
+                        background: #fff !important;
+                        color: #000 !important;
+                        border-radius: 50% !important;
+                    }
+                }
+            `}</style>
         </div>
     );
 };

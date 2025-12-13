@@ -1,3 +1,5 @@
+/* components/FeaturesSection/FeaturesSection.module.css */
+
 .features {
     padding: 100px 0;
     background-color: var(--bg-color);
@@ -23,13 +25,19 @@
     position: relative;
     overflow: hidden;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
-    /* --- FIX: Applied the border to ALL cards directly --- */
-    border-top: 4px solid var(--primary-accent);
-    box-shadow: 0 10px 30px rgba(255, 193, 7, 0.1);
+    
+    /*Ensure no border*/
+    border: none; 
+    
+    /* --- FIX: Yellow Shadow only at the bottom --- */
+    /* Using rgba(250, 204, 21, 0.4) for a transparent yellow shadow */
+    box-shadow: 0 15px 30px -10px rgba(250, 204, 21, 0.4); 
 }
 
 .card:hover {
-    transform: translateY(-10px);
+    transform: translateY(-5px);
+    /* --- FIX: Stronger Yellow Shadow on hover --- */
+    box-shadow: 0 20px 40px -10px rgba(250, 204, 21, 0.6);
 }
 
 .cardNumber {
