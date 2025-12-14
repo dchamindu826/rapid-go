@@ -1,5 +1,3 @@
-/* src/pages/RestaurantsPage/RestaurantsPage.module.css */
-
 .restaurantsPage {
     padding-top: 40px;
     padding-bottom: 100px;
@@ -9,6 +7,9 @@
     text-align: center;
     margin-bottom: 40px;
     padding: 0 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .pageHeader h1 {
@@ -24,7 +25,55 @@
     font-size: 1rem;
     color: var(--text-secondary);
     max-width: 500px;
+    margin: 0 auto 25px auto; /* Margin bottom wadi kala search bar eka nisa */
+}
+
+/* --- SEARCH BAR STYLES --- */
+.searchContainer {
+    position: relative;
+    width: 100%;
+    max-width: 450px;
     margin: 0 auto;
+}
+
+.searchIcon {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #888;
+    font-size: 1.2rem;
+}
+
+.searchInput {
+    width: 100%;
+    padding: 12px 20px 12px 45px; /* Left padding for icon */
+    border-radius: 50px;
+    border: 1px solid #333;
+    background-color: #1e1e1e;
+    color: #fff;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    outline: none;
+}
+
+.searchInput:focus {
+    border-color: #FACC15;
+    background-color: #252525;
+    box-shadow: 0 0 0 3px rgba(250, 204, 21, 0.1);
+}
+
+.searchInput::placeholder {
+    color: #666;
+}
+
+/* --- No Results Message --- */
+.noResults {
+    grid-column: 1 / -1; /* Take full width */
+    text-align: center;
+    padding: 40px;
+    color: #888;
+    font-size: 1.1rem;
 }
 
 /* --- Modern Grid Layout --- */
@@ -47,11 +96,11 @@
     position: relative;
 }
 
-/* Closed State Styles (New) */
+/* Closed State Styles */
 .closedCard {
     opacity: 0.7;
-    pointer-events: none; /* Make unclickable */
-    filter: grayscale(0.5); /* Slight grey effect */
+    pointer-events: none; 
+    filter: grayscale(0.5); 
 }
 
 .restaurantCard:hover {
@@ -60,7 +109,6 @@
     border-color: var(--primary-accent);
 }
 
-/* Disable hover effect for closed cards */
 .closedCard:hover {
     transform: none;
     box-shadow: none;
@@ -76,14 +124,14 @@
     overflow: hidden;
 }
 
-/* Closed Overlay (New) */
+/* Closed Overlay */
 .closedOverlay {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.7); /* Dark transparent bg */
+    background-color: rgba(0, 0, 0, 0.7); 
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -91,7 +139,7 @@
     color: #fff;
     font-weight: 800;
     z-index: 10;
-    backdrop-filter: blur(3px); /* Blur the image behind */
+    backdrop-filter: blur(3px); 
     border: 2px solid #ff4d4d;
 }
 
@@ -174,5 +222,66 @@
     
     .cardImage {
         height: 160px;
+    }
+    
+    .searchContainer {
+        width: 100%;
+    }
+}
+
+/* --- PAGINATION STYLES --- */
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    margin-top: 50px;
+}
+
+.pageBtn {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 1px solid #333;
+    background-color: #1e1e1e;
+    color: #fff;
+    font-size: 1rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.pageBtn:hover:not(:disabled) {
+    border-color: #FACC15;
+    color: #FACC15;
+}
+
+.activePageBtn {
+    background-color: #FACC15;
+    color: #000 !important; /* Force black text */
+    font-weight: bold;
+    border-color: #FACC15;
+}
+
+.pageBtn:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+    border-color: #333;
+    color: #888;
+}
+
+/* Mobile responsive fixes */
+@media (max-width: 640px) {
+    .pagination {
+        margin-top: 30px;
+        gap: 5px;
+    }
+    
+    .pageBtn {
+        width: 35px;
+        height: 35px;
+        font-size: 0.9rem;
     }
 }

@@ -69,8 +69,6 @@ const MapEvents = ({ position }) => {
   }
 
 // --- DISTANCE CALCULATION HELPER (Fallback) ---
-// This is the "Straight Line" calculation (Haversine)
-// Used only if the API fails.
 const getStraightLineDistance = (lat1, lon1, lat2, lon2) => {
   const R = 6371; 
   const dLat = (lat2 - lat1) * (Math.PI / 180);
@@ -83,17 +81,15 @@ const getStraightLineDistance = (lat1, lon1, lat2, lon2) => {
   return R * c; 
 };
 
-// --- (!!!) NEW: GET ROAD DISTANCE FROM OSRM API ---
+// --- OSRM API FOR ROAD DISTANCE ---
 const getRoadDistance = async (lat1, lon1, lat2, lon2) => {
   try {
-    // Calling OSRM Public API
     const response = await fetch(
       `https://router.project-osrm.org/route/v1/driving/${lon1},${lat1};${lon2},${lat2}?overview=false`
     );
     const data = await response.json();
     
     if (data.code === 'Ok' && data.routes && data.routes.length > 0) {
-      // OSRM returns distance in meters, convert to KM
       return data.routes[0].distance / 1000;
     }
     return null;
@@ -103,24 +99,37 @@ const getRoadDistance = async (lat1, lon1, lat2, lon2) => {
   }
 };
 
-// --- DELIVERY CHARGE LOGIC ---
-const calculateDeliveryDetails = (distance) => {
+// --- (!!!) UPDATED: DELIVERY CHARGE LOGIC (CORRECTED) ---
+const calculateDeliveryDetails = (distance, cartTotal) => {
   if (distance <= 0) return { courierFee: 0, handlingFee: 0 };
 
   let courierFee = 0;
   let handlingFee = 0;
 
-  if (distance <= 2) {
-    courierFee = 60;
+  // 1. Distance Based Calculation
+  if (distance <= 2.0) {
+    courierFee = distance * 60;
     handlingFee = 60;
-  } else if (distance <= 7) {
+  } else if (distance <= 4.0) {
     courierFee = distance * 50;
     handlingFee = 60;
-  } else {
+  } else if (distance <= 7.0) {
+    // 4km to 7km range
     courierFee = distance * 40;
-    handlingFee = 0;
+    handlingFee = 70; 
+  } else {
+    // More than 7km
+    courierFee = distance * 40;
+    handlingFee = 0; // No handling fee for long distance
   }
   
+  // 2. Extra Charges Based on Order Value
+  if (cartTotal > 8000) {
+    courierFee += 200; // Above 8000 -> Add 200
+  } else if (cartTotal >= 5000) {
+    courierFee += 100; // Between 5000 and 8000 -> Add 100
+  }
+
   return { 
     courierFee: Math.round(courierFee), 
     handlingFee: handlingFee 
@@ -138,7 +147,6 @@ export default function CheckoutModal({ restaurant, onClose }) {
   const [isPlacingOrder, setIsPlacingOrder] = useState(false);
   const [mapPosition, setMapPosition] = useState({ lat: 6.9271, lng: 79.8612 }); 
   
-  // Loading state for distance calculation
   const [calculatingDistance, setCalculatingDistance] = useState(false);
 
   const [distance, setDistance] = useState(0);
@@ -152,24 +160,31 @@ export default function CheckoutModal({ restaurant, onClose }) {
     };
   }, []);
 
-  // --- (!!!) UPDATED: ASYNC HANDLER FOR LOCATION SELECT ---
+  // --- RECALCULATE ON CART CHANGE ---
+  useEffect(() => {
+    if (userLocation && distance > 0) {
+        const { courierFee, handlingFee } = calculateDeliveryDetails(distance, cartTotal);
+        setCourierFee(courierFee);
+        setHandlingFee(handlingFee);
+    }
+  }, [cartTotal, distance, userLocation]);
+
+
   const handleLocationSelect = async (latlng) => {
     const { lat, lng } = latlng;
     setUserLocation({ latitude: lat, longitude: lng });
 
     if (restaurant.location?.lat && restaurant.location?.lng) {
-      setCalculatingDistance(true); // Show loading state if you want
+      setCalculatingDistance(true); 
 
-      // 1. Try to get Road Distance (API)
       let dist = await getRoadDistance(restaurant.location.lat, restaurant.location.lng, lat, lng);
 
-      // 2. If API fails (returns null), fallback to Straight Line
       if (dist === null) {
         console.warn("Falling back to straight-line distance");
         dist = getStraightLineDistance(restaurant.location.lat, restaurant.location.lng, lat, lng);
       }
       
-      const { courierFee, handlingFee } = calculateDeliveryDetails(dist);
+      const { courierFee, handlingFee } = calculateDeliveryDetails(dist, cartTotal);
 
       setDistance(dist);
       setCourierFee(courierFee);
@@ -337,6 +352,7 @@ export default function CheckoutModal({ restaurant, onClose }) {
                 <span>Rs. {courierFee.toFixed(2)}</span>
             </div>
 
+            {/* Handling Fee eka pennanne eka 0 ta wada wadi nam witharai */}
             {handlingFee > 0 && (
                 <div className={styles.summaryLine}>
                     <span>Handling Fee</span>
