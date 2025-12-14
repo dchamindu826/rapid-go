@@ -99,7 +99,7 @@ const getRoadDistance = async (lat1, lon1, lat2, lon2) => {
   }
 };
 
-// --- (!!!) UPDATED: DELIVERY CHARGE LOGIC (CORRECTED) ---
+// --- (!!!) UPDATED: DELIVERY CHARGE LOGIC ---
 const calculateDeliveryDetails = (distance, cartTotal) => {
   if (distance <= 0) return { courierFee: 0, handlingFee: 0 };
 
@@ -108,19 +108,20 @@ const calculateDeliveryDetails = (distance, cartTotal) => {
 
   // 1. Distance Based Calculation
   if (distance <= 2.0) {
-    courierFee = distance * 60;
+    // --- UPDATED LOGIC FOR 0-2 KM ---
+    // Any distance between 0 and 2 km is a flat rate of 60.
+    courierFee = 60; 
     handlingFee = 60;
   } else if (distance <= 4.0) {
     courierFee = distance * 50;
     handlingFee = 60;
   } else if (distance <= 7.0) {
-    // 4km to 7km range
     courierFee = distance * 40;
     handlingFee = 70; 
   } else {
     // More than 7km
     courierFee = distance * 40;
-    handlingFee = 0; // No handling fee for long distance
+    handlingFee = 50; 
   }
   
   // 2. Extra Charges Based on Order Value
@@ -352,7 +353,6 @@ export default function CheckoutModal({ restaurant, onClose }) {
                 <span>Rs. {courierFee.toFixed(2)}</span>
             </div>
 
-            {/* Handling Fee eka pennanne eka 0 ta wada wadi nam witharai */}
             {handlingFee > 0 && (
                 <div className={styles.summaryLine}>
                     <span>Handling Fee</span>
