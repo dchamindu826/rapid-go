@@ -1,7 +1,9 @@
+// Header.jsx
 import React, { useState, useEffect } from 'react';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
 import styles from './Header.module.css';
-import { FiHome, FiShoppingCart, FiTruck, FiInfo, FiMail, FiShoppingBag, FiUser, FiMenu, FiX, FiBox } from 'react-icons/fi';
+// FiSmartphone icon eka add karaganna
+import { FiHome, FiShoppingCart, FiTruck, FiInfo, FiMail, FiShoppingBag, FiUser, FiMenu, FiX, FiBox, FiSmartphone } from 'react-icons/fi';
 import { useCart } from '../../contexts/CartContext';
 import { useAuth } from '../../contexts/AuthContext';
 
@@ -46,6 +48,12 @@ const Header = () => {
                     <NavLink to="/shop" className={styles.navLink} onClick={toggleMobileMenu}>Digital Store</NavLink>
                     <NavLink to="/create-order" className={styles.navLink} onClick={toggleMobileMenu}>Order Request</NavLink>
                     <NavLink to="/tracking" className={styles.navLink} onClick={toggleMobileMenu}>Tracking</NavLink>
+                    
+                    {/* Me thiyenne aluth Link eka Main Menu ekata */}
+                    <NavLink to="/download" className={styles.navLink} onClick={toggleMobileMenu}>
+                        Download App
+                    </NavLink>
+                    
                     <NavLink to="/about" className={styles.navLink} onClick={toggleMobileMenu}>About</NavLink>
                     <NavLink to="/contact" className={styles.navLink} onClick={toggleMobileMenu}>Contact Us</NavLink>
                 </nav>
@@ -58,7 +66,6 @@ const Header = () => {
                     
                     {currentUser ? (
                         <div className={styles.profileDropdown}>
-                    
                             {currentUser.photoURL ? (
                                 <img src={currentUser.photoURL} alt="Profile" className={styles.profilePic} referrerPolicy="no-referrer" />
                             ) : (
@@ -69,6 +76,8 @@ const Header = () => {
                             <div className={styles.dropdownContent}>
                                 <Link to="/profile">My Profile</Link>
                                 <Link to="/my-orders">Food Orders</Link>
+                                {/* Dropdown eke link eka oya dapu widiyatama thiyanna */}
+                                <Link to="/download">Download App</Link>
                                 <button onClick={handleLogout}>Log Out</button>
                             </div>
                         </div>

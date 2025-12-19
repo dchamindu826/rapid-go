@@ -1,5 +1,6 @@
 .pageContainer {
-    padding: 80px 0;
+    /* Header eka nisa content eka thawa pahalata gaththa */
+    padding: 180px 0 80px 0; 
     min-height: 70vh;
 }
 

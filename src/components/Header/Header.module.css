@@ -10,11 +10,11 @@
 }
 
 .header.scrolled {
-    background-color: rgba(18, 16, 14, 0.85);
+    background-color: rgba(18, 16, 14, 0.95); /* Thawa dark kara */
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
     padding: 15px 0;
-    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.4);
 }
 
 .headerContainer {
@@ -30,18 +30,19 @@
 
 .nav {
     display: flex;
-    gap: 30px;
+    gap: 15px; /* Spacing adu kara piliwelata penna */
     margin: 0 auto;
 }
 
 .navLink {
     padding: 10px 5px;
     font-weight: 600;
-    font-size: 1rem;
+    font-size: 0.9rem; /* Font size poddak adu kara */
     color: var(--text-secondary);
     text-decoration: none;
     position: relative;
     transition: color 0.3s ease;
+    white-space: nowrap; /* Text eka kadෙnna nodee ekama peliyata gaththa */
 }
 
 .navLink::after {
@@ -91,7 +92,8 @@
   background-color: transparent;
   color: var(--text-secondary);
   transition: all 0.3s ease;
-  top: 2.5px;
+  position: relative;
+  top: 0;
 }
 
 .actionBtn:hover {
@@ -120,27 +122,24 @@
     align-items: center;
 }
 
-/* === MOBILE MENU BUTTON STYLES (UPDATED) === */
 .mobileMenuBtn {
     display: none;
     background: transparent;
     border: none;
-    color: var(--text-color); /* You can change this color */
+    color: var(--text-color);
     cursor: pointer;
     padding: 5px;
     transition: opacity 0.2s ease-in-out;
 }
 
 .mobileMenuBtn svg {
-    width: 28px; /* Icon size */
+    width: 28px;
     height: 28px;
 }
 
 .mobileMenuBtn:hover {
     opacity: 0.7;
 }
-/* === END OF UPDATED STYLES === */
-
 
 .profileDropdown {
     position: relative;
@@ -213,8 +212,18 @@
     color: var(--bg-color);
 }
 
+@media (max-width: 1150px) { /* Screen size eka poddak wadi kara menu eka beraganna */
+    .nav {
+        display: none; /* Hide for tablets if too many items */
+    }
+    .mobileMenuBtn {
+        display: flex;
+    }
+}
+
 @media (max-width: 992px) {
     .nav {
+        display: flex;
         position: fixed;
         top: 0;
         left: -100%;
@@ -234,23 +243,4 @@
     .navLink {
         font-size: 1.5rem;
     }
-    .mobileMenuBtn {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        z-index: 1001;
-    }
-    .headerActions {
-        gap: 10px;
-    }
-}
-
-.profileDropdown::after {
-    content: '';
-    position: absolute;
-    bottom: -10px;
-    left: 0;
-    right: 0;
-    height: 10px;
-    background-color: transparent;
 }

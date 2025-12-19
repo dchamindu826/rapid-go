@@ -25,6 +25,7 @@ import RestaurantsPage from './pages/RestaurantsPage/RestaurantsPage';
 import MenuPage from './pages/MenuPage/MenuPage'; // <-- IMPORT එක එකතු කලා
 import MyOrdersPage from './pages/MyOrdersPage/MyOrdersPage';
 import { FoodCartProvider } from './contexts/FoodCartContext';
+import DownloadApps from './pages/DownloadApps/DownloadApps';
 
 function App() {
   return (
@@ -49,7 +50,7 @@ function App() {
             <Route path="/thank-you" element={<ThankYouPage />} />
             <Route path="/create-order" element={<CreateOrderPage />} />
             <Route path="/order-status/:orderId" element={<OrderStatusPage />} />
-
+            <Route path="/download" element={<DownloadApps />} />
             {/* --- Food Delivery Routes --- */}
             <Route path="/restaurants" element={<RestaurantsPage />} />
             <Route path="/restaurants/:slug" element={<MenuPage />} /> {/* <-- ROUTE එක Activate කලා */}
