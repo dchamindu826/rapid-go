@@ -30,6 +30,11 @@ const MenuPage = () => {
     const [showConflictModal, setShowConflictModal] = useState(false);
     const [pendingItemToAdd, setPendingItemToAdd] = useState(null);
 
+    // --- SCROLL TO TOP FIX (ADDED ONLY THIS) ---
+    useEffect(() => {
+        window.scrollTo(0, 0);
+    }, [slug]);
+
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -330,44 +335,35 @@ const MenuPage = () => {
                 }
 
                 @media (max-width: 768px) {
-                    /* --- 1. Fix Grid Spacing for Mobile --- */
                     .menu-grid-mobile-override {
                         display: flex !important;
                         flex-direction: column !important;
-                        gap: 0px !important; /* Removed large gap */
+                        gap: 0px !important;
                         padding: 10px 15px !important;
                     }
 
-                    /* --- 2. Fix Card Appearance ("Cut Rectangle" Issue) --- */
                     .menu-item-card {
                         display: flex !important;
                         flex-direction: row !important;
                         align-items: center !important;
-                        
-                        /* Adjusted Padding to reduce space between items */
                         padding: 12px 0px !important;
-                        
                         gap: 15px !important;
                         height: auto !important;
                         min-height: 100px;
-                        
-                        /* REMOVE Desktop Border & Radius to fix "Cut" look */
                         border: none !important; 
                         border-radius: 0 !important;
                         background: transparent !important;
                         box-shadow: none !important;
-                        
-                        /* Keep only bottom divider */
                         border-bottom: 1px solid rgba(255,255,255,0.1) !important; 
                     }
 
                     .menu-item-image {
-                        width: 90px !important; /* Slightly smaller for better fit */
+                        width: 90px !important; 
                         height: 90px !important;
                         flex-shrink: 0 !important;
                         border-radius: 12px !important;
                         overflow: hidden;
-                        background: #222; /* Fallback background */
+                        background: #222; 
                     }
                     
                     .menu-item-image img {
@@ -382,7 +378,7 @@ const MenuPage = () => {
                         flex-direction: column !important;
                         justify-content: center !important;
                         text-align: left !important;
-                        overflow: hidden; /* Prevent text spill */
+                        overflow: hidden; 
                     }
 
                     .menu-item-content h3 {
