@@ -30,7 +30,7 @@ const MenuPage = () => {
     const [showConflictModal, setShowConflictModal] = useState(false);
     const [pendingItemToAdd, setPendingItemToAdd] = useState(null);
 
-    // --- SCROLL TO TOP FIX (ADDED ONLY THIS) ---
+    // --- SCROLL TO TOP FIX ---
     useEffect(() => {
         window.scrollTo(0, 0);
     }, [slug]);
@@ -38,23 +38,32 @@ const MenuPage = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
+                // 1. Restaurant Details Fetch කරනවා
                 const restaurantQuery = `*[_type == "restaurant" && slug.current == $slug][0]`;
                 const restaurantData = await client.fetch(restaurantQuery, { slug });
                 setRestaurant(restaurantData);
 
                 if (restaurantData) {
+                    // 2. Menu Items Fetch කරනවා (Category එක expand කරලා නම ගන්නවා)
+                    // මෙතන coalesce පාවිච්චි කරලා තියෙන්නේ category එකේ field එක 'name' හෝ 'title' දෙකෙන් මොකක් වුනත් වැඩ කරන්නයි.
                     const menuQuery = `*[_type == "menuItem" && restaurant._ref == $restoId] {
                         _id, name, description, image, price, variations,
-                        "categoryName": category->name
+                        "categoryName": coalesce(category->name, category->title, "Other")
                     }`;
+                    
                     const menuData = await client.fetch(menuQuery, { restoId: restaurantData._id });
                     setMenuItems(menuData);
 
-                    const uniqueCategories = ['All', ...new Set(menuData.map(item => item.categoryName).filter(Boolean))];
-                    setCategories(uniqueCategories);
+                    // 3. Dynamic Category Extraction
+                    // මෙනු අයිටම්ස් වල තියෙන categories ටික විතරක් අරගෙන Unique list එකක් හදනවා
+                    if (menuData && menuData.length > 0) {
+                        const allCategoryNames = menuData.map(item => item.categoryName);
+                        const uniqueCategories = ['All', ...new Set(allCategoryNames)];
+                        setCategories(uniqueCategories);
+                    }
                 }
             } catch (error) {
-                console.error("Error:", error);
+                console.error("Error fetching menu data:", error);
             } finally {
                 setLoading(false);
             }
@@ -88,7 +97,6 @@ const MenuPage = () => {
         });
     }, [menuItems, searchQuery, activeCategory]);
 
-    // --- LOGIC FIX: Check Restaurant Mismatch on Add ---
     const handleAddToCartSafe = (item, isVariation = false) => {
         if (cartItems.length === 0) {
             addToCart(item, restaurant._id);
@@ -102,7 +110,6 @@ const MenuPage = () => {
         }
     };
 
-    // --- UPDATED FIX FOR DOUBLE POPUP ---
     const handleConfirmClearCart = () => {
         clearCart(); 
         setShowConflictModal(false);
@@ -114,7 +121,6 @@ const MenuPage = () => {
         }, 200);
     };
 
-    // --- ITEM CLICK HANDLERS ---
     const handleItemClick = (item) => {
         if (item.variations && item.variations.length > 0) {
             setSelectedItemForVar(item);
@@ -155,7 +161,6 @@ const MenuPage = () => {
     return (
         <div className={styles.pageWrapper} ref={pageWrapperRef} style={{ position: 'relative' }}>
             
-            {/* --- HERO HEADER --- */}
             <div 
                 className={styles.heroHeader}
                 style={coverImageUrl ? { backgroundImage: `url(${coverImageUrl})` } : {}}
@@ -177,7 +182,6 @@ const MenuPage = () => {
                 </div>
             </div>
 
-            {/* --- STICKY NAV --- */}
             <div className={styles.stickyNav}>
                 <div className={styles.searchBox}>
                     <Search size={18} className={styles.searchIcon} />
@@ -201,7 +205,6 @@ const MenuPage = () => {
                 </div>
             </div>
 
-            {/* --- MENU GRID --- */}
             <div className={`${styles.menuGrid} menu-grid-mobile-override`}>
                 {filteredItems.map(item => (
                     <div 
@@ -239,7 +242,6 @@ const MenuPage = () => {
                 ))}
             </div>
 
-            {/* --- CART OVERLAY --- */}
             {showFloatingCart && (
                 <div
                     className={`${styles.floatingCart} ${isFooterVisible ? styles.floatingCartAbsolute : ''}`}
@@ -255,7 +257,6 @@ const MenuPage = () => {
                 </div>
             )}
 
-            {/* --- VARIATION MODAL --- */}
             {selectedItemForVar && (
                 <div className={styles.modalOverlay}>
                     <div className={styles.varModal}>
@@ -289,7 +290,6 @@ const MenuPage = () => {
                 </div>
             )}
 
-            {/* --- CONFLICT RESOLUTION MODAL --- */}
             {showConflictModal && (
                 <div className={styles.modalOverlay} style={{zIndex: 1100}}>
                     <div className={styles.varModal} style={{maxWidth: '320px', textAlign:'center', padding:'20px'}}>
@@ -318,7 +318,6 @@ const MenuPage = () => {
                 </div>
             )}
 
-            {/* --- CHECKOUT MODAL --- */}
             {isCheckoutOpen && (
                 <CheckoutModal
                     restaurant={restaurant}
@@ -326,7 +325,6 @@ const MenuPage = () => {
                 />
             )}
 
-            {/* --- STYLES INJECTION (MOBILE FIXES) --- */}
             <style>{`
                 .mobile-only-price { display: none; }
                 .${styles.floatingCartAbsolute} {

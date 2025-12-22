@@ -51,6 +51,7 @@ function App() {
             <Route path="/create-order" element={<CreateOrderPage />} />
             <Route path="/order-status/:orderId" element={<OrderStatusPage />} />
             <Route path="/download" element={<DownloadApps />} />
+            
             {/* --- Food Delivery Routes --- */}
             <Route path="/restaurants" element={<RestaurantsPage />} />
             <Route path="/restaurants/:slug" element={<MenuPage />} /> {/* <-- ROUTE එක Activate කලා */}
