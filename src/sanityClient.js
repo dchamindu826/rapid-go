@@ -7,7 +7,7 @@ const readClientConfig = {
   token: import.meta.env.VITE_SANITY_TOKEN, // Viewer token for reading data
   useCdn: false,
   apiVersion: '2023-05-03',
-  ignoreBrowserTokenWarning: true,
+  ignoreBrowserTokenWarning: false,
 };
 
 // Main client for reading data (used on most pages)

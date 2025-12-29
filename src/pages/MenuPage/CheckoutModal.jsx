@@ -241,7 +241,8 @@ export default function CheckoutModal({ restaurant, onClose }) {
           _key: `${item._id}-${Math.random()}`,
           item: { _type: 'reference', _ref: item._id.split('-')[0] },
           quantity: item.quantity,
-          name: item.name 
+          name: item.name,
+          price: item.price
         })),
       };
 

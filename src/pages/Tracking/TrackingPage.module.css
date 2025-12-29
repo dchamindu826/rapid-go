@@ -219,3 +219,159 @@
     background: var(--secondary-accent);
     color: var(--bg-color);
 }
+
+.orderHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 40px;
+    padding: 20px;
+    background-color: var(--card-bg-color);
+    border-radius: 15px;
+    border: 1px solid var(--border-color);
+}
+
+.orderId {
+    color: var(--secondary-accent);
+    font-family: monospace;
+    font-size: 1.5rem;
+}
+
+.statusBadge {
+    padding: 8px 16px;
+    border-radius: 50px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* Status colors */
+.pending { background: #555; color: #fff; }
+.preparing { background: var(--secondary-accent); color: var(--bg-color); }
+.readyForPickup { background: #00d2ff; color: #fff; }
+.onTheWay { background: #f39c12; color: #fff; }
+.completed { background: #27ae60; color: #fff; }
+
+.stepHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 5px;
+}
+
+.stepTime {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--secondary-accent);
+    background: rgba(var(--secondary-accent-rgb), 0.1);
+    padding: 2px 8px;
+    border-radius: 4px;
+}
+
+.prepTimeNote {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 12px;
+    padding: 10px 15px;
+    background-color: rgba(255, 215, 0, 0.1);
+    border-left: 4px solid var(--secondary-accent);
+    border-radius: 4px;
+    color: var(--text-color);
+    font-size: 0.95rem;
+}
+
+.prepTimeNote svg {
+    color: var(--secondary-accent);
+}
+
+/* දැනට තියෙන Step එක highlight කිරීම */
+.activeStep {
+    opacity: 1 !important;
+}
+
+.activeStep .timelineIcon {
+    background: var(--secondary-accent);
+    box-shadow: 0 0 0 5px rgba(255, 215, 0, 0.2);
+    animation: pulse 2s infinite;
+}
+
+.activeStep h3 {
+    color: var(--secondary-accent);
+}
+
+@keyframes pulse {
+    0% { box-shadow: 0 0 0 0px rgba(255, 215, 0, 0.4); }
+    70% { box-shadow: 0 0 0 10px rgba(255, 215, 0, 0); }
+    100% { box-shadow: 0 0 0 0px rgba(255, 215, 0, 0); }
+}
+
+/* Responsive adjustment */
+@media (max-width: 600px) {
+    .orderHeader {
+        flex-direction: column;
+        gap: 15px;
+        text-align: center;
+    }
+    .stepHeader {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 5px;
+    }
+}
+
+.stepTime {
+    font-size: 0.9rem;
+    font-weight: 800; /* ටිකක් තද කරාම හොඳට පේනවා */
+    color: #FFD700; /* කහ පාට වගේ accent color එකක් */
+    background: rgba(0, 0, 0, 0.2);
+    padding: 4px 10px;
+    border-radius: 6px;
+    text-transform: uppercase;
+}
+
+/* පරණ Styles ඔක්කොම තියෙන්න ඇරලා මේ ටික අගටම දාපන් */
+
+.stepHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 5px;
+}
+
+
+/* Estimate Time එකට දාන අලුත් ලස්සන style එක */
+.stepTime {
+    font-size: 0.85rem;
+    font-weight: 800;
+    color: #ffffff;
+    background: linear-gradient(45deg, #f39c12, #e67e22); /* Orange gradient */
+    padding: 4px 12px;
+    border-radius: 20px;
+    text-transform: uppercase;
+    box-shadow: 0 2px 10px rgba(230, 126, 34, 0.3);
+    white-space: nowrap;
+}
+
+/* දැනට යන step එක නම් ඒකේ වෙලාව animate වෙන්න */
+.activeStep .stepTime {
+    animation: blinker 1.5s linear infinite;
+}
+
+@keyframes blinker {
+    50% { opacity: 0.7; }
+}
+
+.prepTimeNote {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 10px;
+    padding: 8px 12px;
+    background: rgba(255, 215, 0, 0.1);
+    border-radius: 8px;
+    font-size: 0.9rem;
+    color: var(--secondary-accent);
+    border: 1px dashed var(--secondary-accent);
+}

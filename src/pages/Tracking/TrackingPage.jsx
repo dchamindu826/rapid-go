@@ -3,17 +3,17 @@ import styles from './TrackingPage.module.css';
 import { useSearchParams } from 'react-router-dom';
 import { client } from '../../sanityClient';
 import { 
-    FiPackage, FiTruck, FiCheckCircle, FiHome, 
-    FiXCircle, FiRefreshCw, FiClock, FiUser, FiShoppingBag 
+    FiPackage, FiTruck, FiCheckCircle, 
+    FiClock, FiUser, FiShoppingBag 
 } from 'react-icons/fi';
 
 const STATUS_STEPS = [
-    { key: 'pending', status: 'Order Received', icon: <FiPackage />, text: 'Order received, awaiting restaurant confirmation.' },
-    { key: 'preparing', status: 'Preparing Food', icon: <FiShoppingBag />, text: 'Restaurant is preparing your food.' },
-    { key: 'readyForPickup', status: 'Food Ready', icon: <FiClock />, text: 'Food is ready for pickup.' },
-    { key: 'assigned', status: 'Rider Assigned', icon: <FiUser />, text: 'A rider has been assigned to your order.' },
-    { key: 'onTheWay', status: 'On the Way', icon: <FiTruck />, text: 'Rider is on the way to your location.' },
-    { key: 'completed', status: 'Delivered', icon: <FiCheckCircle />, text: 'Successfully delivered. Enjoy your meal!' },
+    { key: 'pending', status: 'Order Placed', icon: <FiPackage />, text: "We've received your order." },
+    { key: 'preparing', status: 'Preparing Food', icon: <FiShoppingBag />, text: 'The restaurant is preparing your food.' },
+    { key: 'readyForPickup', status: 'Ready for Pickup', icon: <FiClock />, text: 'Your order is ready to be collected.' },
+    { key: 'assigned', status: 'Rider Assigned', icon: <FiUser />, text: 'A rider is on the way to the restaurant.' },
+    { key: 'onTheWay', status: 'On the Way', icon: <FiTruck />, text: 'Your rider is bringing your order.' },
+    { key: 'completed', status: 'Delivered', icon: <FiCheckCircle />, text: 'Enjoy your meal!' },
 ];
 
 const TrackingPage = () => {
@@ -27,50 +27,46 @@ const TrackingPage = () => {
         if (!idToSearch) return;
         setIsLoading(true);
         setError('');
-        setParcelData(null);
         
         try {
+            // GROQ Query එකෙන් preparationTime එක පැහැදිලිවම ගන්නවා
             const query = `*[_type == "foodOrder" && _id == $trackingNumber][0]{
                 _id,
                 orderStatus,
-                receiverName,
                 preparationTime,
-                _createdAt,
                 statusUpdates,
-                "restaurantName": restaurant->name,
-                "items": orderedItems[]{ "name": @.item->name, "quantity": @.quantity }
+                "restaurantName": restaurant->name
             }`;
             
-            const params = { trackingNumber: idToSearch };
-            const data = await client.fetch(query, params);
+            const data = await client.fetch(query, { trackingNumber: idToSearch });
             
             if (data) {
                 setParcelData(data);
             } else {
-                setError('Invalid Order ID. Please check and try again.');
+                setError('Invalid Order ID.');
+                setParcelData(null);
             }
         } catch (err) {
-            console.error("Tracking failed:", err);
-            setError('An error occurred while fetching data.');
+            setError('Fetch error.');
         } finally {
             setIsLoading(false);
         }
     }, []);
 
     useEffect(() => {
-        const urlTrackingId = searchParams.get('id');
-        if (urlTrackingId) {
-            setTrackingNumber(urlTrackingId);
-            handleSearch(urlTrackingId);
-        }
+        const id = searchParams.get('id');
+        if (id) { setTrackingNumber(id); handleSearch(id); }
     }, [searchParams, handleSearch]);
 
+    // Real-time updates සඳහා listener එක
     useEffect(() => {
         if (!parcelData?._id) return;
-        const query = `*[_type == "foodOrder" && _id == $orderId]`;
-        const params = { orderId: parcelData._id };
-        const subscription = client.listen(query, params).subscribe(update => {
-            if (update.result) { handleSearch(parcelData._id); }
+        const subscription = client.listen(
+            `*[_type == "foodOrder" && _id == $orderId]`, 
+            { orderId: parcelData._id }
+        ).subscribe((update) => {
+            // Document එකේ ඕනෑම වෙනසක් වුනොත් ආයෙත් fetch කරනවා
+            handleSearch(parcelData._id); 
         });
         return () => subscription.unsubscribe();
     }, [parcelData?._id, handleSearch]);
@@ -80,73 +76,49 @@ const TrackingPage = () => {
         return new Date(isoString).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
     };
 
-    const getCurrentStepIndex = (status) => {
-        if (status === 'cancelled' || status === 'returned') return -1;
-        return STATUS_STEPS.findIndex(step => step.key === status);
-    };
-
-    const currentStatusIndex = parcelData ? getCurrentStepIndex(parcelData.orderStatus) : -1;
+    const currentStatusIndex = parcelData ? STATUS_STEPS.findIndex(s => s.key === parcelData.orderStatus) : -1;
 
     return (
         <div className={styles.pageContainer}>
             <div className={styles.searchSection}>
-                <h1>Track Your Food Order</h1>
-                <p className={styles.subtitle}>Enter your Order ID to see live updates.</p>
+                <h1>Track Your Order</h1>
                 <form className={styles.searchBar} onSubmit={(e) => { e.preventDefault(); handleSearch(trackingNumber); }}>
-                    <input 
-                        type="text" 
-                        placeholder="Enter Order ID..." 
-                        value={trackingNumber}
-                        onChange={(e) => setTrackingNumber(e.target.value)}
-                    />
-                    <button type="submit" disabled={isLoading}>
-                        {isLoading ? 'Searching...' : 'Track'}
-                    </button>
+                    <input type="text" value={trackingNumber} onChange={(e) => setTrackingNumber(e.target.value)} placeholder="Order ID..." />
+                    <button type="submit">Track</button>
                 </form>
             </div>
 
-            {isLoading && <div className={styles.loader}></div>}
-            {error && <div className={styles.error}>{error}</div>}
-            
             {parcelData && (
                 <div className={styles.resultsSection}>
-                    <h2>Order Status: <span className={styles.currentStatus}>{parcelData.orderStatus.toUpperCase()}</span></h2>
-                    
-                    <div className={styles.timeline}>
-                        {/* Cancelled State using noticeBox style from your CSS */}
-                        {parcelData.orderStatus === 'cancelled' && (
-                             <div className={`${styles.noticeBox} ${styles.returned}`}>
-                                <FiXCircle />
-                                <div>
-                                    <h3>Order Cancelled</h3>
-                                    <p>This order has been cancelled by the restaurant or user.</p>
-                                </div>
-                            </div>
-                        )}
+                    <div className={styles.orderHeader}>
+                        <h2>Order ID: <span className={styles.orderId}>#{parcelData._id.slice(-6).toUpperCase()}</span></h2>
+                    </div>
 
-                        {/* Status Steps */}
+                    <div className={styles.timeline}>
                         {STATUS_STEPS.map((step, index) => {
                             const updateInfo = parcelData.statusUpdates?.find(u => u.status === step.key);
                             const isCompleted = index <= currentStatusIndex;
+                            const isCurrent = index === currentStatusIndex;
 
                             return (
-                                <div 
-                                    key={step.key} 
-                                    className={`${styles.timelineItem} ${isCompleted ? styles.completed : ''}`}
-                                >
+                                <div key={step.key} className={`${styles.timelineItem} ${isCompleted ? styles.completed : ''} ${isCurrent ? styles.activeStep : ''}`}>
                                     <div className={styles.timelineIcon}>{step.icon}</div>
                                     <div className={styles.timelineContent}>
-                                        <h3>{step.status}</h3>
+                                        <div className={styles.stepHeader}>
+                                            <h3>{step.status}</h3>
+                                            
+                                            {/* ප්‍රධාන වෙනස: Preparing step එකේදී ඇස්තමේන්තුගත කාලය පෙන්වීම */}
+                                            {step.key === 'preparing' && parcelData.preparationTime ? (
+                                                <span className={styles.stepTime}>
+                                                    {parcelData.preparationTime} MINS
+                                                </span>
+                                            ) : updateInfo ? (
+                                                <span className={styles.stepTime}>
+                                                    {formatTime(updateInfo.timestamp)}
+                                                </span>
+                                            ) : null}
+                                        </div>
                                         <p>{step.text}</p>
-                                        {updateInfo && (
-                                            <span className={styles.timestamp}>Updated at: {formatTime(updateInfo.timestamp)}</span>
-                                        )}
-                                        {/* Prep Time logic embedded in Content */}
-                                        {step.key === 'preparing' && index === currentStatusIndex && parcelData.preparationTime && (
-                                            <p style={{color: 'var(--secondary-accent)', fontWeight: 'bold', marginTop: '5px'}}>
-                                                Estimated Prep Time: {parcelData.preparationTime} mins
-                                            </p>
-                                        )}
                                     </div>
                                 </div>
                             );
