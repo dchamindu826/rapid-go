@@ -1,12 +1,50 @@
-.ordersPage h1 { margin-bottom: 2rem; }
-.ordersList { display: flex; flex-direction: column; gap: 1rem; }
-.orderCard { background: var(--card-bg-color); padding: 1rem 1.5rem; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; text-decoration: none; color: var(--text-color); transition: background-color 0.2s; }
-.orderCard:hover { background: var(--border-color); }
-.orderId { font-weight: bold; display: block; }
+.ordersPage h1 { margin-bottom: 2rem; color: #fff; }
+.ordersList { display: flex; flex-direction: column; gap: 1.5rem; }
+
+.orderCard { 
+    background: var(--card-bg-color); 
+    padding: 1.5rem; 
+    border-radius: 12px; 
+    display: flex; 
+    justify-content: space-between; 
+    align-items: flex-start; 
+    text-decoration: none; 
+    color: var(--text-color); 
+    transition: transform 0.2s, border-color 0.2s;
+    border: 1px solid var(--border-color);
+}
+
+.orderCard:hover { 
+    transform: translateY(-2px);
+    border-color: #f9b12b;
+}
+
+.cardMain { flex: 1; }
+
+.orderIdentity { margin-bottom: 1rem; }
+.orderId { font-weight: 800; display: block; color: #f9b12b; font-size: 1.1rem; }
 .orderDate { font-size: 0.8rem; color: var(--text-secondary); }
-.orderTotal { font-weight: 500; }
-.statusBadge { padding: 5px 10px; border-radius: 20px; font-size: 0.8rem; font-weight: bold; text-transform: capitalize; }
-.statusBadge.pending, .statusBadge.preparing { background-color: #fbb0243d; color: #f9b12b; }
-.statusBadge.onTheWay, .statusBadge.nearDestination { background-color: #38bdf83b; color: #38bdf8; }
-.statusBadge.completed { background-color: #34d3993c; color: #34d399; }
-.statusBadge.cancelled { background-color: #ff6b6b3b; color: #ff6b6b; }
+
+.itemsList { margin: 1rem 0; padding: 0.8rem 0; border-top: 1px solid rgba(255,255,255,0.05); border-bottom: 1px solid rgba(255,255,255,0.05); }
+.itemRow { display: flex; align-items: center; gap: 10px; margin-bottom: 5px; }
+.categoryTag { font-size: 0.65rem; background: rgba(249, 177, 43, 0.1); color: #f9b12b; padding: 2px 6px; border-radius: 4px; text-transform: uppercase; font-weight: bold; border: 1px solid rgba(249, 177, 43, 0.2); }
+.itemName { font-size: 0.9rem; color: #eee; }
+
+.priceBreakdown { max-width: 250px; margin-top: 1rem; }
+.priceLine { display: flex; justify-content: space-between; font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 4px; }
+.totalLine { display: flex; justify-content: space-between; margin-top: 8px; padding-top: 8px; border-top: 1px dashed #333; }
+.orderTotal { font-weight: 800; color: #fff; font-size: 1.1rem; }
+
+.cardStatus { display: flex; flex-direction: column; align-items: flex-end; }
+.statusBadge { padding: 6px 14px; border-radius: 8px; font-size: 0.75rem; font-weight: bold; text-transform: capitalize; }
+
+/* Status Colors */
+.statusBadge.pending, .statusBadge.preparing { background-color: rgba(249, 177, 43, 0.15); color: #f9b12b; }
+.statusBadge.onTheWay, .statusBadge.nearDestination { background-color: rgba(56, 189, 248, 0.15); color: #38bdf8; }
+.statusBadge.completed { background-color: rgba(52, 211, 153, 0.15); color: #34d399; }
+.statusBadge.cancelled { background-color: rgba(255, 107, 107, 0.15); color: #ff6b6b; }
+
+@media (max-width: 768px) {
+    .orderCard { flex-direction: column; }
+    .cardStatus { align-items: flex-start; margin-top: 1.5rem; width: 100%; border-top: 1px solid #222; padding-top: 1rem; }
+}

@@ -18,58 +18,67 @@ const MenuPage = () => {
     const [loading, setLoading] = useState(true);
     const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
 
-    // Variation Selection States
     const [selectedItemForVar, setSelectedItemForVar] = useState(null);
     const [selectedVariation, setSelectedVariation] = useState(null);
 
-    // Scroll Detection for Floating Cart
     const [isFooterVisible, setIsFooterVisible] = useState(false);
     const pageWrapperRef = useRef(null);
 
-    // --- CONFLICT HANDLING STATE ---
     const [showConflictModal, setShowConflictModal] = useState(false);
     const [pendingItemToAdd, setPendingItemToAdd] = useState(null);
 
-    // --- SCROLL TO TOP FIX ---
     useEffect(() => {
         window.scrollTo(0, 0);
     }, [slug]);
 
     useEffect(() => {
-        const fetchData = async () => {
-            try {
-                // 1. Restaurant Details Fetch කරනවා
-                const restaurantQuery = `*[_type == "restaurant" && slug.current == $slug][0]`;
-                const restaurantData = await client.fetch(restaurantQuery, { slug });
-                setRestaurant(restaurantData);
+    let menuSubscription; 
 
-                if (restaurantData) {
-                    // 2. Menu Items Fetch කරනවා (Category එක expand කරලා නම ගන්නවා)
-                    // මෙතන coalesce පාවිච්චි කරලා තියෙන්නේ category එකේ field එක 'name' හෝ 'title' දෙකෙන් මොකක් වුනත් වැඩ කරන්නයි.
-                    const menuQuery = `*[_type == "menuItem" && restaurant._ref == $restoId] {
-                        _id, name, description, image, price, variations,
-                        "categoryName": coalesce(category->name, category->title, "Other")
-                    }`;
-                    
-                    const menuData = await client.fetch(menuQuery, { restoId: restaurantData._id });
-                    setMenuItems(menuData);
+    const fetchData = async () => {
+        try {
+            setLoading(true);
+            const restaurantQuery = `*[_type == "restaurant" && slug.current == $slug][0]`;
+            const restaurantData = await client.fetch(restaurantQuery, { slug });
+            setRestaurant(restaurantData);
 
-                    // 3. Dynamic Category Extraction
-                    // මෙනු අයිටම්ස් වල තියෙන categories ටික විතරක් අරගෙන Unique list එකක් හදනවා
-                    if (menuData && menuData.length > 0) {
-                        const allCategoryNames = menuData.map(item => item.categoryName);
-                        const uniqueCategories = ['All', ...new Set(allCategoryNames)];
-                        setCategories(uniqueCategories);
-                    }
+            if (restaurantData) {
+                // FIX: Added 'isDeleted != true' to filter out deleted items
+                const menuQuery = `*[_type == "menuItem" && restaurant._ref == $restoId && isDeleted != true] {
+                    _id, name, description, image, price, variations,
+                    "categoryName": coalesce(category->name, category->title, "Other")
+                }`;
+
+                const initialMenuData = await client.fetch(menuQuery, { restoId: restaurantData._id });
+                setMenuItems(initialMenuData);
+
+                // Real-time Listener also needs the filter
+                menuSubscription = client.listen(menuQuery, { restoId: restaurantData._id })
+                    .subscribe((update) => {
+                        console.log("Menu updated in real-time!");
+                        client.fetch(menuQuery, { restoId: restaurantData._id })
+                            .then(updatedData => setMenuItems(updatedData));
+                    });
+
+                if (initialMenuData.length > 0) {
+                    const allCategoryNames = initialMenuData.map(item => item.categoryName);
+                    const uniqueCategories = ['All', ...new Set(allCategoryNames)];
+                    setCategories(uniqueCategories);
                 }
-            } catch (error) {
-                console.error("Error fetching menu data:", error);
-            } finally {
-                setLoading(false);
             }
-        };
-        fetchData();
-    }, [slug]);
+        } catch (error) {
+            console.error("Error fetching menu data:", error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    fetchData();
+
+    return () => {
+        if (menuSubscription) menuSubscription.unsubscribe();
+    };
+}, [slug]);
+
 
     useEffect(() => {
         const handleScroll = () => {
