@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom';
 import { useNavigate } from 'react-router-dom';
-import { client } from '../../sanityClient';
+import { client, urlFor } from '../../sanityClient';
 import { useFoodCart } from '../../contexts/FoodCartContext';
 import { useAuth } from '../../contexts/AuthContext';
 import styles from './CheckoutModal.module.css';
