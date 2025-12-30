@@ -57,7 +57,7 @@ const DownloadApps = () => {
                 <li><span>✓</span> Smart GPS Navigation</li>
                 <li><span>✓</span> Daily Earnings Tracker</li>
               </ul>
-              <a href="/apps/rider.apk" download="RapidGo_Rider.apk" className={styles.downloadBtn}>
+              <a href="https://drive.google.com/file/d/1Cdo77w437hymMFX9WqWe7G22Q06Z0KhC/view?usp=drivesdk" download="RapidGo_Rider.apk" className={styles.downloadBtn}>
                 Download APK
               </a>
             </div>
