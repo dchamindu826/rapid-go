@@ -242,7 +242,9 @@ export default function CheckoutModal({ restaurant, onClose }) {
           item: { _type: 'reference', _ref: item._id.split('-')[0] },
           quantity: item.quantity,
           name: item.name,
-          price: item.price
+          price: item.price,
+          variation: item.name.includes('(') ? item.name.substring(item.name.indexOf('(')+1, item.name.indexOf(')')) : '',
+          image: item.image ? urlFor(item.image).url() : ""
         })),
       };
 
