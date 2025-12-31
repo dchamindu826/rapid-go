@@ -37,7 +37,7 @@ const DownloadApps = () => {
                 <li><span>✓</span> Detailed Sales Analytics</li>
               </ul>
               {/* Button click kala gaman download wenawa */}
-              <a href="/apps/partner.apk" download="RapidGo_Partner.apk" className={styles.downloadBtn}>
+              <a href="https://drive.google.com/file/d/1-aECjm8Ed_SfwBWcKNZTVL16_HzYYgzC/view?usp=drivesdk" download="RapidGo_Partner.apk" className={styles.downloadBtn}>
                 Download APK
               </a>
             </div>
