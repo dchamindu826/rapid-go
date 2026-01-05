@@ -113,11 +113,11 @@ const calculateDeliveryDetails = (distance, cartTotal) => {
     courierFee = 60; 
     handlingFee = 60;
   } else if (distance <= 4.0) {
-    courierFee = distance * 50;
-    handlingFee = 60;
+    courierFee = distance * 40;
+    handlingFee = 50;
   } else if (distance <= 7.0) {
     courierFee = distance * 40;
-    handlingFee = 70; 
+    handlingFee = 50; 
   } else {
     // More than 7km
     courierFee = distance * 40;
