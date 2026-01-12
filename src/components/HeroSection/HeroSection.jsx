@@ -16,7 +16,7 @@ const HeroSection = () => {
                     <p className={styles.heroTagline}>FAST & RELIABLE</p>
                     <h1 className={styles.heroTitle}>Your Trusted Courier & Delivery Partner.</h1>
                     <p className={styles.heroSubtitle}>One click, and we deliver parcels and groceries directly to your doorstep.</p>
-                    <Link to="/create-order">
+                    <Link to="/restaurants">
                         <button className={styles.btn}>Place an Order</button>
                     </Link>
                 </div>
