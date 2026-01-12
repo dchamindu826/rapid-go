@@ -1,49 +1,37 @@
 import React, { useState } from 'react';
 import styles from './SignUpPage.module.css';
 import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '../../contexts/AuthContext'; // AuthContext eka use karanna
+import { useAuth } from '../../contexts/AuthContext';
 
 const SignUpPage = () => {
-    const [formData, setFormData] = useState({ firstName: '', lastName: '', email: '', password: '' });
     const [error, setError] = useState('');
-    const [loading, setLoading] = useState(false);
-    const { signup } = useAuth(); // signup function eka gannawa
+    // Google walin signup wena eka login wena eka wagema nisa signInWithGoogle use karanawa
+    const { signInWithGoogle } = useAuth();
     const navigate = useNavigate();
 
-    const handleChange = (e) => {
-        setFormData({ ...formData, [e.target.name]: e.target.value });
-    };
-
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        setError('');
-        setLoading(true);
+    const handleGoogleSignUp = async () => {
         try {
-            await signup(formData.email, formData.password, formData.firstName, formData.lastName);
-            navigate('/profile'); // Signup unama profile ekata yawanawa
+            await signInWithGoogle();
+            navigate('/profile');
         } catch (err) {
-            setError('Failed to create an account. This email may already be in use.');
             console.error(err);
+            setError('Failed to sign up with Google.');
         }
-        setLoading(false);
     };
 
     return (
         <div className={`${styles.pageContainer} container`}>
             <div className={styles.signupBox}>
-                <h2>Create an Account</h2>
+                <h2>Create Account</h2>
+                <p>Join us with your Google account</p>
+                
                 {error && <p className={styles.error}>{error}</p>}
-                <form onSubmit={handleSubmit} className={styles.signupForm}>
-                    <div className={styles.nameFields}>
-                        <input type="text" name="firstName" placeholder="First Name" required onChange={handleChange} />
-                        <input type="text" name="lastName" placeholder="Last Name" required onChange={handleChange} />
-                    </div>
-                    <input type="email" name="email" placeholder="Email Address" required onChange={handleChange} />
-                    <input type="password" name="password" placeholder="Password (min. 6 characters)" required onChange={handleChange} />
-                    <button disabled={loading} type="submit" className={styles.signupBtn}>
-                        {loading ? 'Creating Account...' : 'Sign Up'}
-                    </button>
-                </form>
+                
+                <button className={styles.googleBtn} onClick={handleGoogleSignUp}>
+                    <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google icon" />
+                    <span>Sign up with Google</span>
+                </button>
+                
                 <div className={styles.loginRedirect}>
                     Already have an account? <Link to="/login">Log In</Link>
                 </div>

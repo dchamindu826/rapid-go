@@ -99,3 +99,8 @@ body::before {
   overflow: hidden;
   /* Modal එක open වුණාම .app-container එකේ scroll එක නවත්වනවා */
 }
+
+/* SweetAlert eka anith hama ekatama wada udin pennanna */
+.swal2-container {
+  z-index: 99999 !important;
+}

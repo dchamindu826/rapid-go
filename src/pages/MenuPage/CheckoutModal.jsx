@@ -209,10 +209,35 @@ export default function CheckoutModal({ restaurant, onClose }) {
 
   const handlePlaceOrder = async (e) => {
     e.preventDefault();
+
+    // --- MEKA ADD KARANNA (START) ---
+    // User login wela nattam check karanawa
+    if (!currentUser) {
+      Swal.fire({
+        title: 'Login Required',
+        text: 'Order ekak place karanna oya sign in wela inna ona.',
+        icon: 'warning',
+        showCancelButton: true, // Cancel button ekakuth pennanawa
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Sign In', // Login button eka
+        cancelButtonText: 'Cancel'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          // User 'Sign In' click karoth login page ekata yanawa
+          navigate('/login');
+          // Modal eka close karanna onanam methana onClose() call karanna puluwan
+        }
+      });
+      return; // Code eka methanin nawathanawa
+    }
+    // --- MEKA ADD KARANNA (END) ---
+
     if (!userLocation) {
       Swal.fire('Location Needed', 'Please set your delivery location.', 'warning');
       return;
     }
+    
     setIsPlacingOrder(true);
     
     const totalDeliveryCharge = courierFee + handlingFee;
