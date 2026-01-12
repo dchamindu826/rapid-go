@@ -214,13 +214,14 @@ export default function CheckoutModal({ restaurant, onClose }) {
     // User login wela nattam check karanawa
     if (!currentUser) {
       Swal.fire({
-        title: 'Login Required',
-        text: 'Order ekak place karanna oya sign in wela inna ona.',
+       title: 'Login Required',
+        // ඉංග්‍රීසි සහ සිංහල පේළි දෙකකට එන විදිහට හැදුවා
+        html: 'Please login first to place an order.<br><b>ඇණවුම් කිරීමට පෙර කරුණාකර ඔබගේ ගිණුමට පිවිසෙන්න.</b>', 
         icon: 'warning',
-        showCancelButton: true, // Cancel button ekakuth pennanawa
+        showCancelButton: true,
         confirmButtonColor: '#3085d6',
         cancelButtonColor: '#d33',
-        confirmButtonText: 'Sign In', // Login button eka
+        confirmButtonText: 'Login Now', // නැත්නම් 'Login / පිවිසෙන්න'
         cancelButtonText: 'Cancel'
       }).then((result) => {
         if (result.isConfirmed) {
